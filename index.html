@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KATES - Kalkulator Tes Siswa</title>
+    
+    <!-- PWA Manifest Inline untuk GitHub Pages -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI%2BPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSI0MCIvPjx0ZXh0IHg9Ijk2IiB5PSIxMTAiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSIxMDAiLz48dGV4dCB4PSIyNTYiIHk9IjI5MCIgZm9udC1zaXplPSIyMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
@@ -16,6 +20,15 @@
             touch-action: manipulation; /* Cegah double-tap zoom di HP */
             -webkit-user-select: none;
             user-select: none;
+        }
+
+        /* Banner Install PWA Animasi */
+        #install-banner {
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #install-banner.show {
+            transform: translateY(0);
         }
 
         /* Latar Belakang Animasi Matematika (Tema Terang) */
@@ -69,6 +82,27 @@
         }
         .pop-effect { animation: pop-score 0.3s ease-out; }
 
+        /* --- CSS Animasi Reaksi Emoji --- */
+        @keyframes sad-anim {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(2px) rotate(-10deg); }
+            75% { transform: translateY(-2px) rotate(10deg); }
+        }
+        @keyframes smile-anim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes tada-anim {
+            0% { transform: scale(1) rotate(0); }
+            10%, 20% { transform: scale(0.9) rotate(-3deg); }
+            30%, 50%, 70%, 90% { transform: scale(1.2) rotate(3deg); }
+            40%, 60%, 80% { transform: scale(1.2) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        .emoji-sad { animation: sad-anim 1.5s ease-in-out infinite; }
+        .emoji-smile { animation: smile-anim 1.5s ease-in-out infinite; }
+        .emoji-happy { animation: tada-anim 1.5s ease-in-out infinite; }
+
         /* Numpad Button Press Effect */
         .numpad-btn:active {
             transform: scale(0.92);
@@ -85,25 +119,45 @@
 </head>
 <body class="h-[100dvh] w-screen flex flex-col items-center justify-center relative">
     
+    <!-- Banner Install Aplikasi (PWA) -->
+    <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
+        <div class="flex items-center gap-3 pl-2">
+            <span class="text-3xl bg-white p-1 rounded-lg shadow-sm">🏫</span>
+            <div class="flex flex-col">
+                <span class="text-sm font-black tracking-wide">Install KATES</span>
+                <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
+            </div>
+        </div>
+        <div class="flex gap-2 items-center pr-1">
+            <button onclick="installApp()" class="bg-white text-blue-600 text-[11px] font-bold px-4 py-2 rounded-full shadow-md active:scale-95 transition-transform uppercase tracking-wider">Install</button>
+            <button onclick="tutupBanner()" class="text-white/80 hover:text-white px-2 text-2xl font-black">&times;</button>
+        </div>
+    </div>
+
     <div class="math-bg" id="mathBg"></div>
 
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
         <!-- Header: Judul Simetris -->
-        <div class="flex-shrink-0 text-center mb-1">
+        <div class="flex-shrink-0 text-center mb-1 mt-1">
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0">By Zivi•Ai</p>
             <h1 class="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] leading-none mt-1 pb-1">KATES</h1>
             <p class="text-[12px] font-bold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
         </div>
 
         <!-- Display Box (Paling Atas) -->
-        <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2">
+        <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2 relative">
             
             <!-- Kiri: Nilai Asli -->
             <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-md relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 w-12 h-12 bg-blue-200 rounded-full opacity-50"></div>
                 <p class="text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
                 <div class="text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
+            </div>
+
+            <!-- EMOJI REAKSI TENGAH -->
+            <div id="emoji-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[28px] z-20 drop-shadow-md transition-all duration-300 scale-0 bg-white rounded-full w-[50px] h-[50px] flex items-center justify-center shadow-lg border-4 border-slate-100">
+                <!-- Emoji akan diisi oleh JS -->
             </div>
             
             <!-- Kanan: Pembulatan -->
@@ -215,7 +269,54 @@
     </div>
 
     <script>
-        // Data & State Utama
+        // --- LOGIKA INSTALL PWA (Tanpa Titik Tiga) ---
+        let deferredPrompt;
+        
+        // Daftarkan Service Worker Inline agar aplikasi memenuhi syarat PWA
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', (e) => { self.skipWaiting(); });
+                self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
+                self.addEventListener('fetch', (e) => { 
+                    e.respondWith(fetch(e.request).catch(() => new Response('Kalkulator KATES Offline Ready!'))); 
+                });
+            `;
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW Setup Gagal:', err));
+        }
+
+        // Tangkap event saat browser mendeteksi bahwa aplikasi bisa di-install
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Cegah browser menampilkan prompt default-nya
+            e.preventDefault();
+            deferredPrompt = e;
+            // Tampilkan Banner Install Custom kita (Otomatis pop-down dari atas)
+            setTimeout(() => {
+                document.getElementById('install-banner').classList.add('show');
+            }, 1000); // Muncul 1 detik setelah halaman dimuat
+        });
+
+        // Fungsi saat tombol Install di banner ditekan
+        function installApp() {
+            if (deferredPrompt) {
+                // Tampilkan prompt bawaan OS/Browser
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Aplikasi sedang di-install');
+                    }
+                    deferredPrompt = null;
+                    tutupBanner();
+                });
+            }
+        }
+
+        function tutupBanner() {
+            document.getElementById('install-banner').classList.remove('show');
+        }
+
+
+        // --- LOGIKA UTAMA KALKULATOR ---
         const configKelas = {
             '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500' },
             '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500' },
@@ -378,12 +479,9 @@
             document.getElementById('disp-r2').innerText = nilaiInput.r2;
             document.getElementById('disp-r3').innerText = nilaiInput.r3;
             document.getElementById('disp-total').innerText = nilaiInput.total;
-            
-            // Auto pindah kotak di Romawi jika sudah mencapai max karakter logika dasar
-            // (Fitur UX tambahan jika dirasa perlu, tapi saat ini fokus manual)
         }
 
-        // Hitung Nilai Akhir
+        // Hitung Nilai Akhir & Atur Animasi Emoji
         function kalkulasi() {
             let pembagi = parseInt(activeKelas);
             let totalSkor = 0;
@@ -394,7 +492,6 @@
                 let r3 = parseInt(nilaiInput.r3) || 0;
                 
                 if (activeKelas === '45') {
-                    // Kelas Koding: Romawi 1 dan Romawi 2 bobotnya sama-sama x1
                     totalSkor = (r1 * 1) + (r2 * 1);
                 } else {
                     totalSkor = (r1 * 1) + (r2 * 2) + (r3 * 3);
@@ -408,9 +505,10 @@
             let valAsli = isNaN(nilaiAkhir) ? 0 : nilaiAkhir;
             let strAsli = valAsli.toFixed(2);
             if(strAsli.endsWith('.00')) strAsli = valAsli.toString();
-            let strBulat = Math.round(valAsli).toString();
+            let valBulat = Math.round(valAsli);
+            let strBulat = valBulat.toString();
 
-            // Render ke Layar Atas dengan Animasi
+            // Render ke Layar Atas dengan Animasi Angka
             const elAsli = document.getElementById('nilaiAsli');
             const elBulat = document.getElementById('nilaiBulat');
 
@@ -424,6 +522,31 @@
                 elAsli.classList.add('pop-effect');
                 elBulat.classList.add('pop-effect');
             }
+
+            // --- Logika Animasi Emoji ---
+            const emojiEl = document.getElementById('emoji-reaction');
+            
+            // Hapus semua class animasi sebelumnya
+            emojiEl.classList.remove('emoji-sad', 'emoji-smile', 'emoji-happy');
+
+            // Jika nilai kosong (0), sembunyikan emoji (skala 0)
+            if (totalSkor === 0) {
+                emojiEl.style.transform = 'translate(-50%, -50%) scale(0)';
+            } else {
+                // Tampilkan emoji
+                emojiEl.style.transform = 'translate(-50%, -50%) scale(1)';
+                
+                if (valBulat < 70) {
+                    emojiEl.innerHTML = '😢';
+                    emojiEl.classList.add('emoji-sad');
+                } else if (valBulat >= 70 && valBulat <= 85) {
+                    emojiEl.innerHTML = '😊';
+                    emojiEl.classList.add('emoji-smile');
+                } else if (valBulat > 85) {
+                    emojiEl.innerHTML = '🥳';
+                    emojiEl.classList.add('emoji-happy');
+                }
+            }
         }
 
         // --- Inisialisasi Saat Buka ---
@@ -433,16 +556,11 @@
         // Dukungan Keyboard Fisik (Laptop/PC)
         document.addEventListener('keydown', function(e) {
             const key = e.key;
-            // Deteksi penekanan tombol angka
             if (/^[0-9]$/.test(key)) {
                 tekanTombol(key);
-            } 
-            // Tombol Backspace untuk fungsi Hapus (DEL)
-            else if (key === 'Backspace') {
+            } else if (key === 'Backspace') {
                 tekanTombol('DEL');
-            } 
-            // Tombol C, Delete, atau Escape untuk membersihkan semua nilai
-            else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
+            } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
                 tekanTombol('C');
             }
         });
