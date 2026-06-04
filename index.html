@@ -372,19 +372,44 @@
             const msgEl = document.getElementById('popup-message');
             const maxBox = document.getElementById('popup-max-box');
             
-            // Konfigurasi Tulisan Lucu
+            // Konfigurasi Tulisan Lucu dengan Acak (Randomizer)
             if (tipe === 'nokelas') {
-                emojiEl.innerText = '😴';
-                titleEl.innerText = 'Eits, Sabar Bestie! ✋';
-                titleEl.className = 'text-amber-500 font-black text-xl mb-1';
-                msgEl.innerHTML = 'Belum milih kelas kok udah main gas pencet angka aja?<br>Cuci muka atau ngopi dulu gih! ☕<br>Jangan lupa klik kelasnya ya~';
+                const variasi = [
+                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kelas dulu ngab!' },
+                    { emoji: '☕', title: 'Cuci Muka Dulu!', msg: 'Kelasnya belum dipencet tuh~' },
+                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Gas terus, pilih kelas dulu dong bestie!' },
+                    { emoji: '🙈', title: 'Main Pencet Aja', msg: 'Kelasnya mana woy? Lupa ya?' },
+                    { emoji: '🤣', title: 'Ngopi Duls!', msg: 'Fokus! Jangan lupa klik kelasnya~' }
+                ];
+                // Pilih pesan acak
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+                
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = 'text-amber-500 font-black text-2xl mb-1';
+                msgEl.innerHTML = rand.msg;
+                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
+                
                 maxBox.classList.add('hidden');
                 box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center';
+                
             } else if (tipe === 'over') {
-                emojiEl.innerText = '🫣';
-                titleEl.innerText = 'Ngantuk Ya? 🤣';
-                titleEl.className = 'text-rose-500 font-black text-xl mb-1';
-                msgEl.innerHTML = 'Bapak/Ibu Guru kelebihan ngetiknya nih! 🐣<br>Masa muridnya dikasih nilai nembus batas, wkwkwk!<br>Yuk ketik ulang yuk~';
+                const variasi = [
+                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
+                    { emoji: '🤣', title: 'Ngantuk lu ya bre?', msg: 'Waduh, kebanyakan ngetik tuh!' },
+                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Muridnya dapet nilai bonus kah?' },
+                    { emoji: '🫣', title: 'Guru Sapa Nih?', msg: 'Lebih dari batas maksimal woy!' },
+                    { emoji: '💸', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu/pak? Kelebihan!' }
+                ];
+                // Pilih pesan acak
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = 'text-rose-500 font-black text-2xl mb-1';
+                msgEl.innerHTML = rand.msg;
+                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
+                
                 maxBox.classList.remove('hidden');
                 document.getElementById('popup-max-val').innerText = maxVal;
                 box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center';
