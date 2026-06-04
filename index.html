@@ -3,461 +3,532 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>KATES - Kalkulator Tes Siswa</title>
     
-    <!-- Icon & PWA Manifest Inline -->
-    <link rel="icon" href="LOGO.png" type="image/png">
-    <link rel="apple-touch-icon" href="LOGO.png">
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <!-- PWA Manifest Inline (Standalone) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20Pro%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f8fafc%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg+xml%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
-        /* PENGUNCIAN LAYAR PERMANEN AGAR TIDAK KEPOTONG / MELAR */
+        /* MODERN MOBILE RESET */
+        :root { --app-height: 100%; }
         html, body {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0; left: 0;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
-
-        body {
+            width: 100%; height: var(--app-height); height: 100dvh;
+            position: fixed; top: 0; left: 0;
+            overflow: hidden; overscroll-behavior: none;
             font-family: 'Nunito', sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
-            touch-action: manipulation;
-            -webkit-user-select: none;
-            user-select: none;
+            background: #f8fafc; touch-action: manipulation;
+            -webkit-user-select: none; user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- ANIMASI MASUK (ENTRANCE ANIMATIONS) --- */
-        @keyframes fade-in-down {
-            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes pop-in {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes fade-in-up {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-up-numpad {
-            0% { transform: translateY(100%); }
-            100% { transform: translateY(0); }
-        }
-        
-        /* Animasi Goyang Lucu untuk Popup */
-        @keyframes wiggle {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.05) rotate(-5deg); }
-            50% { transform: scale(1.05) rotate(5deg); }
-            75% { transform: scale(1.05) rotate(-5deg); }
-        }
+        /* --- SMOOTH ANIMATIONS --- */
+        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-15px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes slide-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-up-numpad { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+        @keyframes wiggle { 0%, 100% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.05) rotate(-3deg); } 50% { transform: scale(1.05) rotate(3deg); } 75% { transform: scale(1.05) rotate(-3deg); } }
 
-        .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
-        .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
-        .anim-classes { animation: fade-in-up 0.5s ease-out 0.4s both; }
-        .anim-toggle  { animation: fade-in-up 0.5s ease-out 0.5s both; }
-        .anim-input   { animation: fade-in-up 0.5s ease-out 0.6s both; }
-        .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
-        .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
+        .anim-header  { animation: fade-in-down 0.5s ease-out 0.1s both; }
+        .anim-scores  { animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; }
+        .anim-classes { animation: slide-up 0.4s ease-out 0.3s both; }
+        .anim-toggle  { animation: slide-up 0.4s ease-out 0.4s both; }
+        .anim-input   { animation: slide-up 0.4s ease-out 0.5s both; }
+        .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both; }
+        .anim-wiggle  { animation: wiggle 0.5s ease-in-out; }
 
-        #install-banner {
-            transform: translateY(-100%);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #install-banner.show { transform: translateY(0); }
-
+        /* BACKGROUND SYMBOLS */
         .subject-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+            background: radial-gradient(circle at 50% -20%, #e0e7ff 0%, transparent 60%);
         }
         .symbol {
-            position: absolute;
-            font-weight: 900;
-            white-space: nowrap;
-            will-change: transform, opacity;
-            animation: float-up linear infinite;
-            text-shadow: 0 2px 5px rgba(255,255,255,0.8);
+            position: absolute; font-weight: 900; white-space: nowrap;
+            will-change: transform, opacity; animation: float-up linear infinite;
+            filter: grayscale(100%) opacity(0.08); 
         }
-        
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.35; } 
-            50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; }
-            85% { opacity: 0.35; } 
-            100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; }
+            10% { opacity: 0.8; } 90% { opacity: 0.8; }
+            100% { transform: translateY(-15vh) rotate(15deg) scale(1.2); opacity: 0; }
         }
 
+        /* CLASS BUTTONS */
         .class-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background-color: #ffffff;
-            color: #64748b;
-            border: 1px solid #cbd5e1;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(8px);
+            color: #64748b; border: 1px solid #e2e8f0;
+            position: relative; overflow: hidden;
         }
         .class-active {
-            transform: scale(1.03) translateY(-2px);
-            box-shadow: 0 8px 20px -6px var(--glow-color);
-            color: #ffffff !important;
-            border-color: transparent !important;
-            animation: breathe 2s ease-in-out infinite;
-            z-index: 10;
+            transform: scale(1.05) translateY(-2px);
+            color: #ffffff !important; border-color: transparent !important;
+            box-shadow: 0 10px 15px -3px var(--glow-color); z-index: 10;
         }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); }
-            50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
+        .class-active::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
         }
-
         @keyframes pulse-warning {
-            0%, 100% { transform: scale(1); border-color: #cbd5e1; }
-            50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
+            0%, 100% { transform: scale(1) translateX(0); border-color: #e2e8f0; }
+            25% { transform: scale(1.02) translateX(-2px); border-color: #f43f5e; background-color: #fff1f2; }
+            75% { transform: scale(1.02) translateX(2px); border-color: #f43f5e; background-color: #fff1f2; }
         }
-        .needs-class .class-btn { animation: pulse-warning 0.5s ease-in-out; }
+        .needs-class .class-btn { animation: pulse-warning 0.4s ease-in-out; }
 
-        @keyframes pop-score {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); color: #3b82f6; }
-            100% { transform: scale(1); }
+        /* INPUT BOXES */
+        .input-box {
+            background: #ffffff; transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .pop-effect { animation: pop-score 0.3s ease-out; }
-
-        .numpad-btn:active {
-            transform: scale(0.92);
-            background-color: #cbd5e1;
-        }
-
         .input-active {
-            border: 2px solid #3b82f6 !important;
-            background-color: #eff6ff !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6 !important; background-color: #eff6ff !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+            transform: translateY(-2px);
         }
+
+        /* NUMPAD - IOS STYLE */
+        .numpad-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 8px; padding: 10px 16px 24px 16px;
+        }
+        .numpad-btn {
+            background: #ffffff; border: none; border-radius: 16px;
+            color: #334155; font-size: 1.5rem; font-weight: 800;
+            height: 60px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 0px rgba(203,213,225,0.5), 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
+        }
+        .numpad-btn:active {
+            transform: translateY(2px) scale(0.96);
+            box-shadow: 0 0px 0px rgba(203,213,225,0.5), 0 1px 2px rgba(0,0,0,0.05);
+            background-color: #e2e8f0;
+        }
+        .numpad-btn-action { background: #f1f5f9; color: #64748b; font-size: 1.25rem; }
+        .numpad-btn-action.clear { color: #f43f5e; background: #fff1f2; }
+
+        /* REACTION EFFECTS */
+        @keyframes pop-score { 0% { transform: scale(1); } 50% { transform: scale(1.1); color: #3b82f6; } 100% { transform: scale(1); } }
+        .pop-effect { animation: pop-score 0.3s ease-out; }
+        
+        .emoji-reaction {
+            font-size: 4rem; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+            animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* LANDSCAPE WARNING */
+        #landscape-warning { display: none; }
+        @media (orientation: landscape) and (max-height: 500px) {
+            #landscape-warning { display: flex; }
+            .main-content { filter: blur(5px); pointer-events: none; }
+        }
+
+        /* HIDE SCROLLBAR FOR SETTINGS */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center relative w-full h-full">
-    
-    <!-- BAR ATAS ABSOLUT (Refresh, By Zivi, Reset) -->
-    <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-50 flex justify-between items-start pointer-events-none anim-header">
-        <!-- Tombol Refresh (Kiri) -->
-        <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            REFRESH
-        </button>
+<body class="flex flex-col items-center justify-center relative">
 
-        <!-- Label Pembuat (Tengah Atas) -->
-        <div class="pointer-events-auto bg-white/60 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-slate-100 mt-0.5">
-            <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
+    <!-- WARNING LAYAR MENDATAR -->
+    <div id="landscape-warning" class="fixed inset-0 z-[9999] bg-slate-900/95 flex flex-col items-center justify-center text-white p-6 text-center backdrop-blur-md">
+        <svg class="w-16 h-16 text-amber-400 mb-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path></svg>
+        <h2 class="text-2xl font-black mb-2">Putar HP Anda!</h2>
+        <p class="text-slate-300 font-medium">Aplikasi ini didesain khusus untuk posisi berdiri (Portrait).</p>
+    </div>
+    
+    <!-- BAR ATAS ABSOLUT -->
+    <div class="fixed top-0 left-0 w-full px-3 py-2 z-50 flex justify-between items-start pointer-events-none anim-header">
+        <div class="flex gap-1.5 pointer-events-auto">
+            <!-- Refresh -->
+            <button onclick="refreshApp()" class="bg-white/70 backdrop-blur-md border border-slate-200/50 text-blue-600 text-[10px] font-black px-2.5 py-2 rounded-xl shadow-sm hover:bg-white active:scale-95 transition-all flex items-center justify-center">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            </button>
+            <!-- Pengaturan -->
+            <button onclick="bukaPengaturan()" class="bg-white/70 backdrop-blur-md border border-slate-200/50 text-slate-600 px-2.5 py-2 rounded-xl shadow-sm hover:bg-white active:scale-95 transition-all flex items-center justify-center">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </button>
         </div>
 
-        <!-- Tombol Reset (Kanan) -->
-        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+        <div class="pointer-events-auto bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1.5 rounded-full shadow-md mt-0.5">
+            <p class="text-[9px] uppercase tracking-[0.25em] text-white font-black m-0">By Zivi•Ai</p>
+        </div>
+
+        <!-- Reset -->
+        <button onclick="resetGlobal()" class="pointer-events-auto bg-white/70 backdrop-blur-md border border-slate-200/50 text-rose-500 text-[10px] font-black px-3 py-2 rounded-xl shadow-sm hover:bg-white active:scale-95 transition-all flex items-center gap-1.5">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
             RESET
         </button>
     </div>
 
-    <!-- Banner Install Aplikasi (PWA) -->
-    <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
-        <div class="flex items-center gap-3 pl-2">
-            <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
-            <div class="flex flex-col">
-                <span class="text-sm font-black tracking-wide">Install KATES</span>
-                <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
+    <!-- MODAL PENGATURAN (EDIT KELAS) -->
+    <div id="modal-pengaturan" class="fixed inset-0 z-[200] flex items-end justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="tutupPengaturan()"></div>
+        <div id="modal-pengaturan-box" class="relative bg-slate-50 w-full max-w-md h-[85vh] rounded-t-[2rem] shadow-2xl flex flex-col transform translate-y-full transition-transform duration-300 pointer-events-auto">
+            
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-slate-200 bg-white rounded-t-[2rem] flex justify-between items-center shadow-sm z-10">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-blue-100 text-blue-600 rounded-lg"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></div>
+                    <div>
+                        <h2 class="font-black text-lg text-slate-800 leading-tight">Pengaturan Kelas</h2>
+                        <p class="text-[10px] font-bold text-slate-500">Edit formasi & pembagian bobot.</p>
+                    </div>
+                </div>
+                <button onclick="tutupPengaturan()" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-500 font-black transition-colors">&times;</button>
             </div>
-        </div>
-        <div class="flex gap-2 items-center pr-1">
-            <button onclick="installApp()" class="bg-white text-blue-600 text-[11px] font-bold px-4 py-2 rounded-full shadow-md active:scale-95 transition-transform uppercase tracking-wider">Install</button>
-            <button onclick="tutupBanner()" class="text-white/80 hover:text-white px-2 text-2xl font-black">&times;</button>
+            
+            <!-- Modal Body (List Forms) -->
+            <div class="p-4 overflow-y-auto no-scrollbar flex-1 space-y-4" id="form-pengaturan-container" style="padding-bottom: env(safe-area-inset-bottom);">
+                <!-- Forms injected via JS -->
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-200 bg-white flex gap-2" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
+                <button onclick="resetPengaturan()" class="flex-1 py-3.5 bg-rose-50 text-rose-600 border border-rose-200 font-extrabold rounded-2xl text-xs active:scale-95 transition-transform uppercase tracking-wider">Default</button>
+                <button onclick="simpanPengaturan()" class="flex-[2] py-3.5 bg-blue-600 text-white font-black rounded-2xl text-sm shadow-[0_8px_20px_rgba(37,99,235,0.3)] active:scale-95 transition-transform uppercase tracking-wider">Simpan Perubahan</button>
+            </div>
         </div>
     </div>
 
     <!-- POPUP LUCU OFFLINE MULTIFUNGSI -->
-    <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
-        <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
-            <div id="popup-emoji" class="text-6xl mb-3 animate-bounce">🙈</div>
-            <h3 id="popup-title" class="text-rose-500 font-black text-2xl mb-1">Oopsie!</h3>
-            <p id="popup-message" class="text-slate-600 text-sm font-bold leading-relaxed mb-1">Pesan peringatan di sini</p>
+    <div id="cute-popup" class="fixed inset-0 z-[300] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
+        <div id="cute-popup-box" class="relative bg-white/95 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-2 border-white flex flex-col items-center">
+            <div id="popup-emoji" class="text-6xl mb-2 animate-bounce drop-shadow-md">🙈</div>
+            <h3 id="popup-title" class="text-rose-500 font-black text-2xl mb-1 tracking-tight">Oopsie!</h3>
+            <p id="popup-message" class="text-slate-500 text-sm font-bold leading-relaxed mb-2">Pesan peringatan di sini</p>
             
-            <div id="popup-max-box" class="bg-rose-50 rounded-xl py-2 px-4 mt-3 border border-rose-100 w-full hidden">
-                <span class="text-[10px] text-rose-400 uppercase tracking-widest block font-bold">Mentok di angka:</span>
-                <span id="popup-max-val" class="text-3xl font-black text-rose-500">0</span>
+            <div id="popup-max-box" class="bg-slate-50/80 rounded-2xl py-2 px-4 mt-2 w-full hidden border border-slate-100">
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest block font-extrabold mb-1">Maksimal Angka:</span>
+                <span id="popup-max-val" class="text-3xl font-black text-rose-500 drop-shadow-sm">0</span>
             </div>
         </div>
     </div>
 
-    <!-- Background Animasi Pelajaran -->
+    <!-- Background Animasi -->
     <div class="subject-bg" id="mathBg"></div>
 
     <!-- WADAH UTAMA KONTEN -->
-    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between pb-4 pt-12 sm:pt-10">
+    <div class="main-content relative z-10 w-full max-w-sm h-full flex flex-col p-3 mx-auto justify-between pb-0 pt-16">
         
-        <!-- BAGIAN ATAS & TENGAH: Jarak Center Terpusat agar tidak nabrak di layar pendek -->
-        <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2.5 w-full min-h-0">
+        <div class="flex-1 flex flex-col justify-center gap-3 w-full min-h-0">
             
-            <!-- Header: Judul KATES -->
-            <div class="text-center anim-header w-full mt-2">
-                <img src="JUDUL.png" alt="KATES" class="max-h-[8vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
-                <p class="text-[10px] font-extrabold text-slate-500 tracking-widest mt-0">-KALKULATOR TES SISWA-</p>
+            <div class="text-center anim-header w-full flex flex-col items-center">
+                <h1 class="text-4xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 drop-shadow-sm mb-0">KATES</h1>
+                <p class="text-[9px] sm:text-[10px] font-extrabold text-slate-400 tracking-[0.3em] uppercase mt-0">Kalkulator Tes Siswa</p>
             </div>
 
             <!-- Display Box (Nilai) -->
-            <div class="w-full flex items-center justify-between gap-1.5 sm:gap-2 relative anim-scores">
-                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-1.5 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
-                    <p class="text-[8px] sm:text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
-                    <div class="text-2xl sm:text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
+            <div class="w-full flex items-stretch justify-between gap-2 relative anim-scores">
+                <div class="flex flex-col items-center justify-center flex-1 bg-white/80 backdrop-blur-md rounded-3xl py-2 px-2 border border-blue-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-16 h-16 bg-blue-100 rounded-full blur-2xl opacity-50 -mr-8 -mt-8"></div>
+                    <p class="text-[9px] text-blue-500 font-black tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
+                    <div class="text-2xl sm:text-3xl font-black text-slate-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
                 </div>
 
-                <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24">
-                </div>
+                <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none flex items-center justify-center w-20 h-20"></div>
                 
-                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl py-1.5 px-1 border-2 border-emerald-300 shadow-sm relative overflow-hidden">
-                    <p class="text-[8px] sm:text-[9px] text-emerald-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Pembulatan</p>
-                    <div class="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums transition-all relative z-10" id="nilaiBulat">0</div>
+                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-b from-emerald-400 to-emerald-500 rounded-3xl py-2 px-2 shadow-[0_10px_20px_rgba(16,185,129,0.3)] relative overflow-hidden text-white">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8L3N2Zz4=')] opacity-20"></div>
+                    <p class="text-[9px] text-emerald-100 font-black tracking-widest uppercase mb-0.5 relative z-10">Nilai Akhir</p>
+                    <div class="text-4xl sm:text-5xl font-black text-white tabular-nums drop-shadow-md relative z-10" id="nilaiBulat">0</div>
                 </div>
             </div>
 
-            <!-- Pilihan Kelas (SEKARANG 4 KOLOM SEJAJAR / 1 BARIS) -->
+            <!-- Pilihan Kelas (Dynamic) -->
             <div class="anim-classes w-full" id="area-kelas">
-                <div class="grid grid-cols-4 gap-1">
-                    <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 1</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
-                    </button>
-                    <button onclick="pilihKelas('60')" id="btn-60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 2-3</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
-                    </button>
-                    <button onclick="pilihKelas('65')" id="btn-65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 4-5</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
-                    </button>
-                    <button onclick="pilihKelas('45')" id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black tracking-widest text-purple-600">KODING</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
-                    </button>
+                <div id="area-kelas-container" class="grid grid-cols-4 gap-2 bg-white/60 p-1.5 rounded-2xl border border-slate-200/50 backdrop-blur-sm">
+                    <!-- Dinamis Diisi JS -->
                 </div>
             </div>
 
-            <!-- Menu Toggle (Romawi/Jumlah) -->
+            <!-- Menu Toggle -->
             <div class="flex justify-center anim-toggle w-full">
-                <div class="bg-white p-0.5 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
-                    <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
+                <div class="bg-white p-1 rounded-full flex gap-1 border border-slate-200 w-3/4 shadow-sm relative z-20">
+                    <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1.5 rounded-full text-[11px] font-bold transition-all text-slate-400 bg-transparent">
                         ROMAWI
                     </button>
-                    <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md">
+                    <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1.5 rounded-full text-[11px] font-black transition-all bg-slate-800 text-white shadow-md">
                         JUMLAH
                     </button>
                 </div>
             </div>
 
             <!-- Area Input Box -->
-            <div class="flex items-center justify-center anim-input w-full min-h-[60px]">
+            <div class="flex items-center justify-center anim-input w-full min-h-[70px]">
                 <!-- View Romawi -->
-                <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
-                    <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
-                        <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
-                        <div id="disp-r1" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r1" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-opacity duration-300">
+                    <div onclick="setFokus('r1')" id="box-r1" class="input-box rounded-2xl py-2 px-1 border-2 border-slate-100 flex flex-col items-center justify-center cursor-pointer">
+                        <label id="label-r1" class="text-[9px] font-black text-slate-400 mb-0.5">ROM I <span class="text-blue-500">(x1)</span></label>
+                        <div id="disp-r1" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r1" class="text-[8px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded-full mt-1">Maks: ?</span>
                     </div>
-                    <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
-                        <div id="disp-r2" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r2" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('r2')" id="box-r2" class="input-box rounded-2xl py-2 px-1 border-2 border-slate-100 flex flex-col items-center justify-center cursor-pointer">
+                        <label id="label-r2" class="text-[9px] font-black text-slate-400 mb-0.5">ROM II <span class="text-emerald-500">(x2)</span></label>
+                        <div id="disp-r2" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r2" class="text-[8px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded-full mt-1">Maks: ?</span>
                     </div>
-                    <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
-                        <div id="disp-r3" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r3" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('r3')" id="box-r3" class="input-box rounded-2xl py-2 px-1 border-2 border-slate-100 flex flex-col items-center justify-center cursor-pointer">
+                        <label id="label-r3" class="text-[9px] font-black text-slate-400 mb-0.5">ROM III <span class="text-rose-500">(x3)</span></label>
+                        <div id="disp-r3" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r3" class="text-[8px] text-slate-400 font-bold bg-slate-50 px-2 py-0.5 rounded-full mt-1">Maks: ?</span>
                     </div>
                 </div>
 
                 <!-- View Jumlah -->
-                <div id="view-jumlah" class="w-full flex items-center justify-center">
-                    <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-2xl py-2 px-4 w-[85%] max-w-[280px] border-2 border-amber-400 shadow-[0_4px_15px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
-                        <label class="text-[11px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label>
-                        <div id="disp-total" class="text-4xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300 my-0.5"></div>
-                        <span id="max-total" class="text-[9px] text-slate-400 font-bold">Maks: ?</span>
+                <div id="view-jumlah" class="w-full flex items-center justify-center transition-opacity duration-300">
+                    <div onclick="setFokus('total')" id="box-total" class="input-box rounded-3xl py-3 px-4 w-[80%] border-2 border-slate-100 text-center cursor-pointer flex flex-col items-center justify-center">
+                        <label class="text-[11px] font-black text-slate-400 tracking-widest uppercase">Total Skormu</label>
+                        <div id="disp-total" class="text-5xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-200 my-1 tracking-tight"></div>
+                        <span id="max-total" class="text-[10px] text-slate-500 font-bold bg-slate-100 px-3 py-1 rounded-full mt-1 border border-slate-200">Batas Maksimal: ?</span>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Keyboard Angka Bawaan (Bagian Bawah Permanen) -->
-        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35vh] max-h-[240px] min-h-[160px] relative z-30 anim-numpad flex-shrink-0 mt-1">
-            <div class="grid grid-cols-3 gap-1.5 h-full">
-                <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">1</button>
-                <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">2</button>
-                <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">3</button>
+        <!-- IOS Style Numpad -->
+        <div class="w-full bg-slate-100/80 backdrop-blur-xl rounded-t-[2.5rem] border-t border-white shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)] -mx-3 mt-4 anim-numpad flex-shrink-0 relative z-30">
+            <div class="w-12 h-1.5 bg-slate-300 rounded-full mx-auto mt-3 mb-1"></div>
+            <div class="numpad-grid">
+                <button onclick="tekanTombol('1')" class="numpad-btn">1</button>
+                <button onclick="tekanTombol('2')" class="numpad-btn">2</button>
+                <button onclick="tekanTombol('3')" class="numpad-btn">3</button>
                 
-                <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">4</button>
-                <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">5</button>
-                <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">6</button>
+                <button onclick="tekanTombol('4')" class="numpad-btn">4</button>
+                <button onclick="tekanTombol('5')" class="numpad-btn">5</button>
+                <button onclick="tekanTombol('6')" class="numpad-btn">6</button>
                 
-                <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">7</button>
-                <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">8</button>
-                <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">9</button>
+                <button onclick="tekanTombol('7')" class="numpad-btn">7</button>
+                <button onclick="tekanTombol('8')" class="numpad-btn">8</button>
+                <button onclick="tekanTombol('9')" class="numpad-btn">9</button>
                 
-                <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-lg font-black text-red-500 transition-colors">C</button>
-                <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">0</button>
-                <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-lg font-bold text-slate-600 transition-colors flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <button onclick="tekanTombol('C')" class="numpad-btn numpad-btn-action clear font-black">C</button>
+                <button onclick="tekanTombol('0')" class="numpad-btn">0</button>
+                <button onclick="tekanTombol('DEL')" class="numpad-btn numpad-btn-action">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
                     </svg>
                 </button>
             </div>
         </div>
-
     </div>
 
     <script>
-        let deferredPrompt;
-        
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup:', err));
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(() => {
-                document.getElementById('install-banner').classList.add('show');
-            }, 1500); 
-        });
-
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    deferredPrompt = null;
-                    tutupBanner();
-                });
+        // Haptic Feedback Helper
+        function triggerHaptic(type = 'light') {
+            if (navigator.vibrate) {
+                if (type === 'light') navigator.vibrate(20);
+                if (type === 'heavy') navigator.vibrate([40, 20, 40]);
+                if (type === 'error') navigator.vibrate([50, 50, 50, 50]);
             }
         }
 
-        function tutupBanner() {
-            document.getElementById('install-banner').classList.remove('show');
-        }
+        const appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+        window.addEventListener('resize', appHeight); appHeight();
 
-        function refreshApp() {
-            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
-        }
+        function refreshApp() { triggerHaptic(); window.location.href = window.location.pathname + '?v=' + new Date().getTime(); }
 
-        const configKelas = {
-            '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500' },
-            '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500' },
-            '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500' },
-            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } 
-        };
+        // --- NEW DATA STRUCTURE FOR CONFIGURABLE CLASSES ---
+        const colorThemes = [
+            { from: 'from-blue-400', to: 'to-blue-600', shadow: 'rgba(59,130,246,0.4)', iconBg: 'bg-blue-100', iconText: 'text-blue-600' },
+            { from: 'from-emerald-400', to: 'to-emerald-600', shadow: 'rgba(16,185,129,0.4)', iconBg: 'bg-emerald-100', iconText: 'text-emerald-600' },
+            { from: 'from-rose-400', to: 'to-rose-600', shadow: 'rgba(244,63,94,0.4)', iconBg: 'bg-rose-100', iconText: 'text-rose-600' },
+            { from: 'from-purple-400', to: 'to-purple-600', shadow: 'rgba(168,85,247,0.4)', iconBg: 'bg-purple-100', iconText: 'text-purple-600' }
+        ];
 
-        let activeKelas = null; 
+        // w = weight (bobot pengali: x1, x2, dst)
+        const defaultConfigs = [
+            { name: 'KLS 1', div: 55, r1: 20, w1: 1, r2: 10, w2: 2, r3: 5, w3: 3 },
+            { name: 'KLS 2-3', div: 60, r1: 25, w1: 1, r2: 10, w2: 2, r3: 5, w3: 3 },
+            { name: 'KLS 4-5', div: 65, r1: 30, w1: 1, r2: 10, w2: 2, r3: 5, w3: 3 },
+            { name: 'KODING', div: 45, r1: 15, w1: 1, r2: 30, w2: 1, r3: 0, w3: 0 } 
+        ];
+
+        let classConfigs = [...defaultConfigs];
+        let activeKelasIndex = null; 
         let activeMode = 'jumlah'; 
         let fokusInput = 'total';
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
         let popupTimeout;
 
+        // --- INIT & RENDER ---
+        function initApp() {
+            try {
+                const savedConfigs = JSON.parse(localStorage.getItem('kates_custom_configs'));
+                if (savedConfigs && savedConfigs.length === 4) classConfigs = savedConfigs;
+            } catch(e) {}
+            
+            renderClassButtons();
+            if (!muatDataOffline()) setMode('jumlah');
+        }
+
+        function renderClassButtons() {
+            const container = document.getElementById('area-kelas-container');
+            container.innerHTML = '';
+            classConfigs.forEach((cfg, i) => {
+                const theme = colorThemes[i];
+                container.innerHTML += `
+                    <button onclick="pilihKelas(${i})" id="btn-kls-${i}" style="--glow-color: ${theme.shadow}" class="class-btn rounded-xl py-2 flex flex-col items-center justify-center transition-all duration-300">
+                        <span class="text-[10px] font-black tracking-tight">${cfg.name}</span>
+                        <span class="text-[8px] font-bold opacity-70">÷${cfg.div}</span>
+                    </button>
+                `;
+            });
+            // Update active state visual if a class is already selected
+            if (activeKelasIndex !== null) {
+                const btn = document.getElementById('btn-kls-' + activeKelasIndex);
+                if(btn) btn.classList.add('bg-gradient-to-br', colorThemes[activeKelasIndex].from, colorThemes[activeKelasIndex].to, 'class-active');
+            }
+        }
+
+        // --- SETTINGS (PENGATURAN) MODAL LOGIC ---
+        function bukaPengaturan() {
+            triggerHaptic('light');
+            const container = document.getElementById('form-pengaturan-container');
+            container.innerHTML = '';
+            
+            classConfigs.forEach((cfg, i) => {
+                const t = colorThemes[i];
+                container.innerHTML += `
+                    <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b ${t.from} ${t.to}"></div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-6 h-6 rounded-full ${t.iconBg} ${t.iconText} flex items-center justify-center font-black text-xs">${i+1}</div>
+                            <h3 class="font-black text-sm text-slate-700 uppercase tracking-wider">Tombol ${i+1}</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Nama Tombol</label>
+                                <input type="text" id="cfg-name-${i}" value="${cfg.name}" class="w-full mt-1 p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-black text-slate-800 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider text-rose-500">Angka Pembagi</label>
+                                <input type="number" id="cfg-div-${i}" value="${cfg.div}" class="w-full mt-1 p-2 bg-rose-50 border border-rose-200 rounded-xl text-sm font-black text-rose-600 focus:border-rose-400 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-100 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-black text-blue-500 w-12">ROM I</span>
+                                <input type="number" id="cfg-r1-${i}" value="${cfg.r1}" placeholder="Maks" class="flex-1 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none">
+                                <span class="text-[10px] font-bold text-slate-400">×</span>
+                                <input type="number" id="cfg-w1-${i}" value="${cfg.w1}" placeholder="Bobot" class="w-12 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none" title="Bobot Pengali">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-black text-emerald-500 w-12">ROM II</span>
+                                <input type="number" id="cfg-r2-${i}" value="${cfg.r2}" placeholder="Maks" class="flex-1 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none">
+                                <span class="text-[10px] font-bold text-slate-400">×</span>
+                                <input type="number" id="cfg-w2-${i}" value="${cfg.w2}" placeholder="Bobot" class="w-12 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none" title="Bobot Pengali">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-black text-rose-500 w-12">ROM III</span>
+                                <input type="number" id="cfg-r3-${i}" value="${cfg.r3}" placeholder="Maks (0=Hide)" class="flex-1 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none">
+                                <span class="text-[10px] font-bold text-slate-400">×</span>
+                                <input type="number" id="cfg-w3-${i}" value="${cfg.w3}" placeholder="Bobot" class="w-12 p-1.5 bg-white border border-slate-200 rounded-lg text-xs font-bold text-center text-slate-700 outline-none" title="Bobot Pengali">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const modal = document.getElementById('modal-pengaturan');
+            const box = document.getElementById('modal-pengaturan-box');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => { box.classList.remove('translate-y-full'); }, 10);
+        }
+
+        function tutupPengaturan() {
+            const modal = document.getElementById('modal-pengaturan');
+            const box = document.getElementById('modal-pengaturan-box');
+            box.classList.add('translate-y-full');
+            setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 300);
+        }
+
+        function simpanPengaturan() {
+            triggerHaptic('heavy');
+            for(let i=0; i<4; i++) {
+                classConfigs[i].name = document.getElementById(`cfg-name-${i}`).value || `KLS ${i+1}`;
+                classConfigs[i].div = parseInt(document.getElementById(`cfg-div-${i}`).value) || 100;
+                classConfigs[i].r1 = parseInt(document.getElementById(`cfg-r1-${i}`).value) || 0;
+                classConfigs[i].w1 = parseInt(document.getElementById(`cfg-w1-${i}`).value) || 1;
+                classConfigs[i].r2 = parseInt(document.getElementById(`cfg-r2-${i}`).value) || 0;
+                classConfigs[i].w2 = parseInt(document.getElementById(`cfg-w2-${i}`).value) || 1;
+                classConfigs[i].r3 = parseInt(document.getElementById(`cfg-r3-${i}`).value) || 0;
+                classConfigs[i].w3 = parseInt(document.getElementById(`cfg-w3-${i}`).value) || 1;
+            }
+            localStorage.setItem('kates_custom_configs', JSON.stringify(classConfigs));
+            tutupPengaturan();
+            renderClassButtons();
+            resetGlobal();
+            tampilkanPeringatanLucu('success');
+        }
+
+        function resetPengaturan() {
+            triggerHaptic('heavy');
+            if(confirm("Kembalikan ke pengaturan awal bawaan aplikasi?")) {
+                classConfigs = JSON.parse(JSON.stringify(defaultConfigs)); // Deep copy default
+                localStorage.removeItem('kates_custom_configs');
+                tutupPengaturan();
+                renderClassButtons();
+                resetGlobal();
+                tampilkanPeringatanLucu('success');
+            }
+        }
+
+
+        // --- POPUP WARNING ---
         function tampilkanPeringatanLucu(tipe, maxVal = 0) {
+            triggerHaptic(tipe === 'success' ? 'heavy' : 'error');
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
-            
             const emojiEl = document.getElementById('popup-emoji');
             const titleEl = document.getElementById('popup-title');
             const msgEl = document.getElementById('popup-message');
             const maxBox = document.getElementById('popup-max-box');
             
             if (tipe === 'nokelas') {
-                const variasi = [
-                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kelas dulu ngab!' },
-                    { emoji: '☕', title: 'Cuci Muka Dulu!', msg: 'Kelasnya belum dipencet tuh~' },
-                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Gas terus, pilih kelas dulu dong bestie!' },
-                    { emoji: '🙈', title: 'Main Pencet Aja', msg: 'Kelasnya mana woy? Lupa ya?' },
-                    { emoji: '🤣', title: 'Ngopi Duls!', msg: 'Fokus! Jangan lupa klik kelasnya~' }
-                ];
-                const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = 'text-amber-500 font-black text-2xl mb-1';
-                msgEl.innerHTML = rand.msg;
-                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
-                
-                maxBox.classList.add('hidden');
-                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center';
-                
+                emojiEl.innerText = '🗿'; titleEl.innerText = 'Woi Bangun!'; titleEl.className = 'text-slate-800 font-black text-2xl mb-1';
+                msgEl.innerText = 'Pilih tombol kelas dulu ngab!'; maxBox.classList.add('hidden'); box.style.borderColor = '#fbbf24';
             } else if (tipe === 'over') {
-                const variasi = [
-                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
-                    { emoji: '🤣', title: 'Ngantuk lu ya bre?', msg: 'Waduh, kebanyakan ngetik tuh!' },
-                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Muridnya dapet nilai bonus kah?' },
-                    { emoji: '🫣', title: 'Guru Sapa Nih?', msg: 'Lebih dari batas maksimal woy!' },
-                    { emoji: '💸', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu/pak? Kelebihan!' }
-                ];
-                const rand = variasi[Math.floor(Math.random() * variasi.length)];
-
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = 'text-rose-500 font-black text-2xl mb-1';
-                msgEl.innerHTML = rand.msg;
-                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
-                
-                maxBox.classList.remove('hidden');
-                document.getElementById('popup-max-val').innerText = maxVal;
-                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center';
+                emojiEl.innerText = '🤯'; titleEl.innerText = 'Kelebihan!!'; titleEl.className = 'text-rose-500 font-black text-2xl mb-1';
+                msgEl.innerText = 'Angkanya nembus batas konfigurasi!'; maxBox.classList.remove('hidden');
+                document.getElementById('popup-max-val').innerText = maxVal; box.style.borderColor = '#f43f5e';
+            } else if (tipe === 'success') {
+                emojiEl.innerText = '✅'; titleEl.innerText = 'Tersimpan!'; titleEl.className = 'text-emerald-500 font-black text-2xl mb-1';
+                msgEl.innerText = 'Pengaturan berhasil diperbarui.'; maxBox.classList.add('hidden'); box.style.borderColor = '#10b981';
             }
 
             popup.classList.remove('opacity-0', 'pointer-events-none');
-            popup.classList.add('opacity-100');
-            
-            setTimeout(() => {
-                box.classList.remove('scale-50', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
-            }, 10);
-
+            setTimeout(() => { box.classList.remove('scale-50', 'opacity-0'); box.classList.add('scale-100', 'anim-wiggle'); }, 10);
             clearTimeout(popupTimeout);
-            popupTimeout = setTimeout(() => {
-                tutupPeringatanLucu();
-            }, 3500);
+            popupTimeout = setTimeout(tutupPeringatanLucu, tipe === 'success' ? 2000 : 3000);
         }
 
         function tutupPeringatanLucu() {
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
-            
-            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
-            box.classList.add('scale-50', 'opacity-0');
-
-            setTimeout(() => {
-                popup.classList.remove('opacity-100');
-                popup.classList.add('opacity-0', 'pointer-events-none');
-            }, 300);
+            box.classList.remove('scale-100', 'anim-wiggle'); box.classList.add('scale-50', 'opacity-0');
+            setTimeout(() => popup.classList.add('opacity-0', 'pointer-events-none'), 300);
         }
 
-        function simpanDataOffline() {
-            const data = { activeKelas, activeMode, fokusInput, nilaiInput };
-            localStorage.setItem('kates_offline_data', JSON.stringify(data));
-        }
-
+        // --- CORE APP LOGIC ---
+        function simpanDataOffline() { localStorage.setItem('kates_pro_data', JSON.stringify({ activeKelasIndex, activeMode, fokusInput, nilaiInput })); }
         function muatDataOffline() {
             try {
-                const data = JSON.parse(localStorage.getItem('kates_offline_data'));
-                if (data && data.activeKelas) {
+                const data = JSON.parse(localStorage.getItem('kates_pro_data'));
+                if (data && data.activeKelasIndex !== null && data.activeKelasIndex !== undefined) {
                     nilaiInput = data.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
-                    setMode(data.activeMode || 'jumlah');
-                    pilihKelas(data.activeKelas);
+                    setMode(data.activeMode || 'jumlah'); 
+                    pilihKelas(data.activeKelasIndex); 
                     setFokus(data.fokusInput || 'total');
                     return true;
                 }
@@ -467,127 +538,118 @@
 
         function initMathBg() {
             const bg = document.getElementById('mathBg');
-            const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
-            
-            for(let i = 0; i < 10; i++) {
-                let el = document.createElement('div');
-                el.className = 'symbol';
+            const symbols = ['÷', '×', '=', '+', '-', '√', '%', 'π', '∑', '∫']; 
+            for(let i = 0; i < 15; i++) {
+                let el = document.createElement('div'); el.className = 'symbol text-slate-400';
                 el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 el.style.left = `${Math.random() * 100}vw`;
-                el.style.animationDuration = `${12 + Math.random() * 10}s`;
-                el.style.animationDelay = `-${Math.random() * 15}s`; 
-                el.style.fontSize = `${2 + Math.random() * 2}rem`; 
+                el.style.animationDuration = `${15 + Math.random() * 15}s`;
+                el.style.animationDelay = `-${Math.random() * 20}s`; 
+                el.style.fontSize = `${2 + Math.random() * 3}rem`; 
                 bg.appendChild(el);
             }
         }
         initMathBg();
 
         function resetGlobal() {
-            activeKelas = null;
+            triggerHaptic('heavy');
+            activeKelasIndex = null;
             document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-            ['55', '60', '65', '45'].forEach(k => {
-                const btn = document.getElementById('btn-' + k);
-                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                btn.classList.remove('class-active');
-            });
+            for(let i=0; i<4; i++) {
+                const btn = document.getElementById('btn-kls-' + i);
+                if(btn) {
+                    btn.className = btn.className.replace(/bg-gradient-to-br.*to-\w+-600/g, '');
+                    btn.classList.remove('class-active', 'text-white');
+                }
+            }
 
-            const viewRomawi = document.getElementById('view-romawi');
-            const boxR3 = document.getElementById('box-r3');
-            const labelR2 = document.getElementById('label-r2');
+            document.getElementById('view-romawi').classList.replace('grid-cols-2', 'grid-cols-3');
+            document.getElementById('box-r3').classList.remove('hidden');
             
-            viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
-            boxR3.classList.remove('hidden');
-            labelR2.innerText = 'ROM II (x2)'; 
+            // Reset labels to default format
+            document.getElementById('label-r1').innerHTML = 'ROM I <span class="text-blue-500">(x1)</span>'; 
+            document.getElementById('label-r2').innerHTML = 'ROM II <span class="text-emerald-500">(x2)</span>'; 
+            document.getElementById('label-r3').innerHTML = 'ROM III <span class="text-rose-500">(x3)</span>'; 
 
-            document.getElementById('max-r1').innerText = 'Maks: ?';
-            document.getElementById('max-r2').innerText = 'Maks: ?';
-            document.getElementById('max-r3').innerText = 'Maks: ?';
-            document.getElementById('max-total').innerText = 'Maks: ?';
+            ['r1', 'r2', 'r3', 'total'].forEach(id => document.getElementById(`max-${id}`).innerText = 'Maks: ?');
             
-            updateTampilan();
-            setMode('jumlah'); 
-
+            updateTampilan(); setMode('jumlah');
             document.getElementById('nilaiAsli').innerText = '0.00';
             document.getElementById('nilaiBulat').innerText = '0';
             
             const gifEl = document.getElementById('gif-reaction');
-            gifEl.classList.remove('scale-100');
-            gifEl.classList.add('scale-0');
-            gifEl.innerHTML = '';
-
+            gifEl.classList.replace('scale-100', 'scale-0'); gifEl.innerHTML = '';
             simpanDataOffline();
         }
 
-        function pilihKelas(kelas) {
-            activeKelas = kelas;
-            
+        function pilihKelas(idx) {
+            triggerHaptic('light');
+            activeKelasIndex = idx;
+            const cfg = classConfigs[idx];
+
             document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-            ['55', '60', '65', '45'].forEach(k => {
-                const btn = document.getElementById('btn-' + k);
-                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                btn.classList.remove('class-active');
-            });
+            // Update button UI
+            for(let i=0; i<4; i++) {
+                const btn = document.getElementById('btn-kls-' + i);
+                if(btn) {
+                    btn.className = btn.className.replace(/bg-gradient-to-br.*to-\w+-600/g, '');
+                    btn.classList.remove('class-active');
+                }
+            }
+            const activeBtn = document.getElementById('btn-kls-' + idx);
+            if(activeBtn) activeBtn.classList.add('bg-gradient-to-br', colorThemes[idx].from, colorThemes[idx].to, 'class-active');
 
-            const activeBtn = document.getElementById('btn-' + kelas);
-            activeBtn.classList.remove('bg-white');
-            activeBtn.classList.add(configKelas[kelas].color, 'class-active');
-
+            // Update Romawi Layout & Labels dynamically based on config weights
             const viewRomawi = document.getElementById('view-romawi');
             const boxR3 = document.getElementById('box-r3');
-            const labelR2 = document.getElementById('label-r2');
 
-            if (kelas === '45') {
-                viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2');
+            document.getElementById('label-r1').innerHTML = `ROM I <span class="text-blue-500">(x${cfg.w1})</span>`;
+            document.getElementById('label-r2').innerHTML = `ROM II <span class="text-emerald-500">(x${cfg.w2})</span>`;
+            
+            if (cfg.r3 === 0) {
+                viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2'); 
                 boxR3.classList.add('hidden');
-                labelR2.innerText = 'ROM II (x1)'; 
                 if (fokusInput === 'r3') setFokus('r2');
             } else {
-                viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
+                viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3'); 
                 boxR3.classList.remove('hidden');
-                labelR2.innerText = 'ROM II (x2)'; 
+                document.getElementById('label-r3').innerHTML = `ROM III <span class="text-rose-500">(x${cfg.w3})</span>`;
             }
 
-            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1;
-            document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2;
-            if (kelas !== '45') {
-                document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
-            }
-            document.getElementById('max-total').innerText = 'Maks: ' + kelas;
+            document.getElementById('max-r1').innerText = 'Maks: ' + cfg.r1;
+            document.getElementById('max-r2').innerText = 'Maks: ' + cfg.r2;
+            if (cfg.r3 !== 0) document.getElementById('max-r3').innerText = 'Maks: ' + cfg.r3;
+            document.getElementById('max-total').innerText = 'Maks: ' + cfg.div;
             
-            validasiNilai();
-            updateTampilan();
-            kalkulasi();
-            simpanDataOffline();
+            validasiNilai(); updateTampilan(); kalkulasi(); simpanDataOffline();
         }
 
         function setMode(mode) {
+            triggerHaptic('light');
             activeMode = mode;
             const tRomawi = document.getElementById('tab-romawi');
             const tJumlah = document.getElementById('tab-jumlah');
+            const vRomawi = document.getElementById('view-romawi');
+            const vJumlah = document.getElementById('view-jumlah');
             
             if(mode === 'romawi') {
-                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md";
-                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-romawi').classList.remove('hidden');
-                document.getElementById('view-romawi').classList.add('grid');
-                document.getElementById('view-jumlah').classList.add('hidden');
-                document.getElementById('view-jumlah').classList.remove('flex');
+                tRomawi.className = "flex-1 py-1.5 rounded-full text-[11px] font-black transition-all bg-slate-800 text-white shadow-md";
+                tJumlah.className = "flex-1 py-1.5 rounded-full text-[11px] font-bold transition-all text-slate-400 bg-transparent";
+                vJumlah.classList.add('hidden'); vJumlah.classList.remove('flex');
+                vRomawi.classList.remove('hidden'); vRomawi.classList.add('grid');
                 setFokus('r1'); 
             } else {
-                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
-                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-jumlah').classList.remove('hidden');
-                document.getElementById('view-jumlah').classList.add('flex');
-                document.getElementById('view-romawi').classList.add('hidden');
-                document.getElementById('view-romawi').classList.remove('grid');
+                tJumlah.className = "flex-1 py-1.5 rounded-full text-[11px] font-black transition-all bg-slate-800 text-white shadow-md";
+                tRomawi.className = "flex-1 py-1.5 rounded-full text-[11px] font-bold transition-all text-slate-400 bg-transparent";
+                vRomawi.classList.add('hidden'); vRomawi.classList.remove('grid');
+                vJumlah.classList.remove('hidden'); vJumlah.classList.add('flex');
                 setFokus('total'); 
             }
-            kalkulasi();
-            simpanDataOffline();
+            kalkulasi(); simpanDataOffline();
         }
 
         function setFokus(idBox) {
@@ -600,44 +662,36 @@
         }
 
         function tekanTombol(kunci) {
-            if (!activeKelas) {
+            triggerHaptic('light');
+            if (activeKelasIndex === null) {
                 const areaKelas = document.getElementById('area-kelas');
-                areaKelas.classList.remove('needs-class');
-                void areaKelas.offsetWidth; 
-                areaKelas.classList.add('needs-class');
-                
-                tampilkanPeringatanLucu('nokelas');
-                return;
+                areaKelas.classList.remove('needs-class'); void areaKelas.offsetWidth; areaKelas.classList.add('needs-class');
+                tampilkanPeringatanLucu('nokelas'); return;
             }
 
             let strCurrent = nilaiInput[fokusInput];
-
-            if (kunci === 'C') {
-                strCurrent = '';
-            } else if (kunci === 'DEL') {
-                strCurrent = strCurrent.slice(0, -1);
-            } else {
+            if (kunci === 'C') { triggerHaptic('heavy'); strCurrent = ''; }
+            else if (kunci === 'DEL') strCurrent = strCurrent.slice(0, -1);
+            else {
                 if(strCurrent === '0' && kunci === '0') return;
                 strCurrent += kunci;
             }
 
             nilaiInput[fokusInput] = strCurrent;
-            validasiNilai();
-            updateTampilan();
-            kalkulasi();
-            simpanDataOffline();
+            validasiNilai(); updateTampilan(); kalkulasi(); simpanDataOffline();
         }
 
         function validasiNilai() {
-            if(!activeKelas) return;
+            if(activeKelasIndex === null) return;
             const valNum = parseInt(nilaiInput[fokusInput]);
             if(isNaN(valNum)) return;
 
+            const cfg = classConfigs[activeKelasIndex];
             let maxAllow = 0;
-            if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1;
-            if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2;
-            if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3;
-            if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
+            if(fokusInput === 'r1') maxAllow = cfg.r1;
+            if(fokusInput === 'r2') maxAllow = cfg.r2;
+            if(fokusInput === 'r3') maxAllow = cfg.r3;
+            if(fokusInput === 'total') maxAllow = cfg.div;
 
             if(valNum > maxAllow) {
                 nilaiInput[fokusInput] = '';
@@ -653,80 +707,54 @@
         }
 
         function kalkulasi() {
-            if (!activeKelas) return;
-
-            let pembagi = parseInt(activeKelas);
+            if (activeKelasIndex === null) return;
+            const cfg = classConfigs[activeKelasIndex];
+            let pembagi = cfg.div; 
             let totalSkor = 0;
 
             if (activeMode === 'romawi') {
-                let r1 = parseInt(nilaiInput.r1) || 0;
-                let r2 = parseInt(nilaiInput.r2) || 0;
+                let r1 = parseInt(nilaiInput.r1) || 0; 
+                let r2 = parseInt(nilaiInput.r2) || 0; 
                 let r3 = parseInt(nilaiInput.r3) || 0;
-                
-                if (activeKelas === '45') {
-                    totalSkor = (r1 * 1) + (r2 * 1);
-                } else {
-                    totalSkor = (r1 * 1) + (r2 * 2) + (r3 * 3);
-                }
+                totalSkor = (r1 * cfg.w1) + (r2 * cfg.w2) + (r3 * cfg.w3);
             } else {
                 totalSkor = parseFloat(nilaiInput.total) || 0;
             }
 
             let nilaiAkhir = (totalSkor * 100) / pembagi;
-            
             let valAsli = isNaN(nilaiAkhir) ? 0 : nilaiAkhir;
-            let strAsli = valAsli.toFixed(2);
-            if(strAsli.endsWith('.00')) strAsli = valAsli.toString();
-            let valBulat = Math.round(valAsli);
-            let strBulat = valBulat.toString();
+            let strAsli = valAsli.toFixed(2); if(strAsli.endsWith('.00')) strAsli = valAsli.toString();
+            let valBulat = Math.round(valAsli); let strBulat = valBulat.toString();
 
-            const elAsli = document.getElementById('nilaiAsli');
-            const elBulat = document.getElementById('nilaiBulat');
+            const elAsli = document.getElementById('nilaiAsli'); const elBulat = document.getElementById('nilaiBulat');
 
             if(elAsli.innerText !== strAsli) {
-                elAsli.innerText = strAsli;
-                elBulat.innerText = strBulat;
-                
-                elAsli.classList.remove('pop-effect');
-                elBulat.classList.remove('pop-effect');
+                elAsli.innerText = strAsli; elBulat.innerText = strBulat;
+                elAsli.classList.remove('pop-effect'); elBulat.classList.remove('pop-effect');
                 void elAsli.offsetWidth; 
-                elAsli.classList.add('pop-effect');
-                elBulat.classList.add('pop-effect');
+                elAsli.classList.add('pop-effect'); elBulat.classList.add('pop-effect');
             }
 
             const gifEl = document.getElementById('gif-reaction');
-
-            if (totalSkor === 0 || !activeKelas) {
-                gifEl.classList.remove('scale-100');
-                gifEl.classList.add('scale-0');
+            if (totalSkor === 0 || activeKelasIndex === null) {
+                gifEl.classList.replace('scale-100', 'scale-0');
             } else {
-                gifEl.classList.remove('scale-0');
-                gifEl.classList.add('scale-100');
-                
-                if (valBulat < 70) {
-                    gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">';
-                } else if (valBulat >= 70 && valBulat <= 85) {
-                    gifEl.innerHTML = '<img src="senyum.gif" alt="senyum" class="w-full h-full object-contain">';
-                } else if (valBulat > 85) {
-                    gifEl.innerHTML = '<img src="bahagia.gif" alt="bahagia" class="w-full h-full object-contain">';
-                }
+                gifEl.classList.replace('scale-0', 'scale-100');
+                if (valBulat < 70) gifEl.innerHTML = '<div class="emoji-reaction">😭</div>';
+                else if (valBulat >= 70 && valBulat <= 85) gifEl.innerHTML = '<div class="emoji-reaction">😊</div>';
+                else if (valBulat > 85) gifEl.innerHTML = '<div class="emoji-reaction">🔥</div>';
             }
         }
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', (e) => {
             const key = e.key;
-            if (/^[0-9]$/.test(key)) {
-                tekanTombol(key);
-            } else if (key === 'Backspace') {
-                tekanTombol('DEL');
-            } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
-                tekanTombol('C');
-            }
+            if (/^[0-9]$/.test(key)) tekanTombol(key);
+            else if (key === 'Backspace') tekanTombol('DEL');
+            else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') tekanTombol('C');
         });
 
-        if (!muatDataOffline()) {
-            setMode('jumlah');
-        }
+        // Initialize App UI
+        initApp();
 
     </script>
 </body>
