@@ -11,7 +11,6 @@
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Import Font Tambahan -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
@@ -25,6 +24,32 @@
             user-select: none;
         }
 
+        /* --- ANIMASI MASUK (ENTRANCE ANIMATIONS) --- */
+        @keyframes fade-in-down {
+            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pop-in {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fade-in-up {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-up-numpad {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Kelas penanda animasi urut (staggered) */
+        .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+        .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
+        .anim-classes { animation: fade-in-up 0.5s ease-out 0.4s both; }
+        .anim-toggle  { animation: fade-in-up 0.5s ease-out 0.5s both; }
+        .anim-input   { animation: fade-in-up 0.5s ease-out 0.6s both; }
+        .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
+
         /* Banner Install PWA Animasi */
         #install-banner {
             transform: translateY(-100%);
@@ -34,7 +59,7 @@
             transform: translateY(0);
         }
 
-        /* Latar Belakang Animasi Matematika (Transparan & Halus) */
+        /* Latar Belakang Animasi Matematika */
         .math-bg {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -50,8 +75,8 @@
         }
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.15; } /* Sangat transparan */
-            85% { opacity: 0.15; } /* Sangat transparan */
+            15% { opacity: 0.35; } /* Tidak terlalu transparan */
+            85% { opacity: 0.35; } 
             100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
@@ -131,16 +156,15 @@
 
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
-        <!-- Header: Judul KATES (Menggunakan Gambar PNG) -->
-        <div class="flex-shrink-0 text-center mb-1 mt-1">
+        <!-- Header: Judul KATES (Animasi 1) -->
+        <div class="flex-shrink-0 text-center mb-1 mt-1 anim-header">
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
-            <!-- Memanggil JUDUL.png dengan tinggi yang disesuaikan agar proporsional -->
-            <img src="JUDUL.png" alt="KATES" class="h-11 sm:h-12 object-contain mx-auto my-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">
+            <img src="JUDUL.png" alt="KATES" class="h-16 sm:h-20 object-contain mx-auto my-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">
             <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
         </div>
 
-        <!-- Display Box (Paling Atas) -->
-        <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2 relative">
+        <!-- Display Box (Paling Atas) (Animasi 2) -->
+        <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2 relative anim-scores">
             
             <!-- Kiri: Nilai Asli -->
             <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
@@ -148,7 +172,7 @@
                 <div class="text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
             </div>
 
-            <!-- GIF REAKSI TENGAH (Polos / Transparan / Ukuran Diperbesar) -->
+            <!-- GIF REAKSI TENGAH -->
             <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28">
                 <!-- GIF akan diisi oleh JS -->
             </div>
@@ -160,9 +184,8 @@
             </div>
         </div>
 
-        <!-- Pilihan Kelas -->
-        <div class="flex-shrink-0 mb-2" id="area-kelas">
-            <!-- 3 Kotak Atas -->
+        <!-- Pilihan Kelas (Animasi 3) -->
+        <div class="flex-shrink-0 mb-2 anim-classes" id="area-kelas">
             <div class="grid grid-cols-3 gap-1 mb-1">
                 <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-2 flex flex-col items-center justify-center">
                     <span class="text-xs font-black">KLS 1</span>
@@ -177,30 +200,29 @@
                     <span class="text-[8px] font-bold opacity-80">Bagi 65</span>
                 </button>
             </div>
-            <!-- 1 Shape Panjang Bawah -->
             <button onclick="pilihKelas('45')" id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn w-full rounded-xl py-2 flex items-center justify-center gap-2">
                 <span class="text-xs font-black tracking-widest">KELAS KODING</span>
                 <span class="text-[9px] bg-black/10 px-2 py-0.5 rounded-full font-bold">Bagi 45</span>
             </button>
         </div>
 
-        <!-- Menu Toggle (Romawi/Jumlah) -->
-        <div class="flex-shrink-0 flex justify-center mb-2">
+        <!-- Menu Toggle (Animasi 4) -->
+        <div class="flex-shrink-0 flex justify-center mb-2 anim-toggle">
             <div class="bg-white p-1 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
-                <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md">
+                <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
                     ROMAWI
                 </button>
-                <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
+                <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md">
                     JUMLAH
                 </button>
             </div>
         </div>
 
-        <!-- Area Input -->
-        <div class="flex-1 min-h-[80px] flex items-center justify-center mb-2 relative z-20">
+        <!-- Area Input (Animasi 5) -->
+        <div class="flex-1 min-h-[80px] flex items-center justify-center mb-2 relative z-20 anim-input">
             
             <!-- View Romawi -->
-            <div id="view-romawi" class="w-full grid grid-cols-3 gap-2 transition-all duration-300">
+            <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
                 <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors input-active">
                     <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
                     <div id="disp-r1" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
@@ -219,7 +241,7 @@
             </div>
 
             <!-- View Jumlah -->
-            <div id="view-jumlah" class="hidden w-full h-full flex items-center justify-center">
+            <div id="view-jumlah" class="w-full h-full flex items-center justify-center">
                 <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl p-1.5 w-1/2 border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
                     <label class="text-[9px] font-black text-amber-500 tracking-widest uppercase mb-0.5">Total Skormu</label>
                     <div id="disp-total" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
@@ -229,8 +251,8 @@
 
         </div>
 
-        <!-- Keyboard Angka Bawaan (Numpad) -->
-        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35dvh] min-h-[220px] relative z-30">
+        <!-- Keyboard Angka Bawaan (Animasi 6 - Numpad) -->
+        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35dvh] min-h-[220px] relative z-30 anim-numpad">
             <div class="grid grid-cols-3 gap-1.5 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">2</button>
@@ -257,7 +279,7 @@
     </div>
 
     <script>
-        // --- LOGIKA INSTALL PWA (Pop Up Otomatis) ---
+        // --- LOGIKA INSTALL PWA ---
         let deferredPrompt;
         
         if ('serviceWorker' in navigator) {
@@ -272,18 +294,14 @@
             navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW Setup Gagal:', err));
         }
 
-        // Tangkap event saat browser mendeteksi bahwa aplikasi bisa di-install
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Cegah prompt default browser
             e.preventDefault();
             deferredPrompt = e;
-            // Tampilkan Banner Install Custom otomatis dalam 1 detik
             setTimeout(() => {
                 document.getElementById('install-banner').classList.add('show');
-            }, 1000); 
+            }, 1500); 
         });
 
-        // Fungsi saat tombol Install di banner ditekan
         function installApp() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -306,57 +324,48 @@
             '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } // Koding
         };
 
-        let activeKelas = null; // Status Default Netral (Belum pilih kelas)
-        let activeMode = 'romawi'; 
-        let fokusInput = 'r1';
+        let activeKelas = null; 
+        let activeMode = 'jumlah'; // DEFAULT JUMLAH
+        let fokusInput = 'total';
         
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-        // Inisialisasi Background Animasi (Transparan & Halus)
+        // Animasi Background Matematika
         function initMathBg() {
             const bg = document.getElementById('mathBg');
             const symbols = ['+', '-', '×', '÷', '=', '%', '√', '∑', '∞', 'π'];
             const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e']; 
             
-            // Jumlah disedikitkan jadi 8 agar tidak terlalu ramai
             for(let i = 0; i < 8; i++) {
                 let el = document.createElement('div');
                 el.className = 'symbol';
                 el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 el.style.left = `${Math.random() * 100}vw`;
                 el.style.color = colors[Math.floor(Math.random() * colors.length)];
-                el.style.animationDuration = `${12 + Math.random() * 10}s`; // Lebih lambat dan halus
+                el.style.animationDuration = `${12 + Math.random() * 10}s`;
                 el.style.animationDelay = `-${Math.random() * 15}s`; 
-                // Ukuran font lebih kecil (0.8rem - 1.5rem)
-                el.style.fontSize = `${0.8 + Math.random() * 0.7}rem`;
+                el.style.fontSize = `${1.5 + Math.random() * 2}rem`; // Lebih Besar
                 bg.appendChild(el);
             }
         }
         initMathBg();
 
-        // Mengganti Kelas
         function pilihKelas(kelas) {
             activeKelas = kelas;
             
-            // Hapus animasi peringatan jika ada
             document.getElementById('area-kelas').classList.remove('needs-class');
-
-            // Kosongkan nilai saat pindah kelas
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-            // UI Reset warna semua tombol kelas
             ['55', '60', '65', '45'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
                 btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
                 btn.classList.remove('class-active');
             });
 
-            // Aktifkan tombol yang dipilih
             const activeBtn = document.getElementById('btn-' + kelas);
             activeBtn.classList.remove('bg-white');
             activeBtn.classList.add(configKelas[kelas].color, 'class-active');
 
-            // Logika Khusus Kelas Koding
             const viewRomawi = document.getElementById('view-romawi');
             const boxR3 = document.getElementById('box-r3');
             const labelR2 = document.getElementById('label-r2');
@@ -372,7 +381,6 @@
                 labelR2.innerText = 'ROM II (x2)'; 
             }
 
-            // Update Label Batas Maksimal
             document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1;
             document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2;
             if (kelas !== '45') {
@@ -385,7 +393,6 @@
             kalkulasi();
         }
 
-        // Pindah Tab Menu
         function setMode(mode) {
             activeMode = mode;
             const tRomawi = document.getElementById('tab-romawi');
@@ -395,7 +402,9 @@
                 tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md";
                 tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-romawi').classList.remove('hidden');
+                document.getElementById('view-romawi').classList.add('grid');
                 document.getElementById('view-jumlah').classList.add('hidden');
+                document.getElementById('view-jumlah').classList.remove('flex');
                 setFokus('r1'); 
             } else {
                 tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
@@ -403,12 +412,12 @@
                 document.getElementById('view-jumlah').classList.remove('hidden');
                 document.getElementById('view-jumlah').classList.add('flex');
                 document.getElementById('view-romawi').classList.add('hidden');
+                document.getElementById('view-romawi').classList.remove('grid');
                 setFokus('total'); 
             }
             kalkulasi();
         }
 
-        // Fokus ke kotak input tertentu
         function setFokus(idBox) {
             fokusInput = idBox;
             ['r1', 'r2', 'r3', 'total'].forEach(id => {
@@ -418,13 +427,11 @@
             document.getElementById('box-' + idBox).classList.add('input-active');
         }
 
-        // Logika Numpad Buatan
         function tekanTombol(kunci) {
-            // Jika kelas belum dipilih, berikan efek peringatan di area kelas
             if (!activeKelas) {
                 const areaKelas = document.getElementById('area-kelas');
                 areaKelas.classList.remove('needs-class');
-                void areaKelas.offsetWidth; // Reflow reset animasi
+                void areaKelas.offsetWidth; 
                 areaKelas.classList.add('needs-class');
                 return;
             }
@@ -446,7 +453,6 @@
             kalkulasi();
         }
 
-        // Validasi agar tidak lewat batas soal
         function validasiNilai() {
             if(!activeKelas) return;
             const valNum = parseInt(nilaiInput[fokusInput]);
@@ -463,7 +469,6 @@
             }
         }
 
-        // Update angka di layar
         function updateTampilan() {
             document.getElementById('disp-r1').innerText = nilaiInput.r1;
             document.getElementById('disp-r2').innerText = nilaiInput.r2;
@@ -471,7 +476,6 @@
             document.getElementById('disp-total').innerText = nilaiInput.total;
         }
 
-        // Hitung Nilai Akhir & Atur Animasi Emoji
         function kalkulasi() {
             if (!activeKelas) return;
 
@@ -500,7 +504,6 @@
             let valBulat = Math.round(valAsli);
             let strBulat = valBulat.toString();
 
-            // Render Nilai Atas
             const elAsli = document.getElementById('nilaiAsli');
             const elBulat = document.getElementById('nilaiBulat');
 
@@ -510,12 +513,11 @@
                 
                 elAsli.classList.remove('pop-effect');
                 elBulat.classList.remove('pop-effect');
-                void elAsli.offsetWidth; // Reflow reset
+                void elAsli.offsetWidth; 
                 elAsli.classList.add('pop-effect');
                 elBulat.classList.add('pop-effect');
             }
 
-            // --- Logika Animasi GIF Polos (Bersih) ---
             const gifEl = document.getElementById('gif-reaction');
 
             if (totalSkor === 0 || !activeKelas) {
@@ -525,8 +527,6 @@
                 gifEl.classList.remove('scale-0');
                 gifEl.classList.add('scale-100');
                 
-                // Logika: < 70 Sedih, 70-85 Senyum, > 85 Bahagia
-                // Merujuk langsung ke file GIF yang diupload di GitHub
                 if (valBulat < 70) {
                     gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">';
                 } else if (valBulat >= 70 && valBulat <= 85) {
@@ -537,7 +537,6 @@
             }
         }
 
-        // Setup Keyboard Laptop/PC
         document.addEventListener('keydown', function(e) {
             const key = e.key;
             if (/^[0-9]$/.test(key)) {
@@ -549,9 +548,8 @@
             }
         });
 
-        // --- Inisialisasi Tampilan ---
-        // Status awal netral, set tampilan UI ke mode Romawi secara default
-        setMode('romawi');
+        // Set default ke JUMLAH
+        setMode('jumlah');
 
     </script>
 </body>
