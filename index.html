@@ -282,19 +282,19 @@
             <!-- Pilihan Kelas Dinamis -->
             <div class="anim-classes w-full" id="area-kelas">
                 <div class="grid grid-cols-4 gap-1">
-                    <button onclick="pilihKelas('btn1')" id="btn-btn1" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                    <button data-key="btn1" id="btn-btn1" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
                         <span id="label-btn1" class="text-[9px] sm:text-[10px] font-black pointer-events-none"></span>
                         <span id="pembagi-btn1" class="text-[7.5px] font-bold opacity-80 pointer-events-none"></span>
                     </button>
-                    <button onclick="pilihKelas('btn2')" id="btn-btn2" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                    <button data-key="btn2" id="btn-btn2" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
                         <span id="label-btn2" class="text-[9px] sm:text-[10px] font-black pointer-events-none"></span>
                         <span id="pembagi-btn2" class="text-[7.5px] font-bold opacity-80 pointer-events-none"></span>
                     </button>
-                    <button onclick="pilihKelas('btn3')" id="btn-btn3" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                    <button data-key="btn3" id="btn-btn3" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
                         <span id="label-btn3" class="text-[9px] sm:text-[10px] font-black pointer-events-none"></span>
                         <span id="pembagi-btn3" class="text-[7.5px] font-bold opacity-80 pointer-events-none"></span>
                     </button>
-                    <button onclick="pilihKelas('btn4')" id="btn-btn4" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                    <button data-key="btn4" id="btn-btn4" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn bg-white rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
                         <span id="label-btn4" class="text-[8px] sm:text-[9px] font-black tracking-widest text-purple-600 pointer-events-none"></span>
                         <span id="pembagi-btn4" class="text-[7.5px] font-bold opacity-80 pointer-events-none"></span>
                     </button>
@@ -447,8 +447,12 @@
         ziviBtn.addEventListener('contextmenu', e => e.preventDefault());
 
         // --- LOGIKA POPUP PENGATURAN ---
-        function bukaSettings() {
-            loadSettingsForm(); // Muat data tombol 1
+        function bukaSettings(keyToSelect = null) {
+            if(keyToSelect) {
+                // Auto-pilih dropdown sesuai shape yang ditekan lama
+                document.getElementById('edit-select').value = keyToSelect;
+            }
+            loadSettingsForm(); // Muat data tombol
             const popup = document.getElementById('settings-popup');
             const box = document.getElementById('settings-popup-box');
             popup.classList.remove('opacity-0', 'pointer-events-none');
@@ -876,6 +880,56 @@
             } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
                 tekanTombol('C');
             }
+        });
+
+        // --- SETUP TEKAN LAMA (LONG PRESS) PADA TOMBOL KELAS ---
+        document.querySelectorAll('.class-btn').forEach(btn => {
+            let lpTimer;
+            let isLongPress = false;
+            const key = btn.getAttribute('data-key');
+            
+            const startLp = (e) => {
+                // Abaikan klik kanan desktop (agar tidak bentrok)
+                if(e.type === 'mousedown' && e.button !== 0) return; 
+                isLongPress = false;
+                lpTimer = setTimeout(() => {
+                    isLongPress = true;
+                    // Getaran halus di HP saat popup pengaturan berhasil dipanggil
+                    if(navigator.vibrate) navigator.vibrate(50);
+                    bukaSettings(key); 
+                }, 800); // Waktu Tahan: 0.8 Detik
+            };
+            
+            const cancelLp = () => clearTimeout(lpTimer);
+            
+            const endLp = (e) => {
+                clearTimeout(lpTimer);
+                if(isLongPress) {
+                    e.preventDefault(); // Cegah fungsi klik jika baru saja tekan lama
+                }
+            };
+
+            // Event sentuh HP
+            btn.addEventListener('touchstart', startLp, {passive: true});
+            btn.addEventListener('touchend', endLp);
+            btn.addEventListener('touchmove', cancelLp);
+            btn.addEventListener('touchcancel', cancelLp);
+            
+            // Event Mouse Laptop
+            btn.addEventListener('mousedown', startLp);
+            btn.addEventListener('mouseup', endLp);
+            btn.addEventListener('mouseleave', cancelLp);
+            btn.addEventListener('contextmenu', e => e.preventDefault()); // Cegah menu klik kanan default HP
+            
+            // Fungsi Klik Normal untuk Memilih
+            btn.addEventListener('click', (e) => {
+                if(isLongPress) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                pilihKelas(key); 
+            });
         });
 
         // 1. Eksekusi Background
