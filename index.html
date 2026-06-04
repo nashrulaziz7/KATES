@@ -51,6 +51,14 @@
             0% { transform: translateY(100%); }
             100% { transform: translateY(0); }
         }
+        
+        /* Animasi Goyang Lucu untuk Popup */
+        @keyframes wiggle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(-5deg); }
+            50% { transform: scale(1.05) rotate(5deg); }
+            75% { transform: scale(1.05) rotate(-5deg); }
+        }
 
         .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
         .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
@@ -58,6 +66,7 @@
         .anim-toggle  { animation: fade-in-up 0.5s ease-out 0.5s both; }
         .anim-input   { animation: fade-in-up 0.5s ease-out 0.6s both; }
         .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
+        .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
 
         /* Banner Install PWA Animasi */
         #install-banner {
@@ -159,6 +168,24 @@
         </div>
     </div>
 
+    <!-- POPUP LUCU OFFLINE -->
+    <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <!-- Overlay transparan blur -->
+        <div class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
+        <!-- Kotak Popup -->
+        <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
+            <div class="text-6xl mb-3 animate-bounce">🙈</div>
+            <h3 class="text-rose-500 font-black text-xl mb-1">Oopsie!</h3>
+            <p class="text-slate-600 text-xs font-bold leading-relaxed mb-1">
+                Eh, kelebihan ngetiknya<br>Bapak/Ibu Guru! 🐣
+            </p>
+            <div class="bg-rose-50 rounded-xl py-2 px-4 mt-2 border border-rose-100 w-full">
+                <span class="text-[10px] text-rose-400 uppercase tracking-widest block font-bold">Maksimal Nilai:</span>
+                <span id="popup-max-val" class="text-3xl font-black text-rose-500">0</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Background Animasi Pelajaran -->
     <div class="subject-bg" id="mathBg"></div>
 
@@ -241,31 +268,35 @@
         </div>
 
         <!-- Area Input (Animasi 5) -->
+        <!-- Membuang h-full dari komponen anak agar proporsi terjaga -->
         <div class="flex-1 min-h-[60px] flex items-center justify-center mb-2 relative z-20 anim-input">
             
-            <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300 h-full">
-                <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active h-full">
-                    <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
-                    <div id="disp-r1" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r1" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
+            <!-- View Romawi -->
+            <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
+                <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-3 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
+                    <label class="text-[10px] font-extrabold text-blue-500 mb-1">ROM I (x1)</label>
+                    <div id="disp-r1" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                    <span id="max-r1" class="text-[9px] text-slate-400 mt-1 font-bold">Maks: ?</span>
                 </div>
-                <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors h-full">
-                    <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
-                    <div id="disp-r2" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r2" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
+                <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-3 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                    <label id="label-r2" class="text-[10px] font-extrabold text-emerald-500 mb-1">ROM II (x2)</label>
+                    <div id="disp-r2" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                    <span id="max-r2" class="text-[9px] text-slate-400 mt-1 font-bold">Maks: ?</span>
                 </div>
-                <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors h-full">
-                    <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
-                    <div id="disp-r3" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r3" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
+                <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-3 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                    <label class="text-[10px] font-extrabold text-rose-500 mb-1">ROM III (x3)</label>
+                    <div id="disp-r3" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                    <span id="max-r3" class="text-[9px] text-slate-400 mt-1 font-bold">Maks: ?</span>
                 </div>
             </div>
 
-            <div id="view-jumlah" class="w-full h-full flex items-center justify-center">
-                <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl p-2 w-1/2 h-full border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
-                    <label class="text-[9px] font-black text-amber-500 tracking-widest uppercase mb-0.5">Total Skormu</label>
-                    <div id="disp-total" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-total" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
+            <!-- View Jumlah -->
+            <div id="view-jumlah" class="w-full flex items-center justify-center h-full">
+                <!-- Penyesuaian Bentuk Shape Agar Proporsional dan Tidak Gepeng -->
+                <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-2xl py-4 w-[75%] max-w-[260px] border-2 border-amber-400 shadow-[0_4px_15px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
+                    <label class="text-xs sm:text-sm font-black text-amber-500 tracking-widest uppercase mb-1">Total Skormu</label>
+                    <div id="disp-total" class="text-5xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300 my-1"></div>
+                    <span id="max-total" class="text-[10px] text-slate-400 mt-1 font-bold">Maks: ?</span>
                 </div>
             </div>
 
@@ -347,6 +378,46 @@
         let activeMode = 'jumlah'; // DEFAULT JUMLAH
         let fokusInput = 'total';
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+        let popupTimeout;
+
+        // --- FUNGSI POPUP PERINGATAN LUCU (OFFLINE) ---
+        function tampilkanPeringatanLucu(maxVal) {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            
+            document.getElementById('popup-max-val').innerText = maxVal;
+
+            // Munculkan overlay
+            popup.classList.remove('opacity-0', 'pointer-events-none');
+            popup.classList.add('opacity-100');
+            
+            // Animasi kotak membesar dan goyang (wiggle)
+            setTimeout(() => {
+                box.classList.remove('scale-50', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
+            }, 10);
+
+            // Hilang otomatis setelah 2.5 detik
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                tutupPeringatanLucu();
+            }, 2500);
+        }
+
+        function tutupPeringatanLucu() {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            
+            // Kembalikan kotak ke ukuran kecil
+            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
+            box.classList.add('scale-50', 'opacity-0');
+
+            // Hilangkan overlay
+            setTimeout(() => {
+                popup.classList.remove('opacity-100');
+                popup.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
+        }
 
         // --- FUNGSI OFFLINE (SIMPAN DATA LOKAL) ---
         function simpanDataOffline() {
@@ -543,7 +614,10 @@
             if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
 
             if(valNum > maxAllow) {
+                // Tahan angka agar tidak melebihi batas
                 nilaiInput[fokusInput] = maxAllow.toString();
+                // Munculkan Peringatan Lucu!
+                tampilkanPeringatanLucu(maxAllow);
             }
         }
 
