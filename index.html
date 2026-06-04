@@ -1,67 +1,733 @@
-<!-- ... existing code ... -->
-        <!-- Pilihan Kelas (Animasi 3) -->
-        <div class="flex-shrink-0 mb-2 anim-classes" id="area-kelas">
-            <div class="grid grid-cols-4 gap-1 mb-1">
-                <button id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                    <span class="text-[9px] sm:text-[10px] font-black">KLS 1</span>
-                    <span class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
-                </button>
-                <button id="btn-60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                    <span class="text-[9px] sm:text-[10px] font-black">KLS 2-3</span>
-                    <span class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
-                </button>
-                <button id="btn-65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                    <span class="text-[9px] sm:text-[10px] font-black">KLS 4-5</span>
-                    <span class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
-                </button>
-                <button id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                    <span class="text-[9px] sm:text-[10px] font-black tracking-widest text-purple-600">KODING</span>
-                    <span class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KATES - Kalkulator Tes Siswa</title>
+    
+    <!-- Icon & PWA Manifest Inline -->
+    <link rel="icon" href="LOGO.png" type="image/png">
+    <link rel="apple-touch-icon" href="LOGO.png">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+        
+        /* PENGUNCIAN LAYAR PERMANEN AGAR TIDAK KEPOTONG / MELAR */
+        html, body {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0; left: 0;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* --- ANIMASI MASUK (ENTRANCE ANIMATIONS) --- */
+        @keyframes fade-in-down {
+            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes pop-in {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fade-in-up {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slide-up-numpad {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+        
+        /* Animasi Goyang Lucu untuk Popup */
+        @keyframes wiggle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(-5deg); }
+            50% { transform: scale(1.05) rotate(5deg); }
+            75% { transform: scale(1.05) rotate(-5deg); }
+        }
+
+        .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+        .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
+        .anim-classes { animation: fade-in-up 0.5s ease-out 0.4s both; }
+        .anim-toggle  { animation: fade-in-up 0.5s ease-out 0.5s both; }
+        .anim-input   { animation: fade-in-up 0.5s ease-out 0.6s both; }
+        .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
+        .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
+
+        #install-banner {
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #install-banner.show { transform: translateY(0); }
+
+        .subject-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .symbol {
+            position: absolute;
+            font-weight: 900;
+            white-space: nowrap;
+            will-change: transform, opacity;
+            animation: float-up linear infinite;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.8);
+        }
+        
+        @keyframes float-up {
+            0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
+            15% { opacity: 0.35; } 
+            50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; }
+            85% { opacity: 0.35; } 
+            100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; }
+        }
+
+        .class-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #ffffff;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+            position: relative;
+            overflow: hidden;
+        }
+        .class-active {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 8px 20px -6px var(--glow-color);
+            color: #ffffff !important;
+            border-color: transparent !important;
+            animation: breathe 2s ease-in-out infinite;
+            z-index: 10;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); }
+            50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { transform: scale(1); border-color: #cbd5e1; }
+            50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
+        }
+        .needs-class .class-btn { animation: pulse-warning 0.5s ease-in-out; }
+
+        @keyframes pop-score {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); color: #3b82f6; }
+            100% { transform: scale(1); }
+        }
+        .pop-effect { animation: pop-score 0.3s ease-out; }
+
+        .numpad-btn:active {
+            transform: scale(0.92);
+            background-color: #cbd5e1;
+        }
+
+        .input-active {
+            border: 2px solid #3b82f6 !important;
+            background-color: #eff6ff !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center relative w-full h-full">
+    
+    <!-- BAR ATAS ABSOLUT (Refresh, By Zivi, Reset) -->
+    <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-50 flex justify-between items-start pointer-events-none anim-header">
+        <!-- Tombol Refresh (Kiri) -->
+        <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            REFRESH
+        </button>
+
+        <!-- Label Pembuat (Tengah Atas) -->
+        <div class="pointer-events-auto bg-white/60 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-slate-100 mt-0.5">
+            <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
+        </div>
+
+        <!-- Tombol Reset (Kanan) -->
+        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            RESET
+        </button>
+    </div>
+
+    <!-- Banner Install Aplikasi (PWA) -->
+    <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
+        <div class="flex items-center gap-3 pl-2">
+            <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
+            <div class="flex flex-col">
+                <span class="text-sm font-black tracking-wide">Install KATES</span>
+                <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
+            </div>
+        </div>
+        <div class="flex gap-2 items-center pr-1">
+            <button onclick="installApp()" class="bg-white text-blue-600 text-[11px] font-bold px-4 py-2 rounded-full shadow-md active:scale-95 transition-transform uppercase tracking-wider">Install</button>
+            <button onclick="tutupBanner()" class="text-white/80 hover:text-white px-2 text-2xl font-black">&times;</button>
+        </div>
+    </div>
+
+    <!-- POPUP LUCU OFFLINE MULTIFUNGSI -->
+    <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
+        <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
+            <div id="popup-emoji" class="text-6xl mb-3 animate-bounce">🙈</div>
+            <h3 id="popup-title" class="text-rose-500 font-black text-2xl mb-1">Oopsie!</h3>
+            <p id="popup-message" class="text-slate-600 text-sm font-bold leading-relaxed mb-1">Pesan peringatan di sini</p>
+            
+            <div id="popup-max-box" class="bg-rose-50 rounded-xl py-2 px-4 mt-3 border border-rose-100 w-full hidden">
+                <span class="text-[10px] text-rose-400 uppercase tracking-widest block font-bold">Mentok di angka:</span>
+                <span id="popup-max-val" class="text-3xl font-black text-rose-500">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Animasi Pelajaran -->
+    <div class="subject-bg" id="mathBg"></div>
+
+    <!-- WADAH UTAMA KONTEN -->
+    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between pb-4 pt-12 sm:pt-10">
+        
+        <!-- BAGIAN ATAS & TENGAH: Jarak Center Terpusat agar tidak nabrak di layar pendek -->
+        <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2.5 w-full min-h-0">
+            
+            <!-- Header: Judul KATES -->
+            <div class="text-center anim-header w-full mt-2">
+                <img src="JUDUL.png" alt="KATES" class="max-h-[8vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
+                <p class="text-[10px] font-extrabold text-slate-500 tracking-widest mt-0">-KALKULATOR TES SISWA-</p>
+            </div>
+
+            <!-- Display Box (Nilai) -->
+            <div class="w-full flex items-center justify-between gap-1.5 sm:gap-2 relative anim-scores">
+                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-1.5 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
+                    <p class="text-[8px] sm:text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
+                    <div class="text-2xl sm:text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
+                </div>
+
+                <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24">
+                </div>
+                
+                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl py-1.5 px-1 border-2 border-emerald-300 shadow-sm relative overflow-hidden">
+                    <p class="text-[8px] sm:text-[9px] text-emerald-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Pembulatan</p>
+                    <div class="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums transition-all relative z-10" id="nilaiBulat">0</div>
+                </div>
+            </div>
+
+            <!-- Pilihan Kelas (SEKARANG 4 KOLOM SEJAJAR / 1 BARIS) -->
+            <div class="anim-classes w-full" id="area-kelas">
+                <div class="grid grid-cols-4 gap-1">
+                    <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                        <span class="text-[9px] sm:text-[10px] font-black">KLS 1</span>
+                        <span class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
+                    </button>
+                    <button onclick="pilihKelas('60')" id="btn-60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                        <span class="text-[9px] sm:text-[10px] font-black">KLS 2-3</span>
+                        <span class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
+                    </button>
+                    <button onclick="pilihKelas('65')" id="btn-65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                        <span class="text-[9px] sm:text-[10px] font-black">KLS 4-5</span>
+                        <span class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
+                    </button>
+                    <button onclick="pilihKelas('45')" id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
+                        <span class="text-[9px] sm:text-[10px] font-black tracking-widest text-purple-600">KODING</span>
+                        <span class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu Toggle (Romawi/Jumlah) -->
+            <div class="flex justify-center anim-toggle w-full">
+                <div class="bg-white p-0.5 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
+                    <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
+                        ROMAWI
+                    </button>
+                    <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md">
+                        JUMLAH
+                    </button>
+                </div>
+            </div>
+
+            <!-- Area Input Box -->
+            <div class="flex items-center justify-center anim-input w-full min-h-[60px]">
+                <!-- View Romawi -->
+                <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
+                    <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
+                        <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
+                        <div id="disp-r1" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r1" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    </div>
+                    <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                        <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
+                        <div id="disp-r2" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r2" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    </div>
+                    <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                        <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
+                        <div id="disp-r3" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r3" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    </div>
+                </div>
+
+                <!-- View Jumlah -->
+                <div id="view-jumlah" class="w-full flex items-center justify-center">
+                    <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-2xl py-2 px-4 w-[85%] max-w-[280px] border-2 border-amber-400 shadow-[0_4px_15px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
+                        <label class="text-[11px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label>
+                        <div id="disp-total" class="text-4xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300 my-0.5"></div>
+                        <span id="max-total" class="text-[9px] text-slate-400 font-bold">Maks: ?</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Keyboard Angka Bawaan (Bagian Bawah Permanen) -->
+        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35vh] max-h-[240px] min-h-[160px] relative z-30 anim-numpad flex-shrink-0 mt-1">
+            <div class="grid grid-cols-3 gap-1.5 h-full">
+                <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">1</button>
+                <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">2</button>
+                <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">3</button>
+                
+                <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">4</button>
+                <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">5</button>
+                <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">6</button>
+                
+                <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">7</button>
+                <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">8</button>
+                <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">9</button>
+                
+                <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-lg font-black text-red-500 transition-colors">C</button>
+                <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">0</button>
+                <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-lg font-bold text-slate-600 transition-colors flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                    </svg>
                 </button>
             </div>
         </div>
-<!-- ... existing code ... -->
-        // Setup tombol kelas dengan penanganan event yang bersih
-        document.querySelectorAll('.class-btn').forEach(btn => {
-            const key = btn.id.split('-')[1];
-            let lpTimer;
-            let isLongPress = false;
 
-            // Mencegah klik kanan menu browser muncul
-            btn.addEventListener('contextmenu', e => e.preventDefault());
+    </div>
 
-            const startAction = (e) => {
-                isLongPress = false;
-                lpTimer = setTimeout(() => {
-                    isLongPress = true;
-                    if(navigator.vibrate) navigator.vibrate(50);
-                    bukaSettings(key);
-                }, 800); // Tahan 0.8 detik untuk edit
-            };
+    <script>
+        let deferredPrompt;
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup:', err));
+        }
 
-            const endAction = (e) => {
-                clearTimeout(lpTimer);
-                if (!isLongPress) {
-                    pilihKelas(key);
-                }
-            };
-
-            btn.addEventListener('mousedown', startAction);
-            btn.addEventListener('mouseup', endAction);
-            btn.addEventListener('mouseleave', () => clearTimeout(lpTimer));
-            
-            btn.addEventListener('touchstart', (e) => {
-                startAction();
-            }, {passive: true});
-            
-            btn.addEventListener('touchend', endAction);
-            btn.addEventListener('touchmove', () => clearTimeout(lpTimer));
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => {
+                document.getElementById('install-banner').classList.add('show');
+            }, 1500); 
         });
 
-        // Set default ke JUMLAH saat pertama dimuat
-        setMode('jumlah');
-        // Inisialisasi awal UI kelas
-        renderTombolKelas();
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    deferredPrompt = null;
+                    tutupBanner();
+                });
+            }
+        }
+
+        function tutupBanner() {
+            document.getElementById('install-banner').classList.remove('show');
+        }
+
+        function refreshApp() {
+            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
+        }
+
+        const configKelas = {
+            '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500' },
+            '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500' },
+            '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500' },
+            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } 
+        };
+
+        let activeKelas = null; 
+        let activeMode = 'jumlah'; 
+        let fokusInput = 'total';
+        let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+        let popupTimeout;
+
+        function tampilkanPeringatanLucu(tipe, maxVal = 0) {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            
+            const emojiEl = document.getElementById('popup-emoji');
+            const titleEl = document.getElementById('popup-title');
+            const msgEl = document.getElementById('popup-message');
+            const maxBox = document.getElementById('popup-max-box');
+            
+            if (tipe === 'nokelas') {
+                const variasi = [
+                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kelas dulu ngab!' },
+                    { emoji: '☕', title: 'Cuci Muka Dulu!', msg: 'Kelasnya belum dipencet tuh~' },
+                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Gas terus, pilih kelas dulu dong bestie!' },
+                    { emoji: '🙈', title: 'Main Pencet Aja', msg: 'Kelasnya mana woy? Lupa ya?' },
+                    { emoji: '🤣', title: 'Ngopi Duls!', msg: 'Fokus! Jangan lupa klik kelasnya~' }
+                ];
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+                
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = 'text-amber-500 font-black text-2xl mb-1';
+                msgEl.innerHTML = rand.msg;
+                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
+                
+                maxBox.classList.add('hidden');
+                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center';
+                
+            } else if (tipe === 'over') {
+                const variasi = [
+                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
+                    { emoji: '🤣', title: 'Ngantuk lu ya bre?', msg: 'Waduh, kebanyakan ngetik tuh!' },
+                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Muridnya dapet nilai bonus kah?' },
+                    { emoji: '🫣', title: 'Guru Sapa Nih?', msg: 'Lebih dari batas maksimal woy!' },
+                    { emoji: '💸', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu/pak? Kelebihan!' }
+                ];
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = 'text-rose-500 font-black text-2xl mb-1';
+                msgEl.innerHTML = rand.msg;
+                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
+                
+                maxBox.classList.remove('hidden');
+                document.getElementById('popup-max-val').innerText = maxVal;
+                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center';
+            }
+
+            popup.classList.remove('opacity-0', 'pointer-events-none');
+            popup.classList.add('opacity-100');
+            
+            setTimeout(() => {
+                box.classList.remove('scale-50', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
+            }, 10);
+
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                tutupPeringatanLucu();
+            }, 3500);
+        }
+
+        function tutupPeringatanLucu() {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            
+            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
+            box.classList.add('scale-50', 'opacity-0');
+
+            setTimeout(() => {
+                popup.classList.remove('opacity-100');
+                popup.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
+        }
+
+        function simpanDataOffline() {
+            const data = { activeKelas, activeMode, fokusInput, nilaiInput };
+            localStorage.setItem('kates_offline_data', JSON.stringify(data));
+        }
+
+        function muatDataOffline() {
+            try {
+                const data = JSON.parse(localStorage.getItem('kates_offline_data'));
+                if (data && data.activeKelas) {
+                    nilaiInput = data.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
+                    setMode(data.activeMode || 'jumlah');
+                    pilihKelas(data.activeKelas);
+                    setFokus(data.fokusInput || 'total');
+                    return true;
+                }
+            } catch (e) {}
+            return false;
+        }
+
+        function initMathBg() {
+            const bg = document.getElementById('mathBg');
+            const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
+            
+            for(let i = 0; i < 10; i++) {
+                let el = document.createElement('div');
+                el.className = 'symbol';
+                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                el.style.left = `${Math.random() * 100}vw`;
+                el.style.animationDuration = `${12 + Math.random() * 10}s`;
+                el.style.animationDelay = `-${Math.random() * 15}s`; 
+                el.style.fontSize = `${2 + Math.random() * 2}rem`; 
+                bg.appendChild(el);
+            }
+        }
+        initMathBg();
+
+        function resetGlobal() {
+            activeKelas = null;
+            document.getElementById('area-kelas').classList.remove('needs-class');
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+
+            ['55', '60', '65', '45'].forEach(k => {
+                const btn = document.getElementById('btn-' + k);
+                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
+                btn.classList.remove('class-active');
+            });
+
+            const viewRomawi = document.getElementById('view-romawi');
+            const boxR3 = document.getElementById('box-r3');
+            const labelR2 = document.getElementById('label-r2');
+            
+            viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
+            boxR3.classList.remove('hidden');
+            labelR2.innerText = 'ROM II (x2)'; 
+
+            document.getElementById('max-r1').innerText = 'Maks: ?';
+            document.getElementById('max-r2').innerText = 'Maks: ?';
+            document.getElementById('max-r3').innerText = 'Maks: ?';
+            document.getElementById('max-total').innerText = 'Maks: ?';
+            
+            updateTampilan();
+            setMode('jumlah'); 
+
+            document.getElementById('nilaiAsli').innerText = '0.00';
+            document.getElementById('nilaiBulat').innerText = '0';
+            
+            const gifEl = document.getElementById('gif-reaction');
+            gifEl.classList.remove('scale-100');
+            gifEl.classList.add('scale-0');
+            gifEl.innerHTML = '';
+
+            simpanDataOffline();
+        }
+
+        function pilihKelas(kelas) {
+            activeKelas = kelas;
+            
+            document.getElementById('area-kelas').classList.remove('needs-class');
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+
+            ['55', '60', '65', '45'].forEach(k => {
+                const btn = document.getElementById('btn-' + k);
+                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
+                btn.classList.remove('class-active');
+            });
+
+            const activeBtn = document.getElementById('btn-' + kelas);
+            activeBtn.classList.remove('bg-white');
+            activeBtn.classList.add(configKelas[kelas].color, 'class-active');
+
+            const viewRomawi = document.getElementById('view-romawi');
+            const boxR3 = document.getElementById('box-r3');
+            const labelR2 = document.getElementById('label-r2');
+
+            if (kelas === '45') {
+                viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2');
+                boxR3.classList.add('hidden');
+                labelR2.innerText = 'ROM II (x1)'; 
+                if (fokusInput === 'r3') setFokus('r2');
+            } else {
+                viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
+                boxR3.classList.remove('hidden');
+                labelR2.innerText = 'ROM II (x2)'; 
+            }
+
+            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1;
+            document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2;
+            if (kelas !== '45') {
+                document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
+            }
+            document.getElementById('max-total').innerText = 'Maks: ' + kelas;
+            
+            validasiNilai();
+            updateTampilan();
+            kalkulasi();
+            simpanDataOffline();
+        }
+
+        function setMode(mode) {
+            activeMode = mode;
+            const tRomawi = document.getElementById('tab-romawi');
+            const tJumlah = document.getElementById('tab-jumlah');
+            
+            if(mode === 'romawi') {
+                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md";
+                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
+                document.getElementById('view-romawi').classList.remove('hidden');
+                document.getElementById('view-romawi').classList.add('grid');
+                document.getElementById('view-jumlah').classList.add('hidden');
+                document.getElementById('view-jumlah').classList.remove('flex');
+                setFokus('r1'); 
+            } else {
+                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
+                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
+                document.getElementById('view-jumlah').classList.remove('hidden');
+                document.getElementById('view-jumlah').classList.add('flex');
+                document.getElementById('view-romawi').classList.add('hidden');
+                document.getElementById('view-romawi').classList.remove('grid');
+                setFokus('total'); 
+            }
+            kalkulasi();
+            simpanDataOffline();
+        }
+
+        function setFokus(idBox) {
+            fokusInput = idBox;
+            ['r1', 'r2', 'r3', 'total'].forEach(id => {
+                const el = document.getElementById('box-' + id);
+                if(el) el.classList.remove('input-active');
+            });
+            document.getElementById('box-' + idBox).classList.add('input-active');
+        }
+
+        function tekanTombol(kunci) {
+            if (!activeKelas) {
+                const areaKelas = document.getElementById('area-kelas');
+                areaKelas.classList.remove('needs-class');
+                void areaKelas.offsetWidth; 
+                areaKelas.classList.add('needs-class');
+                
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+
+            let strCurrent = nilaiInput[fokusInput];
+
+            if (kunci === 'C') {
+                strCurrent = '';
+            } else if (kunci === 'DEL') {
+                strCurrent = strCurrent.slice(0, -1);
+            } else {
+                if(strCurrent === '0' && kunci === '0') return;
+                strCurrent += kunci;
+            }
+
+            nilaiInput[fokusInput] = strCurrent;
+            validasiNilai();
+            updateTampilan();
+            kalkulasi();
+            simpanDataOffline();
+        }
+
+        function validasiNilai() {
+            if(!activeKelas) return;
+            const valNum = parseInt(nilaiInput[fokusInput]);
+            if(isNaN(valNum)) return;
+
+            let maxAllow = 0;
+            if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1;
+            if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2;
+            if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3;
+            if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
+
+            if(valNum > maxAllow) {
+                nilaiInput[fokusInput] = '';
+                tampilkanPeringatanLucu('over', maxAllow);
+            }
+        }
+
+        function updateTampilan() {
+            document.getElementById('disp-r1').innerText = nilaiInput.r1;
+            document.getElementById('disp-r2').innerText = nilaiInput.r2;
+            document.getElementById('disp-r3').innerText = nilaiInput.r3;
+            document.getElementById('disp-total').innerText = nilaiInput.total;
+        }
+
+        function kalkulasi() {
+            if (!activeKelas) return;
+
+            let pembagi = parseInt(activeKelas);
+            let totalSkor = 0;
+
+            if (activeMode === 'romawi') {
+                let r1 = parseInt(nilaiInput.r1) || 0;
+                let r2 = parseInt(nilaiInput.r2) || 0;
+                let r3 = parseInt(nilaiInput.r3) || 0;
+                
+                if (activeKelas === '45') {
+                    totalSkor = (r1 * 1) + (r2 * 1);
+                } else {
+                    totalSkor = (r1 * 1) + (r2 * 2) + (r3 * 3);
+                }
+            } else {
+                totalSkor = parseFloat(nilaiInput.total) || 0;
+            }
+
+            let nilaiAkhir = (totalSkor * 100) / pembagi;
+            
+            let valAsli = isNaN(nilaiAkhir) ? 0 : nilaiAkhir;
+            let strAsli = valAsli.toFixed(2);
+            if(strAsli.endsWith('.00')) strAsli = valAsli.toString();
+            let valBulat = Math.round(valAsli);
+            let strBulat = valBulat.toString();
+
+            const elAsli = document.getElementById('nilaiAsli');
+            const elBulat = document.getElementById('nilaiBulat');
+
+            if(elAsli.innerText !== strAsli) {
+                elAsli.innerText = strAsli;
+                elBulat.innerText = strBulat;
+                
+                elAsli.classList.remove('pop-effect');
+                elBulat.classList.remove('pop-effect');
+                void elAsli.offsetWidth; 
+                elAsli.classList.add('pop-effect');
+                elBulat.classList.add('pop-effect');
+            }
+
+            const gifEl = document.getElementById('gif-reaction');
+
+            if (totalSkor === 0 || !activeKelas) {
+                gifEl.classList.remove('scale-100');
+                gifEl.classList.add('scale-0');
+            } else {
+                gifEl.classList.remove('scale-0');
+                gifEl.classList.add('scale-100');
+                
+                if (valBulat < 70) {
+                    gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">';
+                } else if (valBulat >= 70 && valBulat <= 85) {
+                    gifEl.innerHTML = '<img src="senyum.gif" alt="senyum" class="w-full h-full object-contain">';
+                } else if (valBulat > 85) {
+                    gifEl.innerHTML = '<img src="bahagia.gif" alt="bahagia" class="w-full h-full object-contain">';
+                }
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const key = e.key;
+            if (/^[0-9]$/.test(key)) {
+                tekanTombol(key);
+            } else if (key === 'Backspace') {
+                tekanTombol('DEL');
+            } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
+                tekanTombol('C');
+            }
+        });
+
+        if (!muatDataOffline()) {
+            setMode('jumlah');
+        }
+
     </script>
 </body>
 </html>
