@@ -59,8 +59,8 @@
             transform: translateY(0);
         }
 
-        /* Latar Belakang Animasi Matematika */
-        .math-bg {
+        /* Latar Belakang Animasi Pelajaran */
+        .subject-bg {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: 0;
@@ -70,14 +70,19 @@
         .symbol {
             position: absolute;
             font-weight: 900;
+            white-space: nowrap;
             will-change: transform, opacity;
             animation: float-up linear infinite;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.8);
         }
+        
+        /* Animasi Mengayun Halus */
         @keyframes float-up {
-            0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.35; } /* Tidak terlalu transparan */
+            0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
+            15% { opacity: 0.35; } /* Opacity ditingkatkan agar lebih terlihat */
+            50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; }
             85% { opacity: 0.35; } 
-            100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+            100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; }
         }
 
         /* Tombol Kelas & Efek Aktif */
@@ -151,13 +156,21 @@
         </div>
     </div>
 
-    <!-- Background Animasi -->
-    <div class="math-bg" id="mathBg"></div>
+    <!-- Background Animasi Pelajaran -->
+    <div class="subject-bg" id="mathBg"></div>
 
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
         <!-- Header: Judul KATES (Animasi 1) -->
-        <div class="flex-shrink-0 text-center mb-1 mt-1 anim-header">
+        <div class="flex-shrink-0 text-center mb-1 mt-1 anim-header relative">
+            
+            <!-- Tombol Reset Cepat -->
+            <button onclick="resetGlobal()" class="absolute top-0 right-1 bg-white/60 backdrop-blur-md border border-slate-200 text-rose-500 p-1.5 rounded-full shadow-sm hover:bg-rose-50 active:scale-90 transition-all z-50 flex items-center justify-center" title="Reset Semua">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
             <img src="JUDUL.png" alt="KATES" class="h-16 sm:h-20 object-contain mx-auto my-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">
             <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
@@ -283,15 +296,8 @@
         let deferredPrompt;
         
         if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', (e) => { self.skipWaiting(); });
-                self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-                self.addEventListener('fetch', (e) => { 
-                    e.respondWith(fetch(e.request).catch(() => new Response('Kalkulator KATES Offline Ready!'))); 
-                });
-            `;
-            const blob = new Blob([swCode], {type: 'application/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log('SW Setup Gagal:', err));
+            // Memanggil file fisik sw.js agar lolos keamanan Browser & GitHub Pages
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup (Bisa diabaikan jika offline):', err));
         }
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -327,28 +333,68 @@
         let activeKelas = null; 
         let activeMode = 'jumlah'; // DEFAULT JUMLAH
         let fokusInput = 'total';
-        
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-        // Animasi Background Matematika
+        // Animasi Background Pelajaran Beragam
         function initMathBg() {
             const bg = document.getElementById('mathBg');
-            const symbols = ['+', '-', '×', '÷', '=', '%', '√', '∑', '∞', 'π'];
-            const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e']; 
+            // Masjid, Muhammadiyah(☀️/Matahari), Garuda(🦅), KBBI(📖/Buku), IPA(🔬), Matematika(📐), PJOK(⚽), Kesenian(🎨), Koding(💻), Wayang(🎭), Hijaiyah(ا), Al Qur'an(🕋)
+            const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
             
-            for(let i = 0; i < 8; i++) {
+            for(let i = 0; i < 10; i++) {
                 let el = document.createElement('div');
                 el.className = 'symbol';
                 el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 el.style.left = `${Math.random() * 100}vw`;
-                el.style.color = colors[Math.floor(Math.random() * colors.length)];
                 el.style.animationDuration = `${12 + Math.random() * 10}s`;
                 el.style.animationDelay = `-${Math.random() * 15}s`; 
-                el.style.fontSize = `${1.5 + Math.random() * 2}rem`; // Lebih Besar
+                el.style.fontSize = `${2 + Math.random() * 2}rem`; // Ukuran yang lebih besar
                 bg.appendChild(el);
             }
         }
         initMathBg();
+
+        // Fungsi Membersihkan Semua Data (Reset Default)
+        function resetGlobal() {
+            activeKelas = null;
+            document.getElementById('area-kelas').classList.remove('needs-class');
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+
+            // Matikan indikator semua tombol kelas
+            ['55', '60', '65', '45'].forEach(k => {
+                const btn = document.getElementById('btn-' + k);
+                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
+                btn.classList.remove('class-active');
+            });
+
+            // Kembalikan struktur Romawi ke default (3 Kotak)
+            const viewRomawi = document.getElementById('view-romawi');
+            const boxR3 = document.getElementById('box-r3');
+            const labelR2 = document.getElementById('label-r2');
+            
+            viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
+            boxR3.classList.remove('hidden');
+            labelR2.innerText = 'ROM II (x2)'; 
+
+            // Reset label maksimal
+            document.getElementById('max-r1').innerText = 'Maks: ?';
+            document.getElementById('max-r2').innerText = 'Maks: ?';
+            document.getElementById('max-r3').innerText = 'Maks: ?';
+            document.getElementById('max-total').innerText = 'Maks: ?';
+            
+            updateTampilan();
+            setMode('jumlah'); // Kembali ke tampilan Jumlah secara default
+
+            // Reset Papan Nilai Utama
+            document.getElementById('nilaiAsli').innerText = '0.00';
+            document.getElementById('nilaiBulat').innerText = '0';
+            
+            // Sembunyikan GIF
+            const gifEl = document.getElementById('gif-reaction');
+            gifEl.classList.remove('scale-100');
+            gifEl.classList.add('scale-0');
+            gifEl.innerHTML = '';
+        }
 
         function pilihKelas(kelas) {
             activeKelas = kelas;
@@ -548,7 +594,7 @@
             }
         });
 
-        // Set default ke JUMLAH
+        // Set default ke JUMLAH saat pertama dimuat
         setMode('jumlah');
 
     </script>
