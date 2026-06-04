@@ -9,8 +9,9 @@
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI%2BPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSI0MCIvPjx0ZXh0IHg9Ijk2IiB5PSIxMTAiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSIxMDAiLz48dGV4dCB4PSIyNTYiIHk9IjI5MCIgZm9udC1zaXplPSIyMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Import Font Tambahan -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&family=Fredoka:wght@600;700&display=swap');
         
         body {
             font-family: 'Nunito', sans-serif;
@@ -22,6 +23,10 @@
             user-select: none;
         }
 
+        .font-cute {
+            font-family: 'Fredoka', sans-serif;
+        }
+
         /* Banner Install PWA Animasi */
         #install-banner {
             transform: translateY(-100%);
@@ -31,7 +36,7 @@
             transform: translateY(0);
         }
 
-        /* Latar Belakang Animasi Matematika (Tema Terang) */
+        /* Latar Belakang Animasi Matematika (Transparan & Halus) */
         .math-bg {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -47,8 +52,8 @@
         }
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.85; }
-            90% { opacity: 0.85; }
+            15% { opacity: 0.15; } /* Sangat transparan */
+            85% { opacity: 0.15; } /* Sangat transparan */
             100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
@@ -70,8 +75,17 @@
             z-index: 10;
         }
         @keyframes breathe {
-            0%, 100% { transform: scale(1.03) translateY(-2px); }
-            50% { transform: scale(1.01) translateY(0px); }
+            0%, 100% { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); }
+            50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
+        }
+
+        /* Peringatan ketika kelas belum dipilih */
+        @keyframes pulse-warning {
+            0%, 100% { transform: scale(1); border-color: #cbd5e1; }
+            50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
+        }
+        .needs-class .class-btn {
+            animation: pulse-warning 0.5s ease-in-out;
         }
 
         /* Efek Pop saat nilai berubah */
@@ -81,27 +95,6 @@
             100% { transform: scale(1); }
         }
         .pop-effect { animation: pop-score 0.3s ease-out; }
-
-        /* --- CSS Animasi Reaksi Emoji --- */
-        @keyframes sad-anim {
-            0%, 100% { transform: translateY(0); }
-            25% { transform: translateY(2px) rotate(-10deg); }
-            75% { transform: translateY(-2px) rotate(10deg); }
-        }
-        @keyframes smile-anim {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-        @keyframes tada-anim {
-            0% { transform: scale(1) rotate(0); }
-            10%, 20% { transform: scale(0.9) rotate(-3deg); }
-            30%, 50%, 70%, 90% { transform: scale(1.2) rotate(3deg); }
-            40%, 60%, 80% { transform: scale(1.2) rotate(-3deg); }
-            100% { transform: scale(1) rotate(0); }
-        }
-        .emoji-sad { animation: sad-anim 1.5s ease-in-out infinite; }
-        .emoji-smile { animation: smile-anim 1.5s ease-in-out infinite; }
-        .emoji-happy { animation: tada-anim 1.5s ease-in-out infinite; }
 
         /* Numpad Button Press Effect */
         .numpad-btn:active {
@@ -122,7 +115,7 @@
     <!-- Banner Install Aplikasi (PWA) -->
     <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
         <div class="flex items-center gap-3 pl-2">
-            <span class="text-3xl bg-white p-1 rounded-lg shadow-sm">🏫</span>
+            <span class="text-3xl drop-shadow-md">🏫</span>
             <div class="flex flex-col">
                 <span class="text-sm font-black tracking-wide">Install KATES</span>
                 <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
@@ -134,42 +127,42 @@
         </div>
     </div>
 
+    <!-- Background Animasi -->
     <div class="math-bg" id="mathBg"></div>
 
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
-        <!-- Header: Judul Simetris -->
+        <!-- Header: Judul KATES -->
         <div class="flex-shrink-0 text-center mb-1 mt-1">
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0">By Zivi•Ai</p>
-            <h1 class="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-orange-500 to-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] leading-none mt-1 pb-1">KATES</h1>
-            <p class="text-[12px] font-bold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
+            <!-- Judul menggunakan Font Lucu, Gradasi Biru Cerah ke Oren Cerah -->
+            <h1 class="text-[2.75rem] font-cute font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#00d2ff] to-[#ff7a00] drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)] leading-none mt-1 pb-1">KATES</h1>
+            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0">-KALKULATOR TES SISWA-</p>
         </div>
 
         <!-- Display Box (Paling Atas) -->
         <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2 relative">
             
             <!-- Kiri: Nilai Asli -->
-            <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-md relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-12 h-12 bg-blue-200 rounded-full opacity-50"></div>
+            <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
                 <p class="text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
                 <div class="text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
             </div>
 
-            <!-- EMOJI REAKSI TENGAH -->
-            <div id="emoji-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[28px] z-20 drop-shadow-md transition-all duration-300 scale-0 bg-white rounded-full w-[50px] h-[50px] flex items-center justify-center shadow-lg border-4 border-slate-100">
-                <!-- Emoji akan diisi oleh JS -->
+            <!-- GIF REAKSI TENGAH (Polos / Transparan) -->
+            <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-md flex items-center justify-center w-16 h-16">
+                <!-- GIF akan diisi oleh JS -->
             </div>
             
             <!-- Kanan: Pembulatan -->
-            <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl py-2 px-1 border-2 border-orange-300 shadow-md relative overflow-hidden">
-                <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-orange-200 rounded-full opacity-50"></div>
+            <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl py-2 px-1 border-2 border-orange-300 shadow-sm relative overflow-hidden">
                 <p class="text-[9px] text-orange-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Pembulatan</p>
                 <div class="text-4xl font-black text-orange-700 tabular-nums transition-all relative z-10" id="nilaiBulat">0</div>
             </div>
         </div>
 
         <!-- Pilihan Kelas -->
-        <div class="flex-shrink-0 mb-2">
+        <div class="flex-shrink-0 mb-2" id="area-kelas">
             <!-- 3 Kotak Atas -->
             <div class="grid grid-cols-3 gap-1 mb-1">
                 <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-2 flex flex-col items-center justify-center">
@@ -188,13 +181,13 @@
             <!-- 1 Shape Panjang Bawah -->
             <button onclick="pilihKelas('45')" id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn w-full rounded-xl py-2 flex items-center justify-center gap-2">
                 <span class="text-xs font-black tracking-widest">KELAS KODING</span>
-                <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded-full font-bold">Bagi 45</span>
+                <span class="text-[9px] bg-black/10 px-2 py-0.5 rounded-full font-bold">Bagi 45</span>
             </button>
         </div>
 
         <!-- Menu Toggle (Romawi/Jumlah) -->
         <div class="flex-shrink-0 flex justify-center mb-2">
-            <div class="bg-white p-1 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm">
+            <div class="bg-white p-1 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
                 <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md">
                     ROMAWI
                 </button>
@@ -205,24 +198,24 @@
         </div>
 
         <!-- Area Input -->
-        <div class="flex-1 min-h-[80px] flex items-center justify-center mb-2">
+        <div class="flex-1 min-h-[80px] flex items-center justify-center mb-2 relative z-20">
             
             <!-- View Romawi -->
             <div id="view-romawi" class="w-full grid grid-cols-3 gap-2 transition-all duration-300">
                 <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors input-active">
                     <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
                     <div id="disp-r1" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r1" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: -</span>
+                    <span id="max-r1" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
                 <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors">
                     <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
                     <div id="disp-r2" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r2" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: 10</span>
+                    <span id="max-r2" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
                 <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors">
                     <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
                     <div id="disp-r3" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-r3" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: 5</span>
+                    <span id="max-r3" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
             </div>
 
@@ -231,31 +224,27 @@
                 <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl p-1.5 w-1/2 border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
                     <label class="text-[9px] font-black text-amber-500 tracking-widest uppercase mb-0.5">Total Skormu</label>
                     <div id="disp-total" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                    <span id="max-total" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: -</span>
+                    <span id="max-total" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
             </div>
 
         </div>
 
-        <!-- Keyboard Angka Bawaan (Menghindari Keyboard HP Muncul) -->
-        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35dvh] min-h-[220px]">
+        <!-- Keyboard Angka Bawaan (Numpad) -->
+        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35dvh] min-h-[220px] relative z-30">
             <div class="grid grid-cols-3 gap-1.5 h-full">
-                <!-- Baris 1 -->
                 <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">2</button>
                 <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">3</button>
                 
-                <!-- Baris 2 -->
                 <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">4</button>
                 <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">5</button>
                 <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">6</button>
                 
-                <!-- Baris 3 -->
                 <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">7</button>
                 <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">8</button>
                 <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">9</button>
                 
-                <!-- Baris 4 -->
                 <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-xl font-black text-red-500 transition-colors">C</button>
                 <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">0</button>
                 <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-xl font-bold text-slate-600 transition-colors flex items-center justify-center">
@@ -269,10 +258,9 @@
     </div>
 
     <script>
-        // --- LOGIKA INSTALL PWA (Tanpa Titik Tiga) ---
+        // --- LOGIKA INSTALL PWA (Pop Up Otomatis) ---
         let deferredPrompt;
         
-        // Daftarkan Service Worker Inline agar aplikasi memenuhi syarat PWA
         if ('serviceWorker' in navigator) {
             const swCode = `
                 self.addEventListener('install', (e) => { self.skipWaiting(); });
@@ -287,24 +275,20 @@
 
         // Tangkap event saat browser mendeteksi bahwa aplikasi bisa di-install
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Cegah browser menampilkan prompt default-nya
+            // Cegah prompt default browser
             e.preventDefault();
             deferredPrompt = e;
-            // Tampilkan Banner Install Custom kita (Otomatis pop-down dari atas)
+            // Tampilkan Banner Install Custom otomatis dalam 1 detik
             setTimeout(() => {
                 document.getElementById('install-banner').classList.add('show');
-            }, 1000); // Muncul 1 detik setelah halaman dimuat
+            }, 1000); 
         });
 
         // Fungsi saat tombol Install di banner ditekan
         function installApp() {
             if (deferredPrompt) {
-                // Tampilkan prompt bawaan OS/Browser
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('Aplikasi sedang di-install');
-                    }
                     deferredPrompt = null;
                     tutupBanner();
                 });
@@ -315,36 +299,37 @@
             document.getElementById('install-banner').classList.remove('show');
         }
 
-
         // --- LOGIKA UTAMA KALKULATOR ---
         const configKelas = {
             '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500' },
             '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500' },
             '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500' },
-            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } // Koding: Hanya Romawi 1 & 2
+            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } // Koding
         };
 
-        let activeKelas = '55';
-        let activeMode = 'romawi'; // 'romawi' atau 'jumlah'
-        let fokusInput = 'r1'; // 'r1', 'r2', 'r3', 'total'
+        let activeKelas = null; // Status Default Netral (Belum pilih kelas)
+        let activeMode = 'romawi'; 
+        let fokusInput = 'r1';
         
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-        // Inisialisasi Background Animasi
+        // Inisialisasi Background Animasi (Transparan & Halus)
         function initMathBg() {
             const bg = document.getElementById('mathBg');
-            const symbols = ['+', '-', '×', '÷', '=', '%', '√', '∑', '∞', 'π', '{ }', '</>'];
+            const symbols = ['+', '-', '×', '÷', '=', '%', '√', '∑', '∞', 'π'];
             const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e']; 
-            for(let i = 0; i < 25; i++) {
+            
+            // Jumlah disedikitkan jadi 8 agar tidak terlalu ramai
+            for(let i = 0; i < 8; i++) {
                 let el = document.createElement('div');
                 el.className = 'symbol';
                 el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 el.style.left = `${Math.random() * 100}vw`;
                 el.style.color = colors[Math.floor(Math.random() * colors.length)];
-                el.style.animationDuration = `${6 + Math.random() * 8}s`;
-                // Menggunakan waktu negatif agar animasi sudah tersebar di layar saat pertama dimuat
-                el.style.animationDelay = `-${Math.random() * 10}s`; 
-                el.style.fontSize = `${1.8 + Math.random() * 2.5}rem`;
+                el.style.animationDuration = `${12 + Math.random() * 10}s`; // Lebih lambat dan halus
+                el.style.animationDelay = `-${Math.random() * 15}s`; 
+                // Ukuran font lebih kecil (0.8rem - 1.5rem)
+                el.style.fontSize = `${0.8 + Math.random() * 0.7}rem`;
                 bg.appendChild(el);
             }
         }
@@ -354,6 +339,9 @@
         function pilihKelas(kelas) {
             activeKelas = kelas;
             
+            // Hapus animasi peringatan jika ada
+            document.getElementById('area-kelas').classList.remove('needs-class');
+
             // Kosongkan nilai saat pindah kelas
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
@@ -364,12 +352,12 @@
                 btn.classList.remove('class-active');
             });
 
-            // Aktifkan tombol
+            // Aktifkan tombol yang dipilih
             const activeBtn = document.getElementById('btn-' + kelas);
             activeBtn.classList.remove('bg-white');
             activeBtn.classList.add(configKelas[kelas].color, 'class-active');
 
-            // Logika Khusus Kelas Koding (Hanya 2 Romawi)
+            // Logika Khusus Kelas Koding
             const viewRomawi = document.getElementById('view-romawi');
             const boxR3 = document.getElementById('box-r3');
             const labelR2 = document.getElementById('label-r2');
@@ -377,12 +365,12 @@
             if (kelas === '45') {
                 viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2');
                 boxR3.classList.add('hidden');
-                labelR2.innerText = 'ROM II (x1)'; // Bobot Koding romawi 2 adalah x1
+                labelR2.innerText = 'ROM II (x1)'; 
                 if (fokusInput === 'r3') setFokus('r2');
             } else {
                 viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
                 boxR3.classList.remove('hidden');
-                labelR2.innerText = 'ROM II (x2)'; // Kembali ke default
+                labelR2.innerText = 'ROM II (x2)'; 
             }
 
             // Update Label Batas Maksimal
@@ -391,9 +379,8 @@
             if (kelas !== '45') {
                 document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
             }
-            document.getElementById('max-total').innerText = 'Maks: ' + kelas; // Total max = pembaginya
+            document.getElementById('max-total').innerText = 'Maks: ' + kelas;
             
-            // Validasi ulang nilai saat pindah kelas (cegah nilai lewat batas)
             validasiNilai();
             updateTampilan();
             kalkulasi();
@@ -410,34 +397,39 @@
                 tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-romawi').classList.remove('hidden');
                 document.getElementById('view-jumlah').classList.add('hidden');
-                setFokus('r1'); // Auto fokus ke R1
+                setFokus('r1'); 
             } else {
                 tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
                 tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-jumlah').classList.remove('hidden');
                 document.getElementById('view-jumlah').classList.add('flex');
                 document.getElementById('view-romawi').classList.add('hidden');
-                setFokus('total'); // Auto fokus ke Total
+                setFokus('total'); 
             }
             kalkulasi();
         }
 
-        // Fokus ke kotak input tertentu (untuk numpad)
+        // Fokus ke kotak input tertentu
         function setFokus(idBox) {
             fokusInput = idBox;
-            
-            // Hapus outline dari semua kotak
             ['r1', 'r2', 'r3', 'total'].forEach(id => {
                 const el = document.getElementById('box-' + id);
                 if(el) el.classList.remove('input-active');
             });
-            
-            // Tambah outline ke kotak terpilih
             document.getElementById('box-' + idBox).classList.add('input-active');
         }
 
         // Logika Numpad Buatan
         function tekanTombol(kunci) {
+            // Jika kelas belum dipilih, berikan efek peringatan di area kelas
+            if (!activeKelas) {
+                const areaKelas = document.getElementById('area-kelas');
+                areaKelas.classList.remove('needs-class');
+                void areaKelas.offsetWidth; // Reflow reset animasi
+                areaKelas.classList.add('needs-class');
+                return;
+            }
+
             let strCurrent = nilaiInput[fokusInput];
 
             if (kunci === 'C') {
@@ -445,7 +437,6 @@
             } else if (kunci === 'DEL') {
                 strCurrent = strCurrent.slice(0, -1);
             } else {
-                // Jangan tambah 0 di depan jika kosong
                 if(strCurrent === '0' && kunci === '0') return;
                 strCurrent += kunci;
             }
@@ -458,6 +449,7 @@
 
         // Validasi agar tidak lewat batas soal
         function validasiNilai() {
+            if(!activeKelas) return;
             const valNum = parseInt(nilaiInput[fokusInput]);
             if(isNaN(valNum)) return;
 
@@ -468,12 +460,11 @@
             if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
 
             if(valNum > maxAllow) {
-                // Jika mengetik lebih, otomatis dibatasi di angka maksimalnya
                 nilaiInput[fokusInput] = maxAllow.toString();
             }
         }
 
-        // Update angka di kotak layar
+        // Update angka di layar
         function updateTampilan() {
             document.getElementById('disp-r1').innerText = nilaiInput.r1;
             document.getElementById('disp-r2').innerText = nilaiInput.r2;
@@ -483,6 +474,8 @@
 
         // Hitung Nilai Akhir & Atur Animasi Emoji
         function kalkulasi() {
+            if (!activeKelas) return;
+
             let pembagi = parseInt(activeKelas);
             let totalSkor = 0;
 
@@ -508,7 +501,7 @@
             let valBulat = Math.round(valAsli);
             let strBulat = valBulat.toString();
 
-            // Render ke Layar Atas dengan Animasi Angka
+            // Render Nilai Atas
             const elAsli = document.getElementById('nilaiAsli');
             const elBulat = document.getElementById('nilaiBulat');
 
@@ -518,42 +511,34 @@
                 
                 elAsli.classList.remove('pop-effect');
                 elBulat.classList.remove('pop-effect');
-                void elAsli.offsetWidth; // Reflow reset animasi
+                void elAsli.offsetWidth; // Reflow reset
                 elAsli.classList.add('pop-effect');
                 elBulat.classList.add('pop-effect');
             }
 
-            // --- Logika Animasi Emoji ---
-            const emojiEl = document.getElementById('emoji-reaction');
-            
-            // Hapus semua class animasi sebelumnya
-            emojiEl.classList.remove('emoji-sad', 'emoji-smile', 'emoji-happy');
+            // --- Logika Animasi GIF Polos (Bersih) ---
+            const gifEl = document.getElementById('gif-reaction');
 
-            // Jika nilai kosong (0), sembunyikan emoji (skala 0)
-            if (totalSkor === 0) {
-                emojiEl.style.transform = 'translate(-50%, -50%) scale(0)';
+            if (totalSkor === 0 || !activeKelas) {
+                gifEl.classList.remove('scale-100');
+                gifEl.classList.add('scale-0');
             } else {
-                // Tampilkan emoji
-                emojiEl.style.transform = 'translate(-50%, -50%) scale(1)';
+                gifEl.classList.remove('scale-0');
+                gifEl.classList.add('scale-100');
                 
+                // Logika: < 70 Sedih, 70-85 Senyum, > 85 Bahagia
+                // Merujuk langsung ke file GIF yang diupload di GitHub
                 if (valBulat < 70) {
-                    emojiEl.innerHTML = '😢';
-                    emojiEl.classList.add('emoji-sad');
+                    gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">';
                 } else if (valBulat >= 70 && valBulat <= 85) {
-                    emojiEl.innerHTML = '😊';
-                    emojiEl.classList.add('emoji-smile');
+                    gifEl.innerHTML = '<img src="senyum.gif" alt="senyum" class="w-full h-full object-contain">';
                 } else if (valBulat > 85) {
-                    emojiEl.innerHTML = '🥳';
-                    emojiEl.classList.add('emoji-happy');
+                    gifEl.innerHTML = '<img src="bahagia.gif" alt="bahagia" class="w-full h-full object-contain">';
                 }
             }
         }
 
-        // --- Inisialisasi Saat Buka ---
-        pilihKelas('55');
-        setMode('romawi');
-
-        // Dukungan Keyboard Fisik (Laptop/PC)
+        // Setup Keyboard Laptop/PC
         document.addEventListener('keydown', function(e) {
             const key = e.key;
             if (/^[0-9]$/.test(key)) {
@@ -564,6 +549,10 @@
                 tekanTombol('C');
             }
         });
+
+        // --- Inisialisasi Tampilan ---
+        // Status awal netral, set tampilan UI ke mode Romawi secara default
+        setMode('romawi');
 
     </script>
 </body>
