@@ -162,7 +162,7 @@
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
         <!-- Header: Judul KATES (Animasi 1) -->
-        <div class="flex-shrink-0 text-center mb-1 mt-1 anim-header relative">
+        <div class="flex-shrink-0 text-center mb-6 mt-1 anim-header relative"> <!-- mb-6 memperluas space antara judul dengan shape nilai -->
             
             <!-- Tombol Aksi Cepat -->
             <button onclick="refreshApp()" class="absolute top-0 left-1 z-50 bg-blue-100/80 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
@@ -180,8 +180,8 @@
             </button>
 
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
-            <img src="JUDUL.png" alt="KATES" class="h-16 sm:h-20 object-contain mx-auto my-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">
-            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
+            <img src="JUDUL.png" alt="KATES" class="h-16 sm:h-20 object-contain mx-auto mt-1 mb-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
+            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest -mt-1.5">-KALKULATOR TES SISWA-</p> <!-- -mt-1.5 menempelkan kalimat lebih dekat ke logo -->
         </div>
 
         <!-- Display Box (Paling Atas) (Animasi 2) -->
@@ -343,6 +343,27 @@
         let fokusInput = 'total';
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
+        // --- FUNGSI OFFLINE (SIMPAN DATA LOKAL) ---
+        function simpanDataOffline() {
+            const data = { activeKelas, activeMode, fokusInput, nilaiInput };
+            localStorage.setItem('kates_offline_data', JSON.stringify(data));
+        }
+
+        function muatDataOffline() {
+            try {
+                const data = JSON.parse(localStorage.getItem('kates_offline_data'));
+                if (data && data.activeKelas) {
+                    nilaiInput = data.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
+                    setMode(data.activeMode || 'jumlah');
+                    pilihKelas(data.activeKelas);
+                    setFokus(data.fokusInput || 'total');
+                    return true;
+                }
+            } catch (e) { console.log('Tidak ada data offline'); }
+            return false;
+        }
+        // ------------------------------------------
+
         // Animasi Background Pelajaran Beragam
         function initMathBg() {
             const bg = document.getElementById('mathBg');
@@ -418,6 +439,8 @@
             gifEl.classList.remove('scale-100');
             gifEl.classList.add('scale-0');
             gifEl.innerHTML = '';
+
+            simpanDataOffline();
         }
 
         function pilihKelas(kelas) {
@@ -461,6 +484,7 @@
             validasiNilai();
             updateTampilan();
             kalkulasi();
+            simpanDataOffline();
         }
 
         function setMode(mode) {
@@ -486,6 +510,7 @@
                 setFokus('total'); 
             }
             kalkulasi();
+            simpanDataOffline();
         }
 
         function setFokus(idBox) {
@@ -521,6 +546,7 @@
             validasiNilai();
             updateTampilan();
             kalkulasi();
+            simpanDataOffline();
         }
 
         function validasiNilai() {
@@ -618,8 +644,10 @@
             }
         });
 
-        // Set default ke JUMLAH saat pertama dimuat
-        setMode('jumlah');
+        // Set default ke JUMLAH atau muat data terakhir jika aplikasi dibuka saat Offline
+        if (!muatDataOffline()) {
+            setMode('jumlah');
+        }
 
     </script>
 </body>
