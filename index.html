@@ -145,6 +145,32 @@
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
     
+    <!-- BAR ATAS ABSOLUT (Refresh, By Zivi, Reset) -->
+    <!-- Dikunci di atas layar agar tidak menumpuk dengan Logo -->
+    <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-50 flex justify-between items-start pointer-events-none anim-header">
+        <!-- Tombol Refresh (Kiri) -->
+        <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            REFRESH
+        </button>
+
+        <!-- Label Pembuat (Tengah Atas) -->
+        <div class="pointer-events-auto bg-white/60 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-slate-100 mt-0.5">
+            <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
+        </div>
+
+        <!-- Tombol Reset (Kanan) -->
+        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            RESET
+        </button>
+    </div>
+
+    <!-- Banner Install Aplikasi (PWA) -->
     <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
         <div class="flex items-center gap-3 pl-2">
             <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
@@ -166,8 +192,8 @@
         <!-- Kotak Popup -->
         <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
             <div id="popup-emoji" class="text-6xl mb-3 animate-bounce">🙈</div>
-            <h3 id="popup-title" class="text-rose-500 font-black text-xl mb-1">Oopsie!</h3>
-            <p id="popup-message" class="text-slate-600 text-[11px] font-bold leading-relaxed mb-1">Pesan peringatan di sini</p>
+            <h3 id="popup-title" class="text-rose-500 font-black text-2xl mb-1">Oopsie!</h3>
+            <p id="popup-message" class="text-slate-600 text-sm font-bold leading-relaxed mb-1">Pesan peringatan di sini</p>
             
             <div id="popup-max-box" class="bg-rose-50 rounded-xl py-2 px-4 mt-3 border border-rose-100 w-full hidden">
                 <span class="text-[10px] text-rose-400 uppercase tracking-widest block font-bold">Mentok di angka:</span>
@@ -179,32 +205,21 @@
     <!-- Background Animasi Pelajaran -->
     <div class="subject-bg" id="mathBg"></div>
 
-    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-evenly gap-1 pb-4">
+    <!-- WADAH UTAMA KONTEN -->
+    <!-- pt-14 memastikan konten tidak tertutup Bar Atas Absolut -->
+    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between gap-1 pb-4 pt-14">
         
-        <div class="flex-1 flex flex-col justify-evenly w-full min-h-0 pt-8 sm:pt-4">
+        <!-- BAGIAN ATAS & TENGAH: Jarak Otomatis (Justify-Evenly) -->
+        <div class="flex-1 flex flex-col justify-evenly w-full min-h-0">
             
             <!-- Header: Judul KATES -->
-            <div class="text-center anim-header w-full relative">
-                
-                <button onclick="refreshApp()" class="absolute top-0 left-1 z-50 bg-blue-100/80 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    REFRESH
-                </button>
-
-                <button onclick="resetGlobal()" class="absolute top-0 right-1 z-50 bg-rose-100/80 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    RESET
-                </button>
-
-                <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
+            <div class="text-center anim-header w-full">
+                <!-- Memanggil JUDUL.png -->
                 <img src="JUDUL.png" alt="KATES" class="max-h-[10vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
                 <p class="text-[11px] font-extrabold text-slate-500 tracking-widest -mt-1">-KALKULATOR TES SISWA-</p>
             </div>
 
+            <!-- Display Box (Nilai) -->
             <div class="w-full flex items-center justify-between gap-2 relative anim-scores">
                 <!-- Kiri: Nilai Asli -->
                 <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden h-full">
@@ -223,6 +238,7 @@
                 </div>
             </div>
 
+            <!-- Pilihan Kelas -->
             <div class="anim-classes w-full" id="area-kelas">
                 <div class="grid grid-cols-3 gap-1 mb-1">
                     <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1 sm:py-2 flex flex-col items-center justify-center">
@@ -244,7 +260,7 @@
                 </button>
             </div>
 
-            <!-- Menu Toggle -->
+            <!-- Menu Toggle (Romawi/Jumlah) -->
             <div class="flex justify-center anim-toggle w-full">
                 <div class="bg-white p-1 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
                     <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
@@ -256,6 +272,7 @@
                 </div>
             </div>
 
+            <!-- Area Input Box -->
             <div class="flex items-center justify-center anim-input w-full min-h-[70px]">
                 
                 <!-- View Romawi -->
@@ -289,8 +306,8 @@
 
         </div>
 
-        <!-- Keyboard Angka Bawaan -->
-        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[32vh] max-h-[260px] min-h-[180px] relative z-30 anim-numpad flex-shrink-0">
+        <!-- Keyboard Angka Bawaan (Bagian Bawah Permanen) -->
+        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[32vh] max-h-[260px] min-h-[180px] relative z-30 anim-numpad flex-shrink-0 mt-1">
             <div class="grid grid-cols-3 gap-1.5 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">2</button>
@@ -381,7 +398,6 @@
                     { emoji: '🙈', title: 'Main Pencet Aja', msg: 'Kelasnya mana woy? Lupa ya?' },
                     { emoji: '🤣', title: 'Ngopi Duls!', msg: 'Fokus! Jangan lupa klik kelasnya~' }
                 ];
-                // Pilih pesan acak
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
                 
                 emojiEl.innerText = rand.emoji;
@@ -401,7 +417,6 @@
                     { emoji: '🫣', title: 'Guru Sapa Nih?', msg: 'Lebih dari batas maksimal woy!' },
                     { emoji: '💸', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu/pak? Kelebihan!' }
                 ];
-                // Pilih pesan acak
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
 
                 emojiEl.innerText = rand.emoji;
@@ -604,7 +619,6 @@
                 void areaKelas.offsetWidth; 
                 areaKelas.classList.add('needs-class');
                 
-                // MUNCULKAN POPUP TEGORAN LUCU (Belum pilih kelas)
                 tampilkanPeringatanLucu('nokelas');
                 return;
             }
@@ -639,10 +653,7 @@
             if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
 
             if(valNum > maxAllow) {
-                // KOSONGKAN NILAI JIKA MELEBIHI BATAS
                 nilaiInput[fokusInput] = '';
-                
-                // MUNCULKAN POPUP LUCU KELEBIHAN ANGKA
                 tampilkanPeringatanLucu('over', maxAllow);
             }
         }
