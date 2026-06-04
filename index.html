@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KATES - Kalkulator Tes Siswa</title>
     
-    <!-- PWA Manifest Inline untuk GitHub Pages -->
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiB2aWV3Qm94PSIwIDAgMTkyIDE5MiI%2BPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSI0MCIvPjx0ZXh0IHg9Ijk2IiB5PSIxMTAiIGZvbnQtc2l6ZT0iNzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI%2BPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiMzYjgyZjYiIHJ4PSIxMDAiLz48dGV4dCB4PSIyNTYiIHk9IjI5MCIgZm9udC1zaXplPSIyMDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPks8L3RleHQ%2BPC9zdmc%2B%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <!-- Icon & PWA Manifest Inline untuk GitHub Pages menggunakan LOGO.png -->
+    <link rel="icon" href="LOGO.png" type="image/png">
+    <link rel="apple-touch-icon" href="LOGO.png">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Import Font Tambahan -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&family=Fredoka:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
         body {
             font-family: 'Nunito', sans-serif;
@@ -21,10 +23,6 @@
             touch-action: manipulation; /* Cegah double-tap zoom di HP */
             -webkit-user-select: none;
             user-select: none;
-        }
-
-        .font-cute {
-            font-family: 'Fredoka', sans-serif;
         }
 
         /* Banner Install PWA Animasi */
@@ -115,7 +113,8 @@
     <!-- Banner Install Aplikasi (PWA) -->
     <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
         <div class="flex items-center gap-3 pl-2">
-            <span class="text-3xl drop-shadow-md">🏫</span>
+            <!-- Icon App di Banner Menggunakan LOGO.png -->
+            <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
             <div class="flex flex-col">
                 <span class="text-sm font-black tracking-wide">Install KATES</span>
                 <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
@@ -132,12 +131,12 @@
 
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
         
-        <!-- Header: Judul KATES -->
+        <!-- Header: Judul KATES (Menggunakan Gambar PNG) -->
         <div class="flex-shrink-0 text-center mb-1 mt-1">
-            <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0">By Zivi•Ai</p>
-            <!-- Judul menggunakan Font Lucu, Gradasi Biru Cerah ke Oren Cerah -->
-            <h1 class="text-[2.75rem] font-cute font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-[#00d2ff] to-[#ff7a00] drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)] leading-none mt-1 pb-1">KATES</h1>
-            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0">-KALKULATOR TES SISWA-</p>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
+            <!-- Memanggil JUDUL.png dengan tinggi yang disesuaikan agar proporsional -->
+            <img src="JUDUL.png" alt="KATES" class="h-11 sm:h-12 object-contain mx-auto my-1 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]">
+            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest mt-0.5">-KALKULATOR TES SISWA-</p>
         </div>
 
         <!-- Display Box (Paling Atas) -->
@@ -149,8 +148,8 @@
                 <div class="text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
             </div>
 
-            <!-- GIF REAKSI TENGAH (Polos / Transparan) -->
-            <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-md flex items-center justify-center w-16 h-16">
+            <!-- GIF REAKSI TENGAH (Polos / Transparan / Ukuran Diperbesar) -->
+            <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28">
                 <!-- GIF akan diisi oleh JS -->
             </div>
             
