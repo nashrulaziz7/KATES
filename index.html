@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Tambahan viewport-fit=cover untuk menstabilkan layar dari poni HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>KATES - Kalkulator Tes Siswa</title>
     
     <!-- Icon & PWA Manifest Inline untuk GitHub Pages menggunakan LOGO.png -->
@@ -14,10 +15,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
+        /* PENGUNCIAN LAYAR PERMANEN AGAR TIDAK KEPOTONG / MELAR */
+        html, body {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0; left: 0;
+            overflow: hidden;
+            overscroll-behavior: none; /* Mencegah layar tertarik ke bawah di HP */
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
             margin: 0;
-            overflow: hidden; /* Mutlak tanpa scroll */
             background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
             touch-action: manipulation; /* Cegah double-tap zoom di HP */
             -webkit-user-select: none;
@@ -42,7 +52,6 @@
             100% { transform: translateY(0); }
         }
 
-        /* Kelas penanda animasi urut (staggered) */
         .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
         .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
         .anim-classes { animation: fade-in-up 0.5s ease-out 0.4s both; }
@@ -76,10 +85,9 @@
             text-shadow: 0 2px 5px rgba(255,255,255,0.8);
         }
         
-        /* Animasi Mengayun Halus */
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.35; } /* Opacity ditingkatkan agar lebih terlihat */
+            15% { opacity: 0.35; } 
             50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; }
             85% { opacity: 0.35; } 
             100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; }
@@ -107,7 +115,6 @@
             50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
         }
 
-        /* Peringatan ketika kelas belum dipilih */
         @keyframes pulse-warning {
             0%, 100% { transform: scale(1); border-color: #cbd5e1; }
             50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
@@ -116,7 +123,6 @@
             animation: pulse-warning 0.5s ease-in-out;
         }
 
-        /* Efek Pop saat nilai berubah */
         @keyframes pop-score {
             0% { transform: scale(1); }
             50% { transform: scale(1.15); color: #3b82f6; }
@@ -124,13 +130,11 @@
         }
         .pop-effect { animation: pop-score 0.3s ease-out; }
 
-        /* Numpad Button Press Effect */
         .numpad-btn:active {
             transform: scale(0.92);
             background-color: #cbd5e1;
         }
 
-        /* Kolom Input Aktif */
         .input-active {
             border: 2px solid #3b82f6 !important;
             background-color: #eff6ff !important;
@@ -138,12 +142,11 @@
         }
     </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col items-center justify-center relative">
+<body class="flex flex-col items-center justify-center relative w-full h-full">
     
     <!-- Banner Install Aplikasi (PWA) -->
     <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
         <div class="flex items-center gap-3 pl-2">
-            <!-- Icon App di Banner Menggunakan LOGO.png -->
             <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
             <div class="flex flex-col">
                 <span class="text-sm font-black tracking-wide">Install KATES</span>
@@ -159,20 +162,20 @@
     <!-- Background Animasi Pelajaran -->
     <div class="subject-bg" id="mathBg"></div>
 
-    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto">
+    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 sm:p-3 mx-auto overflow-hidden">
         
         <!-- Header: Judul KATES (Animasi 1) -->
-        <div class="flex-shrink-0 text-center mb-6 mt-1 anim-header relative"> <!-- mb-6 memperluas space antara judul dengan shape nilai -->
+        <div class="flex-shrink-0 text-center mb-4 mt-2 anim-header relative pt-7"> <!-- pt-7 memberi ruang kosong di atas -->
             
             <!-- Tombol Aksi Cepat -->
-            <button onclick="refreshApp()" class="absolute top-0 left-1 z-50 bg-blue-100/80 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
+            <button onclick="refreshApp()" class="absolute top-1 left-1 z-50 bg-blue-100/80 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 REFRESH
             </button>
 
-            <button onclick="resetGlobal()" class="absolute top-0 right-1 z-50 bg-rose-100/80 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
+            <button onclick="resetGlobal()" class="absolute top-1 right-1 z-50 bg-rose-100/80 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -180,13 +183,12 @@
             </button>
 
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-80 mb-0.5">By Zivi•Ai</p>
-            <img src="JUDUL.png" alt="KATES" class="h-16 sm:h-20 object-contain mx-auto mt-1 mb-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
-            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest -mt-1.5">-KALKULATOR TES SISWA-</p> <!-- -mt-1.5 menempelkan kalimat lebih dekat ke logo -->
+            <img src="JUDUL.png" alt="KATES" class="h-14 sm:h-16 object-contain mx-auto mt-1 mb-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
+            <p class="text-[11px] font-extrabold text-slate-500 tracking-widest -mt-1">-KALKULATOR TES SISWA-</p> 
         </div>
 
         <!-- Display Box (Paling Atas) (Animasi 2) -->
-        <div class="flex-shrink-0 w-full mb-2 flex items-center justify-between gap-2 relative anim-scores">
-            
+        <div class="flex-shrink-0 w-full mb-3 flex items-center justify-between gap-2 relative anim-scores">
             <!-- Kiri: Nilai Asli -->
             <div class="flex flex-col items-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-2 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
                 <p class="text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
@@ -195,7 +197,6 @@
 
             <!-- GIF REAKSI TENGAH -->
             <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28">
-                <!-- GIF akan diisi oleh JS -->
             </div>
             
             <!-- Kanan: Pembulatan -->
@@ -206,7 +207,7 @@
         </div>
 
         <!-- Pilihan Kelas (Animasi 3) -->
-        <div class="flex-shrink-0 mb-2 anim-classes" id="area-kelas">
+        <div class="flex-shrink-0 mb-3 anim-classes" id="area-kelas">
             <div class="grid grid-cols-3 gap-1 mb-1">
                 <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-2 flex flex-col items-center justify-center">
                     <span class="text-xs font-black">KLS 1</span>
@@ -240,30 +241,28 @@
         </div>
 
         <!-- Area Input (Animasi 5) -->
-        <div class="flex-1 min-h-[80px] flex items-center justify-center mb-2 relative z-20 anim-input">
+        <div class="flex-1 min-h-[60px] flex items-center justify-center mb-2 relative z-20 anim-input">
             
-            <!-- View Romawi -->
-            <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
-                <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors input-active">
+            <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300 h-full">
+                <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active h-full">
                     <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
                     <div id="disp-r1" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
                     <span id="max-r1" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
-                <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors">
+                <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors h-full">
                     <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
                     <div id="disp-r2" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
                     <span id="max-r2" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
-                <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center cursor-pointer transition-colors">
+                <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl p-2 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors h-full">
                     <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
                     <div id="disp-r3" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
                     <span id="max-r3" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
                 </div>
             </div>
 
-            <!-- View Jumlah -->
             <div id="view-jumlah" class="w-full h-full flex items-center justify-center">
-                <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl p-1.5 w-1/2 border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
+                <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl p-2 w-1/2 h-full border-2 border-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
                     <label class="text-[9px] font-black text-amber-500 tracking-widest uppercase mb-0.5">Total Skormu</label>
                     <div id="disp-total" class="text-3xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
                     <span id="max-total" class="text-[8px] text-slate-400 mt-0.5 font-bold">Maks: ?</span>
@@ -273,7 +272,8 @@
         </div>
 
         <!-- Keyboard Angka Bawaan (Animasi 6 - Numpad) -->
-        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35dvh] min-h-[220px] relative z-30 anim-numpad">
+        <!-- Mengubah ukuran keyboard menjadi Fix (240px) agar tak melar saat direfresh -->
+        <div class="flex-shrink-0 bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[240px] relative z-30 anim-numpad">
             <div class="grid grid-cols-3 gap-1.5 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors">2</button>
@@ -304,8 +304,7 @@
         let deferredPrompt;
         
         if ('serviceWorker' in navigator) {
-            // Memanggil file fisik sw.js agar lolos keamanan Browser & GitHub Pages
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup (Bisa diabaikan jika offline):', err));
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup (Bisa diabaikan):', err));
         }
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -328,6 +327,12 @@
 
         function tutupBanner() {
             document.getElementById('install-banner').classList.remove('show');
+        }
+
+        // --- FUNGSI REFRESH PERMANEN & ANTI-KEPOTONG ---
+        function refreshApp() {
+            // Mencegah bug dimensi layar dengan memaksa reload URL bersih tanpa cache memori aneh
+            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
         }
 
         // --- LOGIKA UTAMA KALKULATOR ---
@@ -359,15 +364,13 @@
                     setFokus(data.fokusInput || 'total');
                     return true;
                 }
-            } catch (e) { console.log('Tidak ada data offline'); }
+            } catch (e) {}
             return false;
         }
-        // ------------------------------------------
 
         // Animasi Background Pelajaran Beragam
         function initMathBg() {
             const bg = document.getElementById('mathBg');
-            // Masjid, Muhammadiyah(☀️/Matahari), Garuda(🦅), KBBI(📖/Buku), IPA(🔬), Matematika(📐), PJOK(⚽), Kesenian(🎨), Koding(💻), Wayang(🎭), Hijaiyah(ا), Al Qur'an(🕋)
             const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
             
             for(let i = 0; i < 10; i++) {
@@ -377,27 +380,11 @@
                 el.style.left = `${Math.random() * 100}vw`;
                 el.style.animationDuration = `${12 + Math.random() * 10}s`;
                 el.style.animationDelay = `-${Math.random() * 15}s`; 
-                el.style.fontSize = `${2 + Math.random() * 2}rem`; // Ukuran yang lebih besar
+                el.style.fontSize = `${2 + Math.random() * 2}rem`; 
                 bg.appendChild(el);
             }
         }
         initMathBg();
-
-        // Fungsi Refresh Paksa untuk Update Versi HTML Terbaru
-        function refreshApp() {
-            if ('serviceWorker' in navigator) {
-                // Menghapus cache service worker lama agar mendownload script terbaru
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for(let registration of registrations) {
-                        registration.unregister();
-                    }
-                    // Muat ulang halaman dari server (bukan dari cache memori)
-                    window.location.reload(true); 
-                });
-            } else {
-                window.location.reload(true);
-            }
-        }
 
         // Fungsi Membersihkan Semua Data (Reset Default)
         function resetGlobal() {
@@ -405,14 +392,12 @@
             document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
 
-            // Matikan indikator semua tombol kelas
             ['55', '60', '65', '45'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
                 btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
                 btn.classList.remove('class-active');
             });
 
-            // Kembalikan struktur Romawi ke default (3 Kotak)
             const viewRomawi = document.getElementById('view-romawi');
             const boxR3 = document.getElementById('box-r3');
             const labelR2 = document.getElementById('label-r2');
@@ -421,20 +406,17 @@
             boxR3.classList.remove('hidden');
             labelR2.innerText = 'ROM II (x2)'; 
 
-            // Reset label maksimal
             document.getElementById('max-r1').innerText = 'Maks: ?';
             document.getElementById('max-r2').innerText = 'Maks: ?';
             document.getElementById('max-r3').innerText = 'Maks: ?';
             document.getElementById('max-total').innerText = 'Maks: ?';
             
             updateTampilan();
-            setMode('jumlah'); // Kembali ke tampilan Jumlah secara default
+            setMode('jumlah'); 
 
-            // Reset Papan Nilai Utama
             document.getElementById('nilaiAsli').innerText = '0.00';
             document.getElementById('nilaiBulat').innerText = '0';
             
-            // Sembunyikan GIF
             const gifEl = document.getElementById('gif-reaction');
             gifEl.classList.remove('scale-100');
             gifEl.classList.add('scale-0');
