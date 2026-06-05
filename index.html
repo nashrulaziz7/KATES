@@ -1860,6 +1860,14 @@
             }
         }
 
+        function bukaExportDialog() {
+            if(!currentClassName) {
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+            toggleModal('export-excel-modal', true);
+        }
+
         function prosesUnduhExcel() {
             const mapelName = document.getElementById('export-mapel-name').value.trim() || "Sumatif Akhir Tahun";
             const siswaList = getSiswaList(currentClassName) || [];
