@@ -1846,13 +1846,9 @@
 
         function clearSemuaNilai() {
             if(confirm("Yakin ingin mengosongkan seluruh nilai di kelas ini?")) {
-                const list = getSiswaList(currentClassName);
+                const list = databaseSiswa[activeKelas] || [];
                 list.forEach(s => {
-                    let lookupId = s.id;
-                    if (activeKelas === '45') {
-                        lookupId = s.id + "_45";
-                    }
-                    delete dataNilaiSiswa[lookupId];
+                    delete dataNilaiSiswa[s.id];
                 });
                 simpanNilaiKeLocal();
                 bukaRekapNilai();
@@ -1860,55 +1856,56 @@
             }
         }
 
-        function bukaExportDialog() {
-            toggleModal('rekap-modal', false);
-            toggleModal('export-excel-modal', true);
-        }
-
         function prosesUnduhExcel() {
             const mapelName = document.getElementById('export-mapel-name').value.trim() || "Sumatif Akhir Tahun";
-            const siswaList = getSiswaList(currentClassName);
+            const siswaList = databaseSiswa[activeKelas] || [];
             
             const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             const d = new Date();
             const dateStr = `${namaHari[d.getDay()]}, ${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
 
-            // Generate HTML-based Excel Table dengan css style warna premium
+            // Inline styles untuk kompatibilitas mutlak 100% di Microsoft Excel Mobile, WPS Office, dan Excel Laptop
+            const styleTitleMain = 'font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; text-align: center; color: #1e3a8a; padding: 10px 0; border: none;';
+            const styleTitleSub = 'font-family: Arial, sans-serif; font-size: 11pt; font-weight: normal; text-align: center; color: #475569; padding-bottom: 10px; border: none;';
+            const styleTitleDate = 'font-family: Arial, sans-serif; font-size: 9pt; font-weight: normal; text-align: center; color: #64748b; padding-bottom: 20px; border: none;';
+            
+            const styleThNo = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: center; width: 60px;';
+            const styleThNama = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: left; width: 300px;';
+            const styleThBulat = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: center; width: 110px;';
+            const styleThAsli = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: center; width: 110px;';
+            
+            const styleTdNo = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; text-align: center;';
+            const styleTdNama = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; text-align: left;';
+            const styleTdFilled = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; text-align: center; background-color: #d1fae5; color: #065f46; font-weight: bold;';
+            const styleTdEmpty = 'border: 1px solid #cbd5e1; padding: 8px; font-family: Arial, sans-serif; font-size: 11pt; text-align: center; background-color: #fce7f3; color: #9d174d; font-weight: bold;';
+
+            // Menyusun dokumen HTML tabel datar murni tanpa nested tags yang rawan dipotong oleh Excel Mobile
             let excelTemplate = `
                 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
                 <head>
                     <meta charset="utf-8">
-                    <style>
-                        table { border-collapse: collapse; }
-                        td, th { border: 1px solid #cbd5e1; padding: 8px; font-family: 'Arial', sans-serif; font-size: 11pt; text-align: left; }
-                        th { background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: center; }
-                        .title { font-size: 14pt; font-weight: bold; text-align: center; color: #1e3a8a; padding: 10px 0; }
-                        .filled { background-color: #d1fae5; color: #065f46; font-weight: bold; text-align: center; }
-                        .empty { background-color: #fce7f3; color: #9d174d; text-align: center; font-weight: bold; }
-                        .text-center { text-align: center; }
-                    </style>
                 </head>
                 <body>
                     <table>
                         <tr>
-                            <td colspan="4" class="title">DAFTAR NILAI KELAS ${currentClassName.toUpperCase()}</td>
+                            <td colspan="4" style="${styleTitleMain}">DAFTAR NILAI KELAS ${configKelas[activeKelas].name.toUpperCase()}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="title" style="font-size: 11pt; font-weight: normal; color: #475569; padding-bottom: 20px;">Mata Pelajaran: ${mapelName.toUpperCase()}</td>
+                            <td colspan="4" style="${styleTitleSub}">Mata Pelajaran: ${mapelName.toUpperCase()}</td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="title" style="font-size: 9pt; font-weight: normal; color: #64748b; padding-bottom: 20px;">Di download pada: ${dateStr}</td>
+                            <td colspan="4" style="${styleTitleDate}">Di download pada: ${dateStr}</td>
                         </tr>
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">No</th>
-                                <th style="width: 300px;">Nama</th>
-                                <th style="width: 110px;">Nilai Bulat</th>
-                                <th style="width: 110px;">Nilai Asli</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                        <tr>
+                            <td colspan="4" style="height: 15px; border: none;"></td>
+                        </tr>
+                        <tr>
+                            <th style="${styleThNo}">No</th>
+                            <th style="${styleThNama}">Nama</th>
+                            <th style="${styleThBulat}">Nilai Bulat</th>
+                            <th style="${styleThAsli}">Nilai Asli</th>
+                        </tr>
             `;
 
             siswaList.forEach((s, idx) => {
@@ -1922,26 +1919,25 @@
                 if (n) {
                     excelTemplate += `
                         <tr>
-                            <td class="text-center">${presensiNo}</td>
-                            <td>${s.nama}</td>
-                            <td class="filled">${n.bulat}</td>
-                            <td class="filled">${n.asli}</td>
+                            <td style="${styleTdNo}">${presensiNo}</td>
+                            <td style="${styleTdNama}">${s.nama}</td>
+                            <td style="${styleTdFilled}">${n.bulat}</td>
+                            <td style="${styleTdFilled}">${n.asli}</td>
                         </tr>
                     `;
                 } else {
                     excelTemplate += `
                         <tr>
-                            <td class="text-center">${presensiNo}</td>
-                            <td>${s.nama}</td>
-                            <td class="empty">-</td>
-                            <td class="empty">-</td>
+                            <td style="${styleTdNo}">${presensiNo}</td>
+                            <td style="${styleTdNama}">${s.nama}</td>
+                            <td style="${styleTdEmpty}">-</td>
+                            <td style="${styleTdEmpty}">-</td>
                         </tr>
                     `;
                 }
             });
 
             excelTemplate += `
-                        </tbody>
                     </table>
                 </body>
                 </html>
@@ -1950,7 +1946,7 @@
             const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Daftar_Nilai_Kelas_${currentClassName.replace(" ", "_")}_${mapelName.replace(/\s+/g, '_')}.xls`;
+            link.download = `Daftar_Nilai_Kelas_${configKelas[activeKelas].name.replace(" ", "_")}_${mapelName.replace(/\s+/g, '_')}.xls`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
