@@ -157,7 +157,7 @@
             100% { transform: scale(1); }
         }
 
-        .numpad-btn { height: 3.5rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: white; transition: all 0.1s; }
+        .numpad-btn { height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: white; transition: all 0.1s; }
         .numpad-btn:active {
             transform: scale(0.92);
             background-color: #cbd5e1;
@@ -546,7 +546,7 @@
 
         <!-- Keyboard Angka Bawaan -->
         <div class="w-[96%] max-w-[360px] mx-auto bg-white rounded-3xl border border-slate-200 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.05)] p-2.5 pb-3 h-[33vh] max-h-[220px] min-h-[150px] relative z-30 anim-numpad flex-shrink-0 mb-1 mt-1">
-            <div class="grid grid-cols-3 gap-2 h-full">
+            <div class="grid grid-cols-3 grid-rows-4 gap-2 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn text-slate-700 text-lg sm:text-xl">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn text-slate-700 text-lg sm:text-xl">2</button>
                 <button onclick="tekanTombol('3')" class="numpad-btn text-slate-700 text-lg sm:text-xl">3</button>
