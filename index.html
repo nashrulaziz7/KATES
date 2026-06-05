@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>KATES - Kalkulator Tes Siswa</title>
+    <title>KATES Pro - Kalkulator & Rekap Siswa</title>
     
     <!-- Icon & PWA Manifest Inline -->
     <link rel="icon" href="LOGO.png" type="image/png">
     <link rel="apple-touch-icon" href="LOGO.png">
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20Pro%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%20Pro%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -33,7 +33,7 @@
             user-select: none;
         }
 
-        /* --- ANIMASI MASUK (ENTRANCE ANIMATIONS) --- */
+        /* ANIMASI MASUK */
         @keyframes fade-in-down {
             0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -50,8 +50,6 @@
             0% { transform: translateY(100%); }
             100% { transform: translateY(0); }
         }
-        
-        /* Animasi Goyang Lucu untuk Popup */
         @keyframes wiggle {
             0%, 100% { transform: scale(1) rotate(0deg); }
             25% { transform: scale(1.05) rotate(-5deg); }
@@ -73,6 +71,7 @@
         }
         #install-banner.show { transform: translateY(0); }
 
+        /* Latar Belakang Animasi Pelajaran */
         .subject-bg {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -88,7 +87,6 @@
             animation: float-up linear infinite;
             text-shadow: 0 2px 5px rgba(255,255,255,0.8);
         }
-        
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
             15% { opacity: 0.35; } 
@@ -118,18 +116,18 @@
             50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
         }
 
+        .needs-class .class-btn { animation: pulse-warning 0.5s ease-in-out; }
         @keyframes pulse-warning {
             0%, 100% { transform: scale(1); border-color: #cbd5e1; }
             50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
         }
-        .needs-class .class-btn { animation: pulse-warning 0.5s ease-in-out; }
 
+        .pop-effect { animation: pop-score 0.3s ease-out; }
         @keyframes pop-score {
             0% { transform: scale(1); }
             50% { transform: scale(1.15); color: #3b82f6; }
             100% { transform: scale(1); }
         }
-        .pop-effect { animation: pop-score 0.3s ease-out; }
 
         .numpad-btn:active {
             transform: scale(0.92);
@@ -144,24 +142,21 @@
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
-    
-    <!-- BAR ATAS ABSOLUT (Refresh, By Zivi, Reset) -->
-    <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-50 flex justify-between items-start pointer-events-none anim-header">
-        <!-- Tombol Refresh (Kiri) -->
-        <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1" title="Perbarui Versi Aplikasi">
+
+    <!-- BAR ATAS ABSOLUT -->
+    <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
+        <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             REFRESH
         </button>
 
-        <!-- Label Pembuat (Tengah Atas) -->
         <div class="pointer-events-auto bg-white/60 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-slate-100 mt-0.5">
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
         </div>
 
-        <!-- Tombol Reset (Kanan) -->
-        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Kosongkan Semua Data">
+        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -169,12 +164,12 @@
         </button>
     </div>
 
-    <!-- Banner Install Aplikasi (PWA) -->
+    <!-- Banner Install PWA -->
     <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
         <div class="flex items-center gap-3 pl-2">
             <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
             <div class="flex flex-col">
-                <span class="text-sm font-black tracking-wide">Install KATES</span>
+                <span class="text-sm font-black tracking-wide">Install KATES Pro</span>
                 <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
             </div>
         </div>
@@ -184,14 +179,13 @@
         </div>
     </div>
 
-    <!-- POPUP LUCU OFFLINE MULTIFUNGSI -->
+    <!-- POPUP PERINGATAN LUCU -->
     <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
         <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
             <div id="popup-emoji" class="text-6xl mb-3 animate-bounce">🙈</div>
             <h3 id="popup-title" class="text-rose-500 font-black text-2xl mb-1">Oopsie!</h3>
             <p id="popup-message" class="text-slate-600 text-sm font-bold leading-relaxed mb-1">Pesan peringatan di sini</p>
-            
             <div id="popup-max-box" class="bg-rose-50 rounded-xl py-2 px-4 mt-3 border border-rose-100 w-full hidden">
                 <span class="text-[10px] text-rose-400 uppercase tracking-widest block font-bold">Mentok di angka:</span>
                 <span id="popup-max-val" class="text-3xl font-black text-rose-500">0</span>
@@ -199,55 +193,131 @@
         </div>
     </div>
 
-    <!-- Background Animasi Pelajaran -->
+    <!-- MODAL 1: REKAPITULASI & MANAJEMEN SISWA (DAFTAR NILAI) -->
+    <div id="rekap-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('rekap-modal', false)"></div>
+        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-sm w-11/12 h-[80vh] flex flex-col border border-slate-100 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                    <span>📊 Rekap Nilai</span>
+                    <span id="rekap-class-tag" class="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold">Semua</span>
+                </h2>
+                <button onclick="toggleModal('rekap-modal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+
+            <!-- List Menu Export -->
+            <div class="flex gap-2 mb-4">
+                <button onclick="exportExcel()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">
+                    🟢 EXPORT EXCEL (CSV)
+                </button>
+                <button onclick="toggleModal('tambah-siswa-modal', true)" class="bg-blue-600 text-white font-black px-4 py-2.5 rounded-xl text-xs hover:bg-blue-700">
+                    + Siswa
+                </button>
+            </div>
+
+            <!-- Tabel Data -->
+            <div class="flex-1 overflow-y-auto pr-1 border border-slate-100 rounded-2xl bg-slate-50 p-2">
+                <div id="tabel-rekap-body" class="space-y-2">
+                    <!-- Dinamis Diisi JS -->
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-400 font-bold">
+                <span id="rekap-total-siswa">Total: 0 Siswa</span>
+                <button onclick="clearSemuaNilai()" class="text-red-500 hover:underline">Hapus Semua Nilai</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: TAMBAH SISWA BARU -->
+    <div id="tambah-siswa-modal" class="fixed inset-0 z-[60] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('tambah-siswa-modal', false)"></div>
+        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 text-center flex flex-col items-center">
+            <h3 class="font-black text-slate-800 text-lg mb-3">Tambah Siswa Baru</h3>
+            <p class="text-xs text-slate-400 mb-3" id="tambah-siswa-subtitle">Menambahkan siswa ke kelas...</p>
+            <input type="text" id="input-nama-baru" placeholder="Nama lengkap siswa..." class="w-full p-3 border-2 border-slate-200 rounded-xl outline-none focus:border-blue-500 text-center text-sm font-bold mb-4">
+            <div class="flex gap-2 w-full">
+                <button onclick="toggleModal('tambah-siswa-modal', false)" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
+                <button onclick="simpanSiswaBaru()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs">Tambahkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: EDIT PENGATURAN KELAS (LONG PRESS) -->
+    <div id="edit-kelas-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('edit-kelas-modal', false)"></div>
+        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
+            <h3 class="font-black text-slate-800 text-lg mb-1 text-center" id="edit-kelas-title">Edit Aturan Kelas</h3>
+            <p class="text-xs text-slate-400 text-center mb-4">Ubah nama dan bobot kelas sesukamu</p>
+            
+            <div class="space-y-3 mb-5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA LABEL TOMBOL</label>
+                    <input type="text" id="edit-label-nama" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">ANGKA PEMBAGI (MAKS SKOR)</label>
+                    <input type="number" id="edit-pembagi-val" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="toggleModal('edit-kelas-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
+                <button onclick="simpanEditAturan()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Animasi -->
     <div class="subject-bg" id="mathBg"></div>
 
     <!-- WADAH UTAMA KONTEN -->
-    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between pb-4 pt-12 sm:pt-10">
+    <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between pb-3 pt-12 sm:pt-10">
         
-        <!-- BAGIAN ATAS & TENGAH: Jarak Center Terpusat agar tidak nabrak di layar pendek -->
-        <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2.5 w-full min-h-0">
+        <!-- BAGIAN ATAS & TENGAH -->
+        <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
             
             <!-- Header: Judul KATES -->
-            <div class="text-center anim-header w-full mt-2">
-                <img src="JUDUL.png" alt="KATES" class="max-h-[8vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.2)]"> 
-                <p class="text-[10px] font-extrabold text-slate-500 tracking-widest mt-0">-KALKULATOR TES SISWA-</p>
+            <div class="text-center anim-header w-full">
+                <img src="JUDUL.png" alt="KATES" class="max-h-[6.5vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.15)]"> 
+                <p class="text-[9px] font-extrabold text-slate-400 tracking-widest mt-0.5">-KALKULATOR TES SISWA PRO-</p>
             </div>
 
             <!-- Display Box (Nilai) -->
-            <div class="w-full flex items-center justify-between gap-1.5 sm:gap-2 relative anim-scores">
-                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-1.5 px-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
-                    <p class="text-[8px] sm:text-[9px] text-blue-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Nilai Asli</p>
-                    <div class="text-2xl sm:text-3xl font-black text-blue-700 tabular-nums transition-all relative z-10" id="nilaiAsli">0.00</div>
+            <div class="w-full flex items-center justify-between gap-1.5 relative anim-scores">
+                <div class="flex flex-col items-center justify-center flex-1 h-[7.5vh] bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
+                    <p class="text-[8px] text-blue-600 font-bold tracking-widest uppercase mb-0.5">Nilai Asli</p>
+                    <div class="text-2xl sm:text-3xl font-black text-blue-700 tabular-nums" id="nilaiAsli">0.00</div>
                 </div>
 
-                <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-16 h-16 sm:w-24 sm:h-24">
+                <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20">
                 </div>
                 
-                <div class="flex flex-col items-center justify-center flex-1 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl py-1.5 px-1 border-2 border-emerald-300 shadow-sm relative overflow-hidden">
-                    <p class="text-[8px] sm:text-[9px] text-emerald-600 font-bold tracking-widest uppercase mb-0.5 relative z-10">Pembulatan</p>
-                    <div class="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums transition-all relative z-10" id="nilaiBulat">0</div>
+                <div class="flex flex-col items-center justify-center flex-1 h-[7.5vh] bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl py-1 border-2 border-emerald-300 shadow-sm relative overflow-hidden">
+                    <p class="text-[8px] text-emerald-600 font-bold tracking-widest uppercase mb-0.5">Pembulatan</p>
+                    <div class="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums" id="nilaiBulat">0</div>
                 </div>
             </div>
 
-            <!-- Pilihan Kelas (SEKARANG 4 KOLOM SEJAJAR / 1 BARIS) -->
+            <!-- Pilihan Kelas (LONG PRESS READY!) -->
             <div class="anim-classes w-full" id="area-kelas">
                 <div class="grid grid-cols-4 gap-1">
-                    <button onclick="pilihKelas('55')" id="btn-55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 1</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
+                    <button id="btn-55" data-kelas="55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-55" class="text-[9px] font-black">KLS 1</span>
+                        <span id="label-sub-55" class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
                     </button>
-                    <button onclick="pilihKelas('60')" id="btn-60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 2-3</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
+                    <button id="btn-60" data-kelas="60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-60" class="text-[9px] font-black">KLS 2-3</span>
+                        <span id="label-sub-60" class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
                     </button>
-                    <button onclick="pilihKelas('65')" id="btn-65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black">KLS 4-5</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
+                    <button id="btn-65" data-kelas="65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-65" class="text-[9px] font-black">KLS 4-5</span>
+                        <span id="label-sub-65" class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
                     </button>
-                    <button onclick="pilihKelas('45')" id="btn-45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1.5 sm:py-2 flex flex-col items-center justify-center">
-                        <span class="text-[9px] sm:text-[10px] font-black tracking-widest text-purple-600">KODING</span>
-                        <span class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
+                    <button id="btn-45" data-kelas="45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-45" class="text-[9px] font-black tracking-widest text-purple-600">KODING</span>
+                        <span id="label-sub-45" class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
                     </button>
                 </div>
             </div>
@@ -255,67 +325,100 @@
             <!-- Menu Toggle (Romawi/Jumlah) -->
             <div class="flex justify-center anim-toggle w-full">
                 <div class="bg-white p-0.5 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
-                    <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent">
+                    <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent">
                         ROMAWI
                     </button>
-                    <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md">
+                    <button onclick="setMode('jumlah')" id="tab-jumlah" class="flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md">
                         JUMLAH
                     </button>
                 </div>
             </div>
 
             <!-- Area Input Box -->
-            <div class="flex items-center justify-center anim-input w-full min-h-[60px]">
+            <div class="flex items-center justify-center anim-input w-full min-h-[50px]">
                 <!-- View Romawi -->
                 <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
-                    <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
-                        <label class="text-[9px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
-                        <div id="disp-r1" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r1" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
+                        <label class="text-[8px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
+                        <div id="disp-r1" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r1" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
-                    <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label id="label-r2" class="text-[9px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
-                        <div id="disp-r2" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r2" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                        <label id="label-r2" class="text-[8px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
+                        <div id="disp-r2" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r2" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
-                    <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-1.5 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label class="text-[9px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
-                        <div id="disp-r3" class="text-xl sm:text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r3" class="text-[7.5px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
+                        <label class="text-[8px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
+                        <div id="disp-r3" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-r3" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                 </div>
 
                 <!-- View Jumlah -->
                 <div id="view-jumlah" class="w-full flex items-center justify-center">
-                    <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-2xl py-2 px-4 w-[85%] max-w-[280px] border-2 border-amber-400 shadow-[0_4px_15px_rgba(251,191,36,0.3)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
-                        <label class="text-[11px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label>
-                        <div id="disp-total" class="text-4xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300 my-0.5"></div>
-                        <span id="max-total" class="text-[9px] text-slate-400 font-bold">Maks: ?</span>
+                    <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl py-1 px-4 w-[75%] max-w-[240px] border-2 border-amber-400 shadow-[0_4px_10px_rgba(251,191,36,0.2)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
+                        <label class="text-[10px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label>
+                        <div id="disp-total" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
+                        <span id="max-total" class="text-[8px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- DROPDOWN SELECTOR SISWA DEWA (Dipindahkan ke bawah, tepat di atas tombol simpan) -->
+            <div class="bg-white/80 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1.5 anim-scores relative z-20 mx-3">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Target Grading:</span>
+                    <!-- Tombol Cepat Rekap -->
+                    <button onclick="bukaRekapNilai()" class="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-black border border-indigo-200 flex items-center gap-1">
+                        📊 REKAP & EXCEL
+                    </button>
+                </div>
+                <div class="flex gap-1.5 items-center w-full">
+                    <!-- Dropdown Pemilihan Kelas (Baru!) -->
+                    <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-1.5 py-1 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
+                        <option value="">-- KELAS --</option>
+                    </select>
+
+                    <div class="flex-1 flex gap-1 min-w-0">
+                        <!-- Dropdown Nama Siswa -->
+                        <select id="select-siswa" onchange="pilihSiswaManual()" class="flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-1.5 py-1 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500 truncate">
+                            <option value="">-- SISWA --</option>
+                        </select>
+                        <!-- Tambah Siswa Cepat -->
+                        <button onclick="tambahSiswaCepat()" class="bg-blue-600 text-white rounded-xl px-2 flex items-center justify-center font-bold hover:bg-blue-700 active:scale-95 transition-all text-xs shrink-0" title="Tambah Siswa Baru">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOMBOL SIMPAN DATA DEWA -->
+            <div class="px-3 anim-input w-full">
+                <button id="btn-simpan-nilai" onclick="simpanNilaiKeSiswa()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black py-2.5 rounded-2xl shadow-lg shadow-blue-200 hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all text-xs flex items-center justify-center gap-2">
+                    📥 SIMPAN NILAI SISWA
+                </button>
             </div>
 
         </div>
 
         <!-- Keyboard Angka Bawaan (Bagian Bawah Permanen) -->
-        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[35vh] max-h-[240px] min-h-[160px] relative z-30 anim-numpad flex-shrink-0 mt-1">
+        <div class="w-full bg-white rounded-t-3xl border-t border-slate-200 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] p-2 -mx-2 sm:-mx-3 h-[33vh] max-h-[220px] min-h-[150px] relative z-30 anim-numpad flex-shrink-0 mt-1">
             <div class="grid grid-cols-3 gap-1.5 h-full">
-                <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">1</button>
-                <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">2</button>
-                <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">3</button>
+                <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">1</button>
+                <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">2</button>
+                <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">3</button>
                 
-                <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">4</button>
-                <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">5</button>
-                <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">6</button>
+                <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">4</button>
+                <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">5</button>
+                <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">6</button>
                 
-                <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">7</button>
-                <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">8</button>
-                <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">9</button>
+                <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">7</button>
+                <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">8</button>
+                <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">9</button>
                 
-                <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-lg font-black text-red-500 transition-colors">C</button>
-                <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-xl sm:text-2xl font-bold text-slate-700 transition-colors">0</button>
-                <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-lg font-bold text-slate-600 transition-colors flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-md font-black text-red-500 transition-colors">C</button>
+                <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">0</button>
+                <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-md font-bold text-slate-600 transition-colors flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
                     </svg>
                 </button>
@@ -325,51 +428,972 @@
     </div>
 
     <script>
-        let deferredPrompt;
-        
+        // --- OFFLINE SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup:', err));
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(() => {
-                document.getElementById('install-banner').classList.add('show');
-            }, 1500); 
-        });
-
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    deferredPrompt = null;
-                    tutupBanner();
-                });
-            }
-        }
-
-        function tutupBanner() {
-            document.getElementById('install-banner').classList.remove('show');
         }
 
         function refreshApp() {
             window.location.href = window.location.pathname + '?v=' + new Date().getTime();
         }
 
-        const configKelas = {
-            '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500' },
-            '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500' },
-            '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500' },
-            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500' } 
+        // --- ATURAN KATEGORI KELAS ---
+        let configKelas = {
+            '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500', name: 'KLS 1' },
+            '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500', name: 'KLS 2-3' },
+            '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500', name: 'KLS 4-5' },
+            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500', name: 'KODING' } 
         };
 
-        let activeKelas = null; 
+        // --- LOOKUP KELAS KE PEMBAGI ---
+        const mapKelasKePembagi = {
+            "1 ICP A": "55", "1 ICP B": "55", "1A": "55", "1B": "55", "1C": "55", "1D": "55",
+            "2 ICP A": "60", "2A": "60", "2B": "60", "2C": "60", "2D": "60",
+            "3A": "60", "3B": "60", "3C": "60", "3D": "60",
+            "4A": "65", "4B": "65", "4C": "65", "4D": "65",
+            "5A": "65", "5B": "65", "5C": "65", "5D": "65",
+            "6A": "65", "6B": "65", "6C": "65", "6D": "65",
+            "KODING": "45"
+        };
+
+        // --- DATABASE SISWA FULL (SESUAI PRESENSI) ---
+        const defaultSiswa = {
+            "1 ICP A": [
+                { id: "1_icp_a_1", nama: "ALTHAF SHAQUILLE ABHIVANDYA" },
+                { id: "1_icp_a_2", nama: "ANDARU GESIT YANARTA" },
+                { id: "1_icp_a_3", nama: "Atarazka Syahnan Haziq" },
+                { id: "1_icp_a_4", nama: "Balqis Akasha Shafiyah" },
+                { id: "1_icp_a_5", nama: "BOY ATHALLAH BAKHRY" },
+                { id: "1_icp_a_6", nama: "Elvara Aiza Santosa" },
+                { id: "1_icp_a_7", nama: "Hamda Batrisya Seika" },
+                { id: "1_icp_a_8", nama: "Inara Putri Arkadewi" },
+                { id: "1_icp_a_9", nama: "LUKITA ASKANA SAKHI" },
+                { id: "1_icp_a_10", nama: "Muhammad Tangguh Asnawi" },
+                { id: "1_icp_a_11", nama: "Nizar Abdillah Ghazwan" },
+                { id: "1_icp_a_12", nama: "PESONA HARUM HUMAIRA" },
+                { id: "1_icp_a_13", nama: "RIFANI REYYA ANNISA" },
+                { id: "1_icp_a_14", nama: "WAFAZENA JANITRALESHA" }
+            ],
+            "1 ICP B": [
+                { id: "1_icp_b_1", nama: "CINTA AFIA SYAILENDRA" },
+                { id: "1_icp_b_2", nama: "DAVIN AL CHALIEF ERABBANI" },
+                { id: "1_icp_b_3", nama: "Diana Aiza Hudaya" },
+                { id: "1_icp_b_4", nama: "Illona Nusaibah Azzahra" },
+                { id: "1_icp_b_5", nama: "Jihan Arsylia Nugroho" },
+                { id: "1_icp_b_6", nama: "KHALISTA ALIFIA GUNTORO" },
+                { id: "1_icp_b_7", nama: "KHAWLA ADIBA DHATU" },
+                { id: "1_icp_b_8", nama: "MALVEN RAFIIANDRA ARLY WIBOWO" },
+                { id: "1_icp_b_9", nama: "MOZEIN ARKEVIN" },
+                { id: "1_icp_b_10", nama: "Muhammad Zhafran Abdurrahman" },
+                { id: "1_icp_b_11", nama: "Ocean Hoki Praditya" },
+                { id: "1_icp_b_12", nama: "Zharif Almuqaffi Digit" },
+                { id: "1_icp_b_13", nama: "Herdinar Siti Noorjehan Fidiyanto" }
+            ],
+            "1A": [
+                { id: "1a_1", nama: "ABDULLAH AFKAR" },
+                { id: "1a_2", nama: "ABIDZAR HASAN ALFARISI" },
+                { id: "1a_3", nama: "Adreena Agil Maheswari" },
+                { id: "1a_4", nama: "ADZKIYA PINKA FADHEELA" },
+                { id: "1a_5", nama: "ALIF MAULANA ADHYASTHA" },
+                { id: "1a_6", nama: "ATHARRAZKA SAPUTRA" },
+                { id: "1a_7", nama: "AWFA RANIA AZZAHRA" },
+                { id: "1a_8", nama: "DANIS ABRISAM" },
+                { id: "1a_9", nama: "ELHASIQ KSATRIA IBAD EFENDI" },
+                { id: "1a_10", nama: "FREYA SAILA WIDIYANTO" },
+                { id: "1a_11", nama: "HAEDAR AL GHANY YAZEED" },
+                { id: "1a_12", nama: "HAIDAR KIANO ALRAFAEYZA" },
+                { id: "1a_13", nama: "HASNAH KHAIRUNNISA HUMAIROH" },
+                { id: "1a_14", nama: "IBRAHIM AHMAD ABDUR ROUUF" },
+                { id: "1a_15", nama: "KEINARRA AZKADINA WIJAYA" },
+                { id: "1a_16", nama: "KHANSA PARAMITA WIBOWO" },
+                { id: "1a_17", nama: "Khayra Mutiara Khalidiya" },
+                { id: "1a_18", nama: "MAHANTA LEON ARRASYID" },
+                { id: "1a_19", nama: "MUHAMMAD ABBIYA RAZKAJATI" },
+                { id: "1a_20", nama: "Muhammad Idris Asy Syafii" },
+                { id: "1a_21", nama: "NOURA KHANZANIA MECCA WIRAWAN" },
+                { id: "1a_22", nama: "Nusaibah Aqila Choirunnisa" },
+                { id: "1a_23", nama: "Omarizz Adrintaka Zayn" },
+                { id: "1a_24", nama: "Rania Arsyi Nailazaara" },
+                { id: "1a_25", nama: "RM Aldianurrasyid Rajendra Kusumo" },
+                { id: "1a_26", nama: "Sakura Reiwa Gunawan" },
+                { id: "1a_27", nama: "ZALENZIO MAULANA FACHRIANSYAH" },
+                { id: "1a_28", nama: "KINARA TAQIYYA ADLA" }
+            ],
+            "1B": [
+                { id: "1b_1", nama: "ADERA KIREINA HUTOMO" },
+                { id: "1b_2", nama: "Aerish Qia Adzkadina" },
+                { id: "1b_3", nama: "AISYAH NAYLA SALSABILA" },
+                { id: "1b_4", nama: "ALESHA HANA ELSHANUM" },
+                { id: "1b_5", nama: "ATHAFARIZ DANISH PRATAMA" },
+                { id: "1b_6", nama: "AZKADINA FAKHRA FAOZI" },
+                { id: "1b_7", nama: "BERYL SALSABELA" },
+                { id: "1b_8", nama: "Ceisya Azzahra Hardian" },
+                { id: "1b_9", nama: "DZIHANDRA RAFIF SANTOSA" },
+                { id: "1b_10", nama: "FATHAN HAIDAR HAMIDI" },
+                { id: "1b_11", nama: "Fawwaz Diaurahman Hiroshi Abqori" },
+                { id: "1b_12", nama: "FAZIA NURAISHA BIANTARA" },
+                { id: "1b_13", nama: "GHAFI ATHAZAKY DIRGANTORO" },
+                { id: "1b_14", nama: "IBRAHIM ALFARIZI NUR ALDY" },
+                { id: "1b_15", nama: "Ibrahim Arsa Wicaksono" },
+                { id: "1b_16", nama: "Kenziano Tyaga Alfarizqi" },
+                { id: "1b_17", nama: "KEYNARA ABRINA NADHIFA" },
+                { id: "1b_18", nama: "MAHAJANA CARL PASSANDO" },
+                { id: "1b_19", nama: "Muhammad Alfatih" },
+                { id: "1b_20", nama: "MUHAMMAD AZKA RYUZAKI" },
+                { id: "1b_21", nama: "MUHAMMAD RAFFI AL GHIFARI" },
+                { id: "1b_22", nama: "Muhammad Rifky" },
+                { id: "1b_23", nama: "Nazeera Anum Asy'Ari" },
+                { id: "1b_24", nama: "Rafif Athafariz" },
+                { id: "1b_25", nama: "Rania Zalfa Ramadhani" },
+                { id: "1b_26", nama: "Riga Gilbyan" },
+                { id: "1b_27", nama: "Shakeil El Barra Aditia" },
+                { id: "1b_28", nama: "SHALOOM BETSY SANTOSO" }
+            ],
+            "1C": [
+                { id: "1c_1", nama: "Abizar Zain Alby Devkhan" },
+                { id: "1c_2", nama: "ALDRIC FAHREZA PURNOMO" },
+                { id: "1c_3", nama: "ALESHA PUTRI KINANTI" },
+                { id: "1c_4", nama: "AQMAR NADHIF AL AZIZ" },
+                { id: "1c_5", nama: "AQUILA BRAMARA CHOIRUZZEIN" },
+                { id: "1c_6", nama: "AYSILA NURA RASHNA" },
+                { id: "1c_7", nama: "DAVIANDRA RADEVA ATHARRAZKA" },
+                { id: "1c_8", nama: "FATIMAH HASNA ARIFAH" },
+                { id: "1c_9", nama: "FILIO FARZANA ZHIODA" },
+                { id: "1c_10", nama: "GIBRAN KHIAR WALIUDDIN" },
+                { id: "1c_11", nama: "HANA SYARIF BAWAZIR" },
+                { id: "1c_12", nama: "IBRAHIM AHMAD ABDUL FATTAAH" },
+                { id: "1c_13", nama: "KARIN ALESHA AZZAHRA" },
+                { id: "1c_14", nama: "MONERA ALIFIA ASRIKAN" },
+                { id: "1c_15", nama: "MUHAMMAD ATTHAR ALHUSAIN" },
+                { id: "1c_16", nama: "Muhammad Saka Maladira Alfahreza" },
+                { id: "1c_17", nama: "Mutia Nur Afifah" },
+                { id: "1c_18", nama: "NAYLA AZZAHRA SAVINA" },
+                { id: "1c_19", nama: "Nazhan Azwar Algani" },
+                { id: "1c_20", nama: "QANEITA KHAIRUN NISA" },
+                { id: "1c_21", nama: "Rafa Alfarizi" },
+                { id: "1c_22", nama: "Rasya Mochamad Athaya Bakti" },
+                { id: "1c_23", nama: "Shabia Elmedina Farras" },
+                { id: "1c_24", nama: "Yumna Latifah Ilmi Saputro" }
+            ],
+            "1D": [
+                { id: "1d_1", nama: "AIZA SHANUM MAFAZA" },
+                { id: "1d_2", nama: "AL IHYA ULUMUDDIN" },
+                { id: "1d_3", nama: "ALEENA HANY SHAFIQAH" },
+                { id: "1d_4", nama: "Alesha Qinara Sakhi" },
+                { id: "1d_5", nama: "ALMAHYRA YUMNA KHALISA" },
+                { id: "1d_6", nama: "ANAM KHAIRUL LUTHFI" },
+                { id: "1d_7", nama: "ARKA ALI PRADANA" },
+                { id: "1d_8", nama: "Chayra Putri Basyirah" },
+                { id: "1d_9", nama: "Cirrillo Kyo Saputro Wiyono" },
+                { id: "1d_10", nama: "FELISHA AZMA TSANIA" },
+                { id: "1d_11", nama: "Ghazal Ilario Liban" },
+                { id: "1d_12", nama: "HANA HAFIZA ANINDYA" },
+                { id: "1d_13", nama: "Humaira Embun Putri Ardiansyah" },
+                { id: "1d_14", nama: "Juang Ammar Al Syaddad" },
+                { id: "1d_15", nama: "KALANDRA RAYYAN ALFARIZI" },
+                { id: "1d_16", nama: "KAYYARA YASMENA AHMAD" },
+                { id: "1d_17", nama: "KEANU ARSHAKA ZAFEER" },
+                { id: "1d_18", nama: "KHADIJAH HAURA WIRDA" },
+                { id: "1d_19", nama: "LAVENIA ARISHA MAHARANI SETIAWAN" },
+                { id: "1d_20", nama: "MUHAMMAD ABIZAR AL FARIZI" },
+                { id: "1d_21", nama: "Mushab Hafizan Abqary" },
+                { id: "1d_22", nama: "RAFKA ABIMANYU NUKMAN" },
+                { id: "1d_23", nama: "RAJENDRA VENENO ALFARIZKI" },
+                { id: "1d_24", nama: "RASYAD ABDURRAHMAN SYAUKANI" },
+                { id: "1d_25", nama: "Raysakha Janitra Saskara" },
+                { id: "1d_26", nama: "SYAFIRA RAMADHANI" },
+                { id: "1d_27", nama: "Tita Faranisa Birdella" },
+                { id: "1d_28", nama: "YASMINA ISMAIL MARWAZI" }
+            ],
+            "2 ICP A": [
+                { id: "2_icp_a_1", nama: "AFZAR HAZIQ MUSYAFFA" },
+                { id: "2_icp_a_2", nama: "ALISHA SHAKAYLA FAYANI" },
+                { id: "2_icp_a_3", nama: "ALNILAM ZEA FAIRUZA" },
+                { id: "2_icp_a_4", nama: "ALTHAF VIRENDRA ARSALAN" },
+                { id: "2_icp_a_5", nama: "Arshaka Gibran Daniswara" },
+                { id: "2_icp_a_6", nama: "CORDELIA NADHIFA SAFANI" },
+                { id: "2_icp_a_7", nama: "Davin Heksa Ardhana" },
+                { id: "2_icp_a_8", nama: "ELZIO BARRA MAULANA" },
+                { id: "2_icp_a_9", nama: "FAKHRI ASYRAF SHOFWAN MUSTAQIM" },
+                { id: "2_icp_a_10", nama: "Gisella Zahira Joice" },
+                { id: "2_icp_a_11", nama: "KANEZKA SAKHA ALVARENDRA" },
+                { id: "2_icp_a_12", nama: "KHAIREEN ADIKARAPUTRI ALMAHYRA" },
+                { id: "2_icp_a_13", nama: "KINARIAN SHAFA KIRANA" },
+                { id: "2_icp_a_14", nama: "MIKHAYLA ANDREA AZZAHRA" },
+                { id: "2_icp_a_15", nama: "MUTIARA SYAFIA JAZZYVANIA" },
+                { id: "2_icp_a_16", nama: "RAMADHAN RAYYAN" },
+                { id: "2_icp_a_17", nama: "REYHAN DZAKIANDRA WIDJAYA" },
+                { id: "2_icp_a_18", nama: "RISANG EESHA KUMANDANG" },
+                { id: "2_icp_a_19", nama: "Sheryl Anindya Elmarisa" },
+                { id: "2_icp_a_20", nama: "SYAILENDRA SAMODRO JATI WASESO" }
+            ],
+            "2A": [
+                { id: "2a_1", nama: "Abibah Maida Nahda Prasanda" },
+                { id: "2a_2", nama: "Aksa D Rafael" },
+                { id: "2a_3", nama: "Alea Briona Raqqema" },
+                { id: "2a_4", nama: "ALESHA SYAFA CARRENISA" },
+                { id: "2a_5", nama: "Alifa Adzkiya Putri Arifin" },
+                { id: "2a_6", nama: "ALIYA MAHARANI ROOSSETYO" },
+                { id: "2a_7", nama: "Althafunnizar Mauza Putra" },
+                { id: "2a_8", nama: "Alvisco Ocean Wibowo" },
+                { id: "2a_9", nama: "Andara Herfi Maulida" },
+                { id: "2a_10", nama: "APRILLA SIHAN PUTRI ATMAJA" },
+                { id: "2a_11", nama: "ARKANA PRATAMA DINIYAN" },
+                { id: "2a_12", nama: "Ashalina Makayla Almahyra" },
+                { id: "2a_13", nama: "Audrey Anggita Putri" },
+                { id: "2a_14", nama: "Ayesha Inara Havika Sakti" },
+                { id: "2a_15", nama: "AZRIL MAUZA ADHITAMA" },
+                { id: "2a_16", nama: "AZZAM AL ARKHAN" },
+                { id: "2a_17", nama: "BELVIA JEEHANDYA JAYA" },
+                { id: "2a_18", nama: "DEARSYILA VINCA VIOLETTA" },
+                { id: "2a_19", nama: "DHANESH RASHAAD ARTANABIL" },
+                { id: "2a_20", nama: "Enver Dhafin Shakeel" },
+                { id: "2a_21", nama: "FALAH FERDIANSYAH" },
+                { id: "2a_22", nama: "Faqih Ariendra Keenan Alfarezel" },
+                { id: "2a_23", nama: "Fatur Al-Ghifari Mekka Rahardjo" },
+                { id: "2a_24", nama: "HAMIZAN AZFAR" },
+                { id: "2a_25", nama: "HUMAIRA AZKA HERYUDI" },
+                { id: "2a_26", nama: "SAPHENA ANNASYA SOFYAN" }
+            ],
+            "2B": [
+                { id: "2b_1", nama: "ADIVA SHAQUEENA AZZAHRA" },
+                { id: "2b_2", nama: "ANNASTASYA ELENA QAMRA" },
+                { id: "2b_3", nama: "Aqila Putri ashalina" },
+                { id: "2b_4", nama: "ARSENIO BERRYL ABQARI" },
+                { id: "2b_5", nama: "ARSYAD ABDURAHMAN" },
+                { id: "2b_6", nama: "Arsyfa Syabella Humaira" },
+                { id: "2b_7", nama: "ATHAFARIZ ALVARENDRA OSTIN" },
+                { id: "2b_8", nama: "Ayyash Tsaqif Alfatih" },
+                { id: "2b_9", nama: "Dalane Jo D'angel" },
+                { id: "2b_10", nama: "El Wafa Bintang Nawwarulhuda" },
+                { id: "2b_11", nama: "GEORGIA SYANUM GIYANTO PRASODJO" },
+                { id: "2b_12", nama: "Gibran Evano Pramudita" },
+                { id: "2b_13", nama: "ILYAS FATAHILLAH ZAIN" },
+                { id: "2b_14", nama: "Inara Oktaviani Putri Kusuma" },
+                { id: "2b_15", nama: "ISTIB SYARUNANJALA" },
+                { id: "2b_16", nama: "KAHISHA ARTA SAFFIYA" },
+                { id: "2b_17", nama: "Kyna Asyakina Zahira Badegesy" },
+                { id: "2b_18", nama: "Lionel Alvaro Zanetti" },
+                { id: "2b_19", nama: "Muhammad Althof Zahirul Haq" },
+                { id: "2b_20", nama: "NAFIRZHA RIZKYLLAH FATHONY" },
+                { id: "2b_21", nama: "NATASYA ALMIRA" },
+                { id: "2b_22", nama: "RAFANIA AZZAHRA" },
+                { id: "2b_23", nama: "Rafif Akhmar Santoso" },
+                { id: "2b_24", nama: "SANG ALAMRAZD HAQ" },
+                { id: "2b_25", nama: "SHAZFA HANANIA AZAHRA" },
+                { id: "2b_26", nama: "TANAYA REKHA OPALINA" },
+                { id: "2b_27", nama: "ZIANNISA FAHMIDA AFRA" }
+            ],
+            "2C": [
+                { id: "2c_1", nama: "Abidzar Emyr Amrullah" },
+                { id: "2c_2", nama: "Abrisam Ahmad Abdillah" },
+                { id: "2c_3", nama: "ADLAN AHZA MAKARIM" },
+                { id: "2c_4", nama: "AFIZA GHANIA EFENDI" },
+                { id: "2c_5", nama: "AHMAD ARSYA SYAWALUL ARIF" },
+                { id: "2c_6", nama: "Aisyah Nuha Zahira" },
+                { id: "2c_7", nama: "Alesha Azkadina Putri Alfariz" },
+                { id: "2c_8", nama: "Alessandro Alano Aprillio" },
+                { id: "2c_9", nama: "Arindi Putri Nurdiyanwibowo" },
+                { id: "2c_10", nama: "HAFIDZ EL HAZIQ SAPUTRA" },
+                { id: "2c_11", nama: "Khairunnisa Salsabila" },
+                { id: "2c_12", nama: "Mahreen Adna Almahyra" },
+                { id: "2c_13", nama: "MIKHAYLA FITRIYADI" },
+                { id: "2c_14", nama: "Muhammad Alfatan Ardana" },
+                { id: "2c_15", nama: "MUHAMMAD ARSYA GHIFARI" },
+                { id: "2c_16", nama: "Muhammad Daffa Abyan Pamungkas" },
+                { id: "2c_17", nama: "MUHAMMAD DZAKI AKBAR" },
+                { id: "2c_18", nama: "Muhammad Nizam Alfatih" },
+                { id: "2c_19", nama: "NADIA WISMA PURWOKO" },
+                { id: "2c_20", nama: "NASYIFA AZALIA PUTRI BERNOWO" },
+                { id: "2c_21", nama: "QUINNE ZAHIRA ANINDRA" },
+                { id: "2c_22", nama: "Raffasya Ahmad Luthfi" },
+                { id: "2c_23", nama: "SABEEYA SYAHRASYID RAYYANADA" },
+                { id: "2c_24", nama: "MALIQ ZHIAN HARES" }
+            ],
+            "2D": [
+                { id: "2d_1", nama: "AISYAH IZZATUNNISA PUTRI NUGROHO" },
+                { id: "2d_2", nama: "ARSHAKA RAMAZHAN ALGIFARI MANTOW" },
+                { id: "2d_3", nama: "CARLO ZEESHAN RUMI KURNIAWAN" },
+                { id: "2d_4", nama: "Fatih Akhtar Raiffaza" },
+                { id: "2d_5", nama: "FAUZAN AYDIN ZULKIFLI" },
+                { id: "2d_6", nama: "HANIFA AQILA BAHEERA" },
+                { id: "2d_7", nama: "Kamila Noveara Athifa" },
+                { id: "2d_8", nama: "Kenes Pratista Vinala Putri" },
+                { id: "2d_9", nama: "KHANZA ADELIA PUTRI WIJAYA" },
+                { id: "2d_10", nama: "MUHAMMAD UBAY PRASETYO" },
+                { id: "2d_11", nama: "MUHAMMAD ADHYAKSA BISMA" },
+                { id: "2d_12", nama: "MUHAMMAD FARIZ SETYAWAN" },
+                { id: "2d_13", nama: "MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH" },
+                { id: "2d_14", nama: "MUHAMMAD RAFFI RAFASYA NUGROHO" },
+                { id: "2d_15", nama: "Nathan Haven Akmal Alfaruq" },
+                { id: "2d_16", nama: "Quinsha Qiana Zakeysha" },
+                { id: "2d_17", nama: "RAFA FEBIAN ALFARIZKY" },
+                { id: "2d_18", nama: "RAFISQY YUSUF ALFARIZA" },
+                { id: "2d_19", nama: "RHEA ALZEA NUGROHO" },
+                { id: "2d_20", nama: "Rifaul Zhafran Ghazani" },
+                { id: "2d_21", nama: "Rumaisha Pragya Raharja" },
+                { id: "2d_22", nama: "Riffat Ahmad Luthfi" },
+                { id: "2d_23", nama: "SADDAM MUHAMMAD AFKARI" },
+                { id: "2d_24", nama: "SAILA AYUDIA PUTRI" },
+                { id: "2d_25", nama: "VENUS ALMAHYRA HARIYANTO" },
+                { id: "2d_26", nama: "ABIYYU DHABITH AL HAMIZ" }
+            ],
+            "3A": [
+                { id: "3a_1", nama: "Abdillah Ali Arzan" },
+                { id: "3a_2", nama: "Abid Luqman Rajendra" },
+                { id: "3a_3", nama: "ADIVA SHAFINA PUTRI" },
+                { id: "3a_4", nama: "Adzkiya Nurrizqi Rakhmawati" },
+                { id: "3a_5", nama: "Afsheena Hananezka Ar Razzan" },
+                { id: "3a_6", nama: "Aisyah Ayudia Inara" },
+                { id: "3a_7", nama: "Akifa Naila Asy'ari" },
+                { id: "3a_8", nama: "Alfath Ataya Abqary Arzam" },
+                { id: "3a_9", nama: "ARSYILA KIKANDRYA SUSANTO" },
+                { id: "3a_10", nama: "Arsyillah Nur Sofiani" },
+                { id: "3a_11", nama: "Aruna Sachi Philia" },
+                { id: "3a_12", nama: "Ashadiyara Haflasea" },
+                { id: "3a_13", nama: "Athifa Mahira Khansa" },
+                { id: "3a_14", nama: "AZZAHRA ALNAIRA" },
+                { id: "3a_15", nama: "DINATA ALLEN DHYO AL LATIF" },
+                { id: "3a_16", nama: "FAEYZA SYATHIR KURNIAWAN" },
+                { id: "3a_17", nama: "Fakhri Luthfi Hardianto" },
+                { id: "3a_18", nama: "Garland Mashka Rafeyfa" },
+                { id: "3a_19", nama: "Juang Haidar Athalla" },
+                { id: "3a_20", nama: "Kalazahy Nadwa Zayn" },
+                { id: "3a_21", nama: "MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI" },
+                { id: "3a_22", nama: "MUHAMMAD RAFKA VIRENDRA" },
+                { id: "3a_23", nama: "Nadhira Khaerani Hariyadi" },
+                { id: "3a_24", nama: "Nayyara Aqila Razanah" },
+                { id: "3a_25", nama: "Omar Abdul Aziz" },
+                { id: "3a_26", nama: "Raditya Pradipta Ardhani" },
+                { id: "3a_27", nama: "Rashya Alrafaeyza Hajam" },
+                { id: "3a_28", nama: "Shafira Noreen Choirunnisa" },
+                { id: "3a_29", nama: "SHAZFA LASIRA GUNARSO" },
+                { id: "3a_30", nama: "Syakira Tsaqif Choirunnisa" }
+            ],
+            "3B": [
+                { id: "3b_1", nama: "Abiy Vishaka Budi Nugroho" },
+                { id: "3b_2", nama: "Adeeva Meidina Assyifatama" },
+                { id: "3b_3", nama: "Adzkiya Naila Arsyila Atmadja" },
+                { id: "3b_4", nama: "Aello Mezaluna Arubby" },
+                { id: "3b_5", nama: "AERILYN VLA ADZKADINA" },
+                { id: "3b_6", nama: "AHMAD ALFARIZQI SHAQUILLE PUTRA" },
+                { id: "3b_7", nama: "AHNAF KHALIFAZIL AFRIANSAH" },
+                { id: "3b_8", nama: "Aldena Dwisitta Wildani" },
+                { id: "3b_9", nama: "Altaz Qianno Al Barra" },
+                { id: "3b_10", nama: "Candrika Althafunnisa" },
+                { id: "3b_11", nama: "FADLI ABQARY ALHUSNA" },
+                { id: "3b_12", nama: "Fahreza Fathan Abdillah" },
+                { id: "3b_13", nama: "Gavin Yoga Alvaro" },
+                { id: "3b_14", nama: "Ghaida Azkayra Khairani" },
+                { id: "3b_15", nama: "HAFIZH KHWARIZMI AL HANI" },
+                { id: "3b_16", nama: "Jihan Aisharani Zea Zayyana" },
+                { id: "3b_17", nama: "KEENAN KANAKA ALLI ZAFLAN" },
+                { id: "3b_18", nama: "Khansa Monaya Rumaysha" },
+                { id: "3b_19", nama: "Khanza Athifa Ningrum" },
+                { id: "3b_20", nama: "KHAYLILA QUEENA AHMAD" },
+                { id: "3b_21", nama: "KIRANA SHAQILA RAMADHANI" },
+                { id: "3b_22", nama: "Mikhayla Kinanti Azkadina" },
+                { id: "3b_23", nama: "Muhammad Al Ahsan Iqbal Setyo" },
+                { id: "3b_24", nama: "Narulita Beryl Ramadhani" },
+                { id: "3b_25", nama: "Nashila Zia Fahranie" },
+                { id: "3b_26", nama: "RAIHAN ADITYA PRAWIRA" },
+                { id: "3b_27", nama: "REYHAN ATHARIZ WIRAWAN" },
+                { id: "3b_28", nama: "Romaisha Celina Okvin" },
+                { id: "3b_29", nama: "Sarah Ali Hudzaifi" },
+                { id: "3b_30", nama: "SYAMIL YAHYA AL HAFIDZI" }
+            ],
+            "3C": [
+                { id: "3c_1", nama: "Abizar Fatih Pratama" },
+                { id: "3c_2", nama: "ADEEVA AULIASYIFA" },
+                { id: "3c_3", nama: "AISYAH AYUDIA INARA" },
+                { id: "3c_4", nama: "AISYAH NAMEERA FATHIYYATURAHMA" },
+                { id: "3c_5", nama: "AL-GHAZALI AISY ARFA DEANDRA" },
+                { id: "3c_6", nama: "Alisha Natania Khumaira Dachlan" },
+                { id: "3c_7", nama: "ALMEERA SHABIRA EKATARA" },
+                { id: "3c_8", nama: "Almira Shanum Medina Sungkan" },
+                { id: "3c_9", nama: "Aqila Salma Kamila" },
+                { id: "3c_10", nama: "ARJUNA SYAILENDRA AL KHALIFI" },
+                { id: "3c_11", nama: "Arka Leander Raffasya" },
+                { id: "3c_12", nama: "ARSHAKA BINTANG ARLINGGA JATI" },
+                { id: "3c_13", nama: "ARSYA AQUILA MUSYAFFA" },
+                { id: "3c_14", nama: "Azhar Zalfa Faradisa" },
+                { id: "3c_15", nama: "BARRAHILAL AMAHU MANGGANA" },
+                { id: "3c_16", nama: "Callista Nabila Utomo" },
+                { id: "3c_17", nama: "Fathir Alvissyahbana Mudjaed" },
+                { id: "3c_18", nama: "FEARGAL V MARSA" },
+                { id: "3c_19", nama: "KANZIA NAIRA AQILA" },
+                { id: "3c_20", nama: "KHAIRINA FATIMA AL ADHA" },
+                { id: "3c_21", nama: "Khayra Zakiyya Ferris" },
+                { id: "3c_22", nama: "Kimora Humaira Azzahra" },
+                { id: "3c_23", nama: "Laksita Shanumpadma Elhadi" },
+                { id: "3c_24", nama: "MUHAMMAD ELRAJA HABIBIE SANTOSO" },
+                { id: "3c_25", nama: "Muhammad Saifan Asykar Alfansyah" },
+                { id: "3c_26", nama: "Rumaisha Nuha Muhammad" },
+                { id: "3c_27", nama: "Shaula Alya Setiawan" },
+                { id: "3c_28", nama: "Sybilla Jelita Aditia" },
+                { id: "3c_29", nama: "Zavier Elfa'az Zayn Hariyono" },
+                { id: "3c_30", nama: "Zulfadhli Fayyad Hidayat" }
+            ],
+            "3D": [
+                { id: "3d_1", nama: "Afiza Azkayra Setyawan" },
+                { id: "3d_2", nama: "Ahnaf Hashif Wibowo" },
+                { id: "3d_3", nama: "Aisyah Ayunda Hamidi" },
+                { id: "3d_4", nama: "AQILLA MUFIA LASHIRA RIVAI" },
+                { id: "3d_5", nama: "Arshaka Radinka Shakeel" },
+                { id: "3d_6", nama: "ARSY FISYAH KHUSNUL" },
+                { id: "3d_7", nama: "Arsyila Ashadiya Adzra Faozi" },
+                { id: "3d_8", nama: "Deisya Azzahra Pradana" },
+                { id: "3d_9", nama: "Deva Aquina Sakhi" },
+                { id: "3d_10", nama: "GINDA ARSYIL VINALES" },
+                { id: "3d_11", nama: "HASNA NUR HUWA YIDA" },
+                { id: "3d_12", nama: "Iqbal Bintang Pramudya" },
+                { id: "3d_13", nama: "KEANU DANISH KURNIAWAN" },
+                { id: "3d_14", nama: "KEN ARUNA GENDHIS NARESWARI" },
+                { id: "3d_15", nama: "Khaila Putri Pradipta" },
+                { id: "3d_16", nama: "KHALISA SABRIA RANAA SUGIARTA" },
+                { id: "3d_17", nama: "LASHIRA IZZATI SHANUM ZULKARNAIN" },
+                { id: "3d_18", nama: "LETYCIA YUPI QURRATU'AIN BUDIARSO" },
+                { id: "3d_19", nama: "Muhammad Gibran Al Fath Widhiananto" },
+                { id: "3d_20", nama: "NAFISA AQILA PUTRI" },
+                { id: "3d_21", nama: "Nafla Aina Rohman" },
+                { id: "3d_22", nama: "RAKA ADHYASTHA PARADILLA" },
+                { id: "3d_23", nama: "Respati Zayyan Abid" },
+                { id: "3d_24", nama: "SYAFIQ ABQORY" },
+                { id: "3d_25", nama: "Syahira Naura Herlambang" },
+                { id: "3d_26", nama: "VAREL ATHAFARIZ ZHAFRAN SAPUTRA" },
+                { id: "3d_27", nama: "Zayn Khalifa Riswardana" },
+                { id: "3d_28", nama: "Zeevana Shaqeen Azzahra Santoso" },
+                { id: "3d_29", nama: "ZIDAN ATHALLA DHIAULHAQ" },
+                { id: "3d_30", nama: "Zidan Faiz Ramadhan" }
+            ],
+            "4A": [
+                { id: "4a_1", nama: "Aisha Ziya Shayfa" },
+                { id: "4a_2", nama: "Al Syarawi Arfa Gunawan" },
+                { id: "4a_3", nama: "Annisa Salsabila Zafarani" },
+                { id: "4a_4", nama: "AQILA BELLATRIX HUMAIRAH" },
+                { id: "4a_5", nama: "Assyifa Ar Razi" },
+                { id: "4a_6", nama: "Athariz Calief Arganta" },
+                { id: "4a_7", nama: "AZKA RAQILA AL GHIFARI" },
+                { id: "4a_8", nama: "BINTANG PRADHIPTA HERMAWAN" },
+                { id: "4a_9", nama: "BYANCA CHIARA SYAFIQA" },
+                { id: "4a_10", nama: "DISTYA RACHYANANENDRA ALMAHYRA" },
+                { id: "4a_11", nama: "FAAIZ TSAANI KAMILAN EL CHOIRI" },
+                { id: "4a_12", nama: "Farrel Arkaan Oktora" },
+                { id: "4a_13", nama: "HANINDYA JATI PRAMUDITA" },
+                { id: "4a_14", nama: "Hans Aulia Khawari" },
+                { id: "4a_15", nama: "Keisha Amandla Shareefa Iskandar" },
+                { id: "4a_16", nama: "KEYSHA AZZAHRA ZAHFIRA" },
+                { id: "4a_17", nama: "Khanza Naila Santosa" },
+                { id: "4a_18", nama: "MUHAMMAD ALTEZZA ZABDAN" },
+                { id: "4a_19", nama: "Muhammad Althaf Attarizq Wishaka" },
+                { id: "4a_20", nama: "Muhammad Irsyad At Tamimi" },
+                { id: "4a_21", nama: "MUHAMMAD REVAN PRADITYA" },
+                { id: "4a_22", nama: "Muhammad Yusuf Ramadhan Ar-Rasyid" },
+                { id: "4a_23", nama: "NADIA APRILIA SYAKILA" },
+                { id: "4a_24", nama: "NAUFAL ABQARI ARADHANA" },
+                { id: "4a_25", nama: "Nayaka Fajar Sriyanto" },
+                { id: "4a_26", nama: "PARADUTA ISNAN SUSILO" },
+                { id: "4a_27", nama: "RAISYA RIZKY RAFIFAH PUTRI" },
+                { id: "4a_28", nama: "Rumaysha Numa Reis" },
+                { id: "4a_29", nama: "Sadryan Bima Ar Rizky" },
+                { id: "4a_30", nama: "Syanala Kania Salsabila" }
+            ],
+            "4B": [
+                { id: "4b_1", nama: "ADIRA AZZAHRA PUTRI" },
+                { id: "4b_2", nama: "AISYAH ZEA ALMAHYRA" },
+                { id: "4b_3", nama: "Aleesha Afsheen Amarudin" },
+                { id: "4b_4", nama: "ALZAIDAN KHALIQ PERMANA" },
+                { id: "4b_5", nama: "Annaas Rokah Athallah" },
+                { id: "4b_6", nama: "Citrahayi Abbidah Embun Kirana" },
+                { id: "4b_7", nama: "DAFFA CAESAR EFENDI" },
+                { id: "4b_8", nama: "Danendra Azzam Pambudi" },
+                { id: "4b_9", nama: "Delisha Silmi Afiqa" },
+                { id: "4b_10", nama: "Dhia Sabrina Azzalea" },
+                { id: "4b_11", nama: "Fahreza Khalifa Rizky Harun" },
+                { id: "4b_12", nama: "FATIH ALI TSAQIF" },
+                { id: "4b_13", nama: "Hafiza Asyifa Risdana" },
+                { id: "4b_14", nama: "Hafizh Athar Suprapto" },
+                { id: "4b_15", nama: "HAFSA NADHIRA HISAN" },
+                { id: "4b_16", nama: "Irsyad Thohir Putra Irawan" },
+                { id: "4b_17", nama: "KANUGRAHAN ADI WICAKSONO" },
+                { id: "4b_18", nama: "Keanu Putra Hariyadi" },
+                { id: "4b_19", nama: "KEJORA LANGGENG BILITANIA" },
+                { id: "4b_20", nama: "Lucky Arvin Qaid" },
+                { id: "4b_21", nama: "Mikayla Putri Prasetyo" },
+                { id: "4b_22", nama: "Muhamad Adien Taufik" },
+                { id: "4b_23", nama: "NAIRA SYABILA AZZAHRA PUTRI" },
+                { id: "4b_24", nama: "Prince Muhammadiyah El Azzami Sukoco" },
+                { id: "4b_25", nama: "RAJENDRA FADHIL ALFAYI PRAMONO" },
+                { id: "4b_26", nama: "SHEZAN INARA NAJMA" },
+                { id: "4b_27", nama: "Tristan Adelio Setiawan" },
+                { id: "4b_28", nama: "WERKUDARA VINCENT SANTOSO" },
+                { id: "4b_29", nama: "ZAHSY QUEENSHA ELNAURA" }
+            ],
+            "4C": [
+                { id: "4c_1", nama: "Airlangga Gibran Maulana" },
+                { id: "4c_2", nama: "AISYAH DINDA RAMANIA" },
+                { id: "4c_3", nama: "Aisyah Putri Ayudia" },
+                { id: "4c_4", nama: "ARIFIN ARKANA RAMADHAN" },
+                { id: "4c_5", nama: "Arya Fahreza Kurniawan" },
+                { id: "4c_6", nama: "Ayyash Jaisha Mohammad" },
+                { id: "4c_7", nama: "Davira Alesha Pradana" },
+                { id: "4c_8", nama: "FAHLAVI ROMI DEVANKA" },
+                { id: "4c_9", nama: "Farah Nabila Azzahra" },
+                { id: "4c_10", nama: "Fellicia Adeeva Cahya Lacita" },
+                { id: "4c_11", nama: "Gendis Alitha Silmi" },
+                { id: "4c_12", nama: "GHAISAN DZAKY ARIFBOWO" },
+                { id: "4c_13", nama: "HAFIZH MAHARDIKA" },
+                { id: "4c_14", nama: "Henisa Azzahra Silvia" },
+                { id: "4c_15", nama: "INARA AYUNINDYA" },
+                { id: "4c_16", nama: "JESSICA JASMINE" },
+                { id: "4c_17", nama: "KENZI APRILLIO ALFARISQI" },
+                { id: "4c_18", nama: "Kevin Arfandio" },
+                { id: "4c_19", nama: "Kimi Shakila Ajunta" },
+                { id: "4c_20", nama: "MARSYA ALEA ZANINDYA" },
+                { id: "4c_21", nama: "Mirza Zaim Arrafif" },
+                { id: "4c_22", nama: "Muhammad Arfan Arrazan" },
+                { id: "4c_23", nama: "Muhammad Arkan" },
+                { id: "4c_24", nama: "Musyaffa Dzakyandra Raffa Setiyawan" },
+                { id: "4c_25", nama: "Nabila Zahwa Humaira" },
+                { id: "4c_26", nama: "NAUFAL FADHIL RAMADHAN" },
+                { id: "4c_27", nama: "NAURA KINANDRA SUJADI" },
+                { id: "4c_28", nama: "QUEEN RAVENA AISYAH TOBING" },
+                { id: "4c_29", nama: "Radhika Zefa Utomo" },
+                { id: "4c_30", nama: "RAFIF ADYTAMA MULYA" },
+                { id: "4c_31", nama: "Rifqi Hamidan" },
+                { id: "4c_32", nama: "SHIDQIA FATIHAH AL ZENA KURNIAWAN" }
+            ],
+            "4D": [
+                { id: "4d_1", nama: "Adeeva Afsheen Abdillah" },
+                { id: "4d_2", nama: "ALILA KAIA MAULANA" },
+                { id: "4d_3", nama: "Alkhalifi Arkan Sakha Fatardo" },
+                { id: "4d_4", nama: "Alva Rizky Andrianto" },
+                { id: "4d_5", nama: "Anindya shakila putri" },
+                { id: "4d_6", nama: "Anugrah Daviandra Calisto Alfarez" },
+                { id: "4d_7", nama: "ARIF FAITH RAHMAN" },
+                { id: "4d_8", nama: "ARSAKHA TIMUR PAMUNGKAS" },
+                { id: "4d_9", nama: "Azzahra aulia angelina nugraha" },
+                { id: "4d_10", nama: "BASTIAN DANISH RAYYAN RABBANI" },
+                { id: "4d_11", nama: "Herjuno Ahmad Fidiyanto" },
+                { id: "4d_12", nama: "Kaelare Gandewa Murdani" },
+                { id: "4d_13", nama: "Kaysa Elkhaira Shanum" },
+                { id: "4d_14", nama: "KHAYLA AZZA BATRISYA ZAHRA" },
+                { id: "4d_15", nama: "MIKAILA LAQUITTA HENZIE PRASODJO" },
+                { id: "4d_16", nama: "Mirza Ahnaf Putra Winaris" },
+                { id: "4d_17", nama: "MUHAMMAD ADIPATI BAGASKARA" },
+                { id: "4d_18", nama: "MUHAMMAD KHARENDIO DARIS NIBRAS" },
+                { id: "4d_19", nama: "NAILA ALESHA SAFIRA" },
+                { id: "4d_20", nama: "Nandana Adzaki Naswan" },
+                { id: "4d_21", nama: "Oryza Ziggy El Fatta Rosadi" },
+                { id: "4d_22", nama: "Rania Saffa Hafisyah" },
+                { id: "4d_23", nama: "Ravendra Elano Al Kahfi" },
+                { id: "4d_24", nama: "SYAFIYA SALMA KIRANIA CAHYANTO" },
+                { id: "4d_25", nama: "Thalita Maiza Eltsania" },
+                { id: "4d_26", nama: "Tsaniyah Adhifa Nugroho" },
+                { id: "4d_27", nama: "YASNA ISMAIL MARWAZI" },
+                { id: "4d_28", nama: "Yuna Luserina Sanjaya" },
+                { id: "4d_29", nama: "Yusuf Arsyad Abdulloh" },
+                { id: "4d_30", nama: "ZAHIDA RISTYA MAHESWARI" }
+            ],
+            "5A": [
+                { id: "5a_1", nama: "Adnan Faeyza Al Farrukh" },
+                { id: "5a_2", nama: "Alexi Permana Pribadi" },
+                { id: "5a_3", nama: "Alfaraziq Hafy Ar-Razzan" },
+                { id: "5a_4", nama: "Alnadeem Akbar Ramadhan" },
+                { id: "5a_5", nama: "Apta Janitra Passando" },
+                { id: "5a_6", nama: "Aqilasha Porsche Queenarinda" },
+                { id: "5a_7", nama: "Athaliana Alfarisa Wibowo" },
+                { id: "5a_8", nama: "Aulia Syamil Almumtaza" },
+                { id: "5a_9", nama: "Ayudia Inara Alesha Putri" },
+                { id: "5a_10", nama: "Azzahra Humaira Fadhillah" },
+                { id: "5a_11", nama: "Carissa Annisa Faiha" },
+                { id: "5a_12", nama: "Chelsea Oktavia Putri" },
+                { id: "5a_13", nama: "Davina Shava Khairiya Putri" },
+                { id: "5a_14", nama: "Dhabith Aqilah Munsif" },
+                { id: "5a_15", nama: "Fiorent Al Hafizzh Arjuna Dyan Putra" },
+                { id: "5a_16", nama: "Firhan dilfanajib" },
+                { id: "5a_17", nama: "Freya Ariana Callista Mohammad" },
+                { id: "5a_18", nama: "Gio Fadhil Satria Praditya" },
+                { id: "5a_19", nama: "Habil Athaya Zaahirulhaq" },
+                { id: "5a_20", nama: "Hadaya Sakinah Fajar Yin Yang" },
+                { id: "5a_21", nama: "Ikmal Zufar" },
+                { id: "5a_22", nama: "Krystal Adeeva Diandra Faradilla" },
+                { id: "5a_23", nama: "Melvin Rahmatullah Nizar" },
+                { id: "5a_24", nama: "Muhammad Adrian Banu Atiro" },
+                { id: "5a_25", nama: "Muhammad Ashraf Ardiansyah" },
+                { id: "5a_26", nama: "Nada Arsyifa Fredelina" },
+                { id: "5a_27", nama: "Naila Ulfa Caesarra" },
+                { id: "5a_28", nama: "Radja Anatan Wijaya" },
+                { id: "5a_29", nama: "Ramadhan Sandya Wahyu Jati" }
+            ],
+            "5B": [
+                { id: "5b_1", nama: "Abidah Husna Humaniora" },
+                { id: "5b_2", nama: "Abiyyu Radyta Fawwas" },
+                { id: "5b_3", nama: "Adsila Nur Aisyah" },
+                { id: "5b_4", nama: "Airin Palomarinka" },
+                { id: "5b_5", nama: "Alifa Nabilah Putri Kusumawati" },
+                { id: "5b_6", nama: "Anagata Premieranda" },
+                { id: "5b_7", nama: "Azbin Hisyam Linoko" },
+                { id: "5b_8", nama: "Basmalah Faisal Al Ghozali" },
+                { id: "5b_9", nama: "Callysta Annisa Faiha" },
+                { id: "5b_10", nama: "Daud Abdul Majiid" },
+                { id: "5b_11", nama: "Dyah Pratista Nareswari" },
+                { id: "5b_12", nama: "Edgar zaidan aditya" },
+                { id: "5b_13", nama: "Fadlan Athar Sugiarta" },
+                { id: "5b_14", nama: "Fathiya Fella Ramadyana" },
+                { id: "5b_15", nama: "Hafiza Khaira Lubna" },
+                { id: "5b_16", nama: "Hanum Maryam Istafa" },
+                { id: "5b_17", nama: "Iqbal Sakha Abiyyu" },
+                { id: "5b_18", nama: "Kaynarra Shanum Aufanisa" },
+                { id: "5b_19", nama: "Kayyisa Maza Adisti" },
+                { id: "5b_20", nama: "Khaizuran Raziq Abbasy" },
+                { id: "5b_21", nama: "Khalid Satya Abdillah" },
+                { id: "5b_22", nama: "Muhammad Dzikron Almusawa" },
+                { id: "5b_23", nama: "Naufal Ahza Fahryan" },
+                { id: "5b_24", nama: "Nayla Adiva Putri Arga" },
+                { id: "5b_25", nama: "Rislaila Karamina Nareswari" },
+                { id: "5b_26", nama: "Sabina Nindya El Yasin" },
+                { id: "5b_27", nama: "Shafira Alhusna Denastya" },
+                { id: "5b_28", nama: "Zaki Al Fariz" },
+                { id: "5b_29", nama: "Ze Abdul Ghany Fahradienn" }
+            ],
+            "5C": [
+                { id: "5c_1", nama: "Abdillah Muhafizh" },
+                { id: "5c_2", nama: "Ahmad Dzakir El Basil Nelson" },
+                { id: "5c_3", nama: "Aisha Salsabil Darmawan" },
+                { id: "5c_4", nama: "Alif Aqmal Abqori" },
+                { id: "5c_5", nama: "Ariendra Salsabila Ostin" },
+                { id: "5c_6", nama: "Belva Caliana Aqila" },
+                { id: "5c_7", nama: "Diandra Alrafaeyza Wibowo" },
+                { id: "5c_8", nama: "Fadlin Athmar Sugiarta" },
+                { id: "5c_9", nama: "Fariq Akhdan Azkiya" },
+                { id: "5c_10", nama: "Fayyadh Ubaidillah Narendra" },
+                { id: "5c_11", nama: "Fazila Ariinda Lutfunisa" },
+                { id: "5c_12", nama: "Humayra lutifa Azizah nur chovie" },
+                { id: "5c_13", nama: "Irhad Ghani Ismail" },
+                { id: "5c_14", nama: "Jordan Aurio Wibowo" },
+                { id: "5c_15", nama: "Keisya Faiha Rifda Putri" },
+                { id: "5c_16", nama: "Maritza Farzana Aaliyah" },
+                { id: "5c_17", nama: "Mohammad Banu Rezon" },
+                { id: "5c_18", nama: "Muhammad Almer Zafrano" },
+                { id: "5c_19", nama: "Muhammad Ayyasy Al Fatih" },
+                { id: "5c_20", nama: "Muhammad Sabrang Piwulang Kautaman" },
+                { id: "5c_21", nama: "Muhammad Yusuf Hanafi" },
+                { id: "5c_22", nama: "Raffael Alfarizqi Novalino" },
+                { id: "5c_23", nama: "Rara Ayu Mefita Putri Az Zahra" },
+                { id: "5c_24", nama: "Rheva Almira Agatha" },
+                { id: "5c_25", nama: "Royyan Adikaraputra Syahbana" },
+                { id: "5c_26", nama: "Sabrina Aisyifa Haifa" },
+                { id: "5c_27", nama: "Safa Nadira Saraswati" },
+                { id: "5c_28", nama: "Sheikha Mahra Al Khawarizmi Muzakarisa" },
+                { id: "5c_29", nama: "Sybilla Embun Dinar" },
+                { id: "5c_30", nama: "Tsania Zeina Khumaira" }
+            ],
+            "5D": [
+                { id: "5d_1", nama: "Abidzar Athaya Dzaky Algifary" },
+                { id: "5d_2", nama: "AINA MACHYA ALSHIDDIQ" },
+                { id: "5d_3", nama: "Aisyah Dianov El Ghania" },
+                { id: "5d_4", nama: "Almira Syakib Rizqiya" },
+                { id: "5d_5", nama: "Alvaro Mahadana" },
+                { id: "5d_6", nama: "Arka Kelud Nova Widyanto" },
+                { id: "5d_7", nama: "Arsyil Hakim Al Fatih" },
+                { id: "5d_8", nama: "Calista Revani" },
+                { id: "5d_9", nama: "Dafa Arsya Wiyanda" },
+                { id: "5d_10", nama: "Fatimah Nurfaeyza Biantara" },
+                { id: "5d_11", nama: "Ghaziya Aqila Sutopo" },
+                { id: "5d_12", nama: "Ghouzan Zweikho Alghifari" },
+                { id: "5d_13", nama: "Hamizan Arfa Basyar" },
+                { id: "5d_14", nama: "Ibrahim Koji Kayana" },
+                { id: "5d_15", nama: "Javier Isco Setya Kurniawan" },
+                { id: "5d_16", nama: "Kannaya Tungga Dewi Rahardjo" },
+                { id: "5d_17", nama: "Keanu Putra Rafandra" },
+                { id: "5d_18", nama: "Marsya Anindya Pradipta" },
+                { id: "5d_19", nama: "Muhammad Zain Alkaf" },
+                { id: "5d_20", nama: "Nafisah Azzahra" },
+                { id: "5d_21", nama: "Naura Hasna Khumaira Alsaka" },
+                { id: "5d_22", nama: "Oktavia Jetri Kurnianada" },
+                { id: "5d_23", nama: "Qonita Humairo Latif" },
+                { id: "5d_24", nama: "Rafif dzaky ismail" },
+                { id: "5d_25", nama: "Raka Raditya Rasyid" },
+                { id: "5d_26", nama: "Reinhart Izzul Haq Muhammad" },
+                { id: "5d_27", nama: "RM Asyrafurahman Wiryawan Kusumo" },
+                { id: "5d_28", nama: "Shelby Azzahra Dzakira" },
+                { id: "5d_29", nama: "Syafira Khanza Fakhrudin" },
+                { id: "5d_30", nama: "Zhafir Mahendra Putra" }
+            ],
+            "6A": [
+                { id: "6a_1", nama: "Abdullah Naafi' Haitami" },
+                { id: "6a_2", nama: "Adinda Kharisma Putri Kencono" },
+                { id: "6a_3", nama: "Ahmad Fadillah Ramdhani" },
+                { id: "6a_4", nama: "Almira Savaira Ayla Arwina Putri" },
+                { id: "6a_5", nama: "Ashilla Nafisha Salsabila" },
+                { id: "6a_6", nama: "Azzah Fatin Dinah" },
+                { id: "6a_7", nama: "Bintang Pramudita Dewani" },
+                { id: "6a_8", nama: "Clevara Ziven Arsy Erlandy" },
+                { id: "6a_9", nama: "Elina Farah Aulia" },
+                { id: "6a_10", nama: "Gadis Avisa Amalia" },
+                { id: "6a_11", nama: "Haisha Hanum Hanania" },
+                { id: "6a_12", nama: "Hanifan Faishal Akbar" },
+                { id: "6a_13", nama: "Keanu Aufaa Putra Kuncara" },
+                { id: "6a_14", nama: "Khalifa Alya Khairunnisa" },
+                { id: "6a_15", nama: "Lanika Alleia Nugroho" },
+                { id: "6a_16", nama: "Maekha Tria Al Ghazali" },
+                { id: "6a_17", nama: "Maheswara Sutodigdoyo Purbo Wiseso" },
+                { id: "6a_18", nama: "Mikhayla Zafirazka Sunu" },
+                { id: "6a_19", nama: "Muhammad Atha Rasyafa" },
+                { id: "6a_20", nama: "Nadya Asyifa Khairani" },
+                { id: "6a_21", nama: "Najwa Mufida Adaffi" },
+                { id: "6a_22", nama: "Narendra Faid Algibran" },
+                { id: "6a_23", nama: "Nediva Faranisa Arifa Putri" },
+                { id: "6a_24", nama: "Noni Lexa Amaretha Setyawan" },
+                { id: "6a_25", nama: "Pradipta Rasya Alfarizky" },
+                { id: "6a_26", nama: "Sakura Hana Humaira" },
+                { id: "6a_27", nama: "Zavier Fico El Rafif" }
+            ],
+            "6B": [
+                { id: "6b_1", nama: "Abdurrahman Aziz Khairi" },
+                { id: "6b_2", nama: "Abdurrahman Yudha Iskandarsyah" },
+                { id: "6b_3", nama: "Allyssa Assyifatul Zahra" },
+                { id: "6b_4", nama: "Alvaro Aidan Santosa" },
+                { id: "6b_5", nama: "Andrina Larasati Roossetyo" },
+                { id: "6b_6", nama: "Annisa Adzkia Jasmine" },
+                { id: "6b_7", nama: "Azka Al Latif" },
+                { id: "6b_8", nama: "Elang Fachriza Wibowo" },
+                { id: "6b_9", nama: "Fadhil Al Maisan Sakha Setiyawan" },
+                { id: "6b_10", nama: "Fajria Shabihah Azzahra" },
+                { id: "6b_11", nama: "Falilah Ransi Kayana" },
+                { id: "6b_12", nama: "Faqih Alfarizi Utama" },
+                { id: "6b_13", nama: "Farah Atania Dumaj" },
+                { id: "6b_14", nama: "Fidelia Carlise Tasanee" },
+                { id: "6b_15", nama: "Hayden Aerozensa Sutrisno" },
+                { id: "6b_16", nama: "Ibni Amiir Al Farraas" },
+                { id: "6b_17", nama: "Muhammad Ahsan Haidar" },
+                { id: "6b_18", nama: "Muhammad Lutfie Sakhi Zaidan" },
+                { id: "6b_19", nama: "Mutiara Putri Santoso" },
+                { id: "6b_20", nama: "Nadzira Qurbah Shalihah" },
+                { id: "6b_21", nama: "Qudsia Khaira Arzami" },
+                { id: "6b_22", nama: "Raihana Salsabila Nadhifa" },
+                { id: "6b_23", nama: "Shakila Athaleta Defrina" },
+                { id: "6b_24", nama: "Shelcye Alya Bilbina" },
+                { id: "6b_25", nama: "Tsania Elrahma Setyawan" },
+                { id: "6b_26", nama: "Wira Adhyasta Wardhana" },
+                { id: "6b_27", nama: "Yaqdhan Rafa Atalla" },
+                { id: "6b_28", nama: "Yusuf Zian Arkana" }
+            ],
+            "6C": [
+                { id: "6c_1", nama: "Adelia Shazia Azzahra" },
+                { id: "6c_2", nama: "Aidan Syam Rachmad" },
+                { id: "6c_3", nama: "Akbar Nurta Alim" },
+                { id: "6c_4", nama: "Athalla Zafran Al Rafisqi" },
+                { id: "6c_5", nama: "Auliya Putri Rhamadani" },
+                { id: "6c_6", nama: "Daanya Ulima Saputro" },
+                { id: "6c_7", nama: "Diandra Nasya Azzahra" },
+                { id: "6c_8", nama: "Dzakira Fauzia Aftani" },
+                { id: "6c_9", nama: "Fatih Rahman" },
+                { id: "6c_10", nama: "Gilang Ramadhan" },
+                { id: "6c_11", nama: "Hafida Husna Akmalia" },
+                { id: "6c_12", nama: "Kalena Shafiyya Nailatul Izzah" },
+                { id: "6c_13", nama: "Kania Khanza Farzana Callysta" },
+                { id: "6c_14", nama: "Kayra Dzikri Kasyifa Aghna" },
+                { id: "6c_15", nama: "Kayyisa Zaida Windriya" },
+                { id: "6c_16", nama: "Ken Cordoba Hayam Wuruk Dhofir" },
+                { id: "6c_17", nama: "Keysha Calista Ramadhani" },
+                { id: "6c_18", nama: "Muhammad Afandi" },
+                { id: "6c_19", nama: "Muhammad Firman Abdillah" },
+                { id: "6c_20", nama: "Muhammad Keenan Wicaksono" },
+                { id: "6c_21", nama: "Nuria Azzahra Hartanto" },
+                { id: "6c_22", nama: "Oryza Sativa Khairunnisa'" },
+                { id: "6c_23", nama: "Qatrunada Shadrina Auni" },
+                { id: "6c_24", nama: "Sabiq Maulana Fakhrudin" },
+                { id: "6c_25", nama: "Sulthan Hanif Muhamad Taufik" },
+                { id: "6c_26", nama: "Tiara Khairun Nisa" },
+                { id: "6c_27", nama: "Urzuqnie Fahman" },
+                { id: "6c_28", nama: "Zhafran Axel Alfarizi" }
+            ],
+            "6D": [
+                { id: "6d_1", nama: "Adinda Aurelia" },
+                { id: "6d_2", nama: "Afifah Bilqis Azzahra" },
+                { id: "6d_3", nama: "Akma Safaraz Ajunta" },
+                { id: "6d_4", nama: "Alaina Arufa Nisa'" },
+                { id: "6d_5", nama: "Alisha Shafia Sugianto" },
+                { id: "6d_6", nama: "Anarta Rizki Pratama" },
+                { id: "6d_7", nama: "Annorafatech Aqilahamdah" },
+                { id: "6d_8", nama: "Aprilio Wifa Albyansyah" },
+                { id: "6d_9", nama: "Ceisya Hazkia Rizky Subagyo" },
+                { id: "6d_10", nama: "Devandra Alvaro El Zahran" },
+                { id: "6d_11", nama: "Dzakiyya Talita Sakhi Wicaksono" },
+                { id: "6d_12", nama: "Dzaky Almair Jamil Wibowo" },
+                { id: "6d_13", nama: "Fathiya Halwa Nisa" },
+                { id: "6d_14", nama: "Faza Hanifa Nugroho" },
+                { id: "6d_15", nama: "Hafuza Gentza Gunarso" },
+                { id: "6d_16", nama: "Helios Cakrabirawa Samsudin" },
+                { id: "6d_17", nama: "Justitia Kafila" },
+                { id: "6d_18", nama: "Kaureen Fazeela Syakira" },
+                { id: "6d_19", nama: "Khafi Aqlan Raiz" },
+                { id: "6d_20", nama: "Kinasih Helga Hares" },
+                { id: "6d_21", nama: "Lionel Castila" },
+                { id: "6d_22", nama: "Mosanda Maarif" },
+                { id: "6d_23", nama: "Muhammad Yahya Asy'ari" },
+                { id: "6d_24", nama: "Nadifa Nur Medina" },
+                { id: "6d_25", nama: "Nailah Hafiza Izzatunnisa" },
+                { id: "6d_26", nama: "Novandra Arjuna Pratama" },
+                { id: "6d_27", nama: "Radinwangi Avatara Azura Kertabhauma Cakraningrat" },
+                { id: "6d_28", nama: "Umar Al-Faruq" }
+            ],
+            "KODING": [
+                { id: "kod_1", nama: "Den Ahmad Coder" },
+                { id: "kod_2", nama: "Zivi AI Master" }
+            ]
+        };
+
+        let databaseSiswa = {};
+        let dataNilaiSiswa = {}; 
+
+        let activeKelas = null; // Menyimpan Pembagi Aktif ('55', '60', '65', '45')
+        let currentClassName = ""; // Menyimpan Nama Kelas Aktif ('1 ICP A', '2A', dsb)
         let activeMode = 'jumlah'; 
         let fokusInput = 'total';
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+        let activeSiswaId = "";
         let popupTimeout;
+        let selectedEditClassKey = null;
 
+        // --- DATABASE LOCAL STORAGE PERSISTENCE (100% OFFLINE) ---
+        function simpanAturanKeLocal() {
+            localStorage.setItem('kates_config_kelas_v2', JSON.stringify(configKelas));
+        }
+
+        function muatAturanDariLocal() {
+            const saved = localStorage.getItem('kates_config_kelas_v2');
+            if(saved) {
+                configKelas = JSON.parse(saved);
+                Object.keys(configKelas).forEach(key => {
+                    document.getElementById('label-name-' + key).innerText = configKelas[key].name;
+                    document.getElementById('label-sub-' + key).innerText = 'Bagi ' + key;
+                });
+            }
+        }
+
+        function simpanSiswaKeLocal() {
+            localStorage.setItem('kates_database_siswa_v3', JSON.stringify(databaseSiswa));
+        }
+
+        function muatSiswaDariLocal() {
+            const saved = localStorage.getItem('kates_database_siswa_v3');
+            if(saved) {
+                databaseSiswa = JSON.parse(saved);
+            } else {
+                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
+                simpanSiswaKeLocal();
+            }
+        }
+
+        function simpanNilaiKeLocal() {
+            localStorage.setItem('kates_data_nilai_siswa_v3', JSON.stringify(dataNilaiSiswa));
+        }
+
+        function muatNilaiDariLocal() {
+            const saved = localStorage.getItem('kates_data_nilai_siswa_v3');
+            if(saved) {
+                dataNilaiSiswa = JSON.parse(saved);
+            }
+        }
+
+        // --- PENGELOLAAN EVENT LONG-PRESS (KUSTOMISASI KELAS) ---
+        function initLongPressEvents() {
+            ['55', '60', '65', '45'].forEach(key => {
+                const btn = document.getElementById('btn-' + key);
+                let touchTimer;
+                
+                btn.addEventListener('touchstart', (e) => {
+                    touchTimer = setTimeout(() => {
+                        vibrateHP();
+                        bukaEditKelas(key);
+                    }, 850);
+                });
+                btn.addEventListener('touchend', () => clearTimeout(touchTimer));
+                btn.addEventListener('touchmove', () => clearTimeout(touchTimer));
+
+                btn.addEventListener('mousedown', (e) => {
+                    touchTimer = setTimeout(() => {
+                        bukaEditKelas(key);
+                    }, 850);
+                });
+                btn.addEventListener('mouseup', () => clearTimeout(touchTimer));
+                btn.addEventListener('mouseleave', () => clearTimeout(touchTimer));
+
+                btn.addEventListener('click', () => {
+                    // Cari kelas ril pertama yang masuk dalam pembagi ini
+                    let firstClassOfPembagi = "";
+                    for (let c in mapKelasKePembagi) {
+                        if (mapKelasKePembagi[c] === key) {
+                            firstClassOfPembagi = c;
+                            break;
+                        }
+                    }
+                    if (firstClassOfPembagi) {
+                        document.getElementById('select-kelas-grading').value = firstClassOfPembagi;
+                        pilihKelasAktif(key, firstClassOfPembagi);
+                    }
+                });
+            });
+        }
+
+        function vibrateHP() {
+            if (navigator.vibrate) navigator.vibrate(80);
+        }
+
+        function bukaEditKelas(key) {
+            selectedEditClassKey = key;
+            document.getElementById('edit-kelas-title').innerText = "Edit " + configKelas[key].name;
+            document.getElementById('edit-label-nama').value = configKelas[key].name;
+            document.getElementById('edit-pembagi-val').value = key;
+            toggleModal('edit-kelas-modal', true);
+        }
+
+        function simpanEditAturan() {
+            const newName = document.getElementById('edit-label-nama').value.trim();
+            const newPembagi = document.getElementById('edit-pembagi-val').value.trim();
+            
+            if(!newName || !newPembagi) return;
+
+            const oldKey = selectedEditClassKey;
+            
+            if (oldKey !== newPembagi) {
+                configKelas[newPembagi] = {
+                    maxR1: configKelas[oldKey].maxR1,
+                    maxR2: configKelas[oldKey].maxR2,
+                    maxR3: configKelas[oldKey].maxR3,
+                    color: configKelas[oldKey].color,
+                    name: newName
+                };
+                delete configKelas[oldKey];
+            } else {
+                configKelas[oldKey].name = newName;
+            }
+
+            simpanAturanKeLocal();
+            toggleModal('edit-kelas-modal', false);
+            location.reload(); 
+        }
+
+        // --- SISTEM MODAL ---
+        function toggleModal(id, show) {
+            const el = document.getElementById(id);
+            if(show) {
+                el.classList.remove('pointer-events-none');
+                el.classList.add('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-95');
+                el.querySelector('.relative').classList.add('scale-100');
+            } else {
+                el.classList.add('pointer-events-none');
+                el.classList.remove('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-100');
+                el.querySelector('.relative').classList.add('scale-95');
+            }
+        }
+
+        // --- POPUP PERINGATAN ---
         function tampilkanPeringatanLucu(tipe, maxVal = 0) {
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
@@ -381,42 +1405,34 @@
             
             if (tipe === 'nokelas') {
                 const variasi = [
-                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kelas dulu ngab!' },
-                    { emoji: '☕', title: 'Cuci Muka Dulu!', msg: 'Kelasnya belum dipencet tuh~' },
-                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Gas terus, pilih kelas dulu dong bestie!' },
-                    { emoji: '🙈', title: 'Main Pencet Aja', msg: 'Kelasnya mana woy? Lupa ya?' },
-                    { emoji: '🤣', title: 'Ngopi Duls!', msg: 'Fokus! Jangan lupa klik kelasnya~' }
+                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kategori kelas dulu ngab!' },
+                    { emoji: '☕', title: 'Cuci Muka Duls!', msg: 'Kelasnya belum dipencet tuh~' },
+                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Main pencet-pencet aja, kelasnya dulu dong!' },
+                    { emoji: '🙈', title: 'Kosong Melompong', msg: 'Klik dulu salah satu kelas di bawah!' }
                 ];
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                
                 emojiEl.innerText = rand.emoji;
                 titleEl.innerText = rand.title;
-                titleEl.className = 'text-amber-500 font-black text-2xl mb-1';
-                msgEl.innerHTML = rand.msg;
-                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
-                
+                titleEl.className = "text-amber-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg;
                 maxBox.classList.add('hidden');
-                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center';
+                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center";
                 
             } else if (tipe === 'over') {
                 const variasi = [
                     { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
-                    { emoji: '🤣', title: 'Ngantuk lu ya bre?', msg: 'Waduh, kebanyakan ngetik tuh!' },
-                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Muridnya dapet nilai bonus kah?' },
-                    { emoji: '🫣', title: 'Guru Sapa Nih?', msg: 'Lebih dari batas maksimal woy!' },
-                    { emoji: '💸', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu/pak? Kelebihan!' }
+                    { emoji: '🤣', title: 'Ngantuk lu ya?', msg: 'Waduh, kebanyakan ngetik tuh!' },
+                    { emoji: '🫣', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu? Kelebihan!' },
+                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Lebih dari batas maksimal woy!' }
                 ];
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
-
                 emojiEl.innerText = rand.emoji;
                 titleEl.innerText = rand.title;
-                titleEl.className = 'text-rose-500 font-black text-2xl mb-1';
-                msgEl.innerHTML = rand.msg;
-                msgEl.className = 'text-slate-600 text-sm font-bold leading-relaxed mb-1';
-                
+                titleEl.className = "text-rose-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg;
                 maxBox.classList.remove('hidden');
                 document.getElementById('popup-max-val').innerText = maxVal;
-                box.className = 'relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center';
+                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center";
             }
 
             popup.classList.remove('opacity-0', 'pointer-events-none');
@@ -430,41 +1446,283 @@
             clearTimeout(popupTimeout);
             popupTimeout = setTimeout(() => {
                 tutupPeringatanLucu();
-            }, 3500);
+            }, 3000);
         }
 
         function tutupPeringatanLucu() {
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
-            
             box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
             box.classList.add('scale-50', 'opacity-0');
-
             setTimeout(() => {
                 popup.classList.remove('opacity-100');
                 popup.classList.add('opacity-0', 'pointer-events-none');
-            }, 300);
+            }, 250);
         }
 
-        function simpanDataOffline() {
-            const data = { activeKelas, activeMode, fokusInput, nilaiInput };
-            localStorage.setItem('kates_offline_data', JSON.stringify(data));
+        // --- SISTEM DROPDOWN KELAS & SISWA DEWA ---
+        function updateKelasDropdownOptions() {
+            const selectKelas = document.getElementById('select-kelas-grading');
+            selectKelas.innerHTML = '<option value="">-- KELAS --</option>';
+            Object.keys(mapKelasKePembagi).forEach(clsName => {
+                const opt = document.createElement('option');
+                opt.value = clsName;
+                opt.innerText = clsName;
+                selectKelas.appendChild(opt);
+            });
         }
 
-        function muatDataOffline() {
-            try {
-                const data = JSON.parse(localStorage.getItem('kates_offline_data'));
-                if (data && data.activeKelas) {
-                    nilaiInput = data.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
-                    setMode(data.activeMode || 'jumlah');
-                    pilihKelas(data.activeKelas);
-                    setFokus(data.fokusInput || 'total');
-                    return true;
+        function pilihKelasDariDropdown() {
+            const selectedClass = document.getElementById('select-kelas-grading').value;
+            if(selectedClass) {
+                const pembagi = mapKelasKePembagi[selectedClass];
+                pilihKelasAktif(pembagi, selectedClass);
+            }
+        }
+
+        function updateSiswaDropdown() {
+            const select = document.getElementById('select-siswa');
+            select.innerHTML = '<option value="">-- SISWA --</option>';
+            
+            if(!currentClassName) return;
+
+            const siswaKelas = databaseSiswa[currentClassName] || [];
+            siswaKelas.forEach(s => {
+                const statusSaved = dataNilaiSiswa[s.id] ? " ✅" : "";
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.innerText = s.nama + statusSaved;
+                select.appendChild(opt);
+            });
+
+            // Cari siswa pertama yang belum memiliki nilai
+            const belumTernilai = siswaKelas.find(s => !dataNilaiSiswa[s.id]);
+            if(belumTernilai) {
+                select.value = belumTernilai.id;
+                activeSiswaId = belumTernilai.id;
+            } else if (siswaKelas.length > 0) {
+                select.value = siswaKelas[0].id;
+                activeSiswaId = siswaKelas[0].id;
+            } else {
+                activeSiswaId = "";
+            }
+            muatNilaiSiswaAktif();
+        }
+
+        function pilihSiswaManual() {
+            activeSiswaId = document.getElementById('select-siswa').value;
+            muatNilaiSiswaAktif();
+        }
+
+        function muatNilaiSiswaAktif() {
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+            
+            if (activeSiswaId && dataNilaiSiswa[activeSiswaId]) {
+                const nilai = dataNilaiSiswa[activeSiswaId];
+                nilaiInput.r1 = nilai.r1 || '';
+                nilaiInput.r2 = nilai.r2 || '';
+                nilaiInput.r3 = nilai.r3 || '';
+                nilaiInput.total = nilai.total || '';
+                
+                setMode(nilai.mode || 'jumlah');
+            } else {
+                updateTampilan();
+                kalkulasi();
+            }
+            updateTampilan();
+            kalkulasi();
+        }
+
+        function tambahSiswaCepat() {
+            if(!currentClassName) {
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+            document.getElementById('tambah-siswa-subtitle').innerText = "Menambahkan siswa ke " + currentClassName;
+            document.getElementById('input-nama-baru').value = "";
+            toggleModal('tambah-siswa-modal', true);
+        }
+
+        function simpanSiswaBaru() {
+            const nama = document.getElementById('input-nama-baru').value.trim();
+            if(!nama) return;
+
+            const newId = currentClassName.replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-6);
+            if(!databaseSiswa[currentClassName]) databaseSiswa[currentClassName] = [];
+            
+            databaseSiswa[currentClassName].push({ id: newId, nama: nama });
+            simpanSiswaKeLocal();
+            
+            toggleModal('tambah-siswa-modal', false);
+            updateSiswaDropdown();
+            document.getElementById('select-siswa').value = newId;
+            activeSiswaId = newId;
+            muatNilaiSiswaAktif();
+        }
+
+        // --- SAVE DATA PENILAIAN SISWA (AUTO NEXT DEWA) ---
+        function simpanNilaiKeSiswa() {
+            if(!activeKelas) {
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+            if(!activeSiswaId) {
+                alert("Harap pilih nama siswa terlebih dahulu!");
+                return;
+            }
+
+            const r1 = nilaiInput.r1;
+            const r2 = nilaiInput.r2;
+            const r3 = nilaiInput.r3;
+            const total = nilaiInput.total;
+            const asli = document.getElementById('nilaiAsli').innerText;
+            const bulat = document.getElementById('nilaiBulat').innerText;
+
+            dataNilaiSiswa[activeSiswaId] = {
+                mode: activeMode,
+                r1: r1,
+                r2: r2,
+                r3: r3,
+                total: total,
+                asli: asli,
+                bulat: bulat
+            };
+
+            simpanNilaiKeLocal();
+            vibrateHP();
+
+            const saveBtn = document.getElementById('btn-simpan-nilai');
+            saveBtn.innerText = "✅ BERHASIL DISIMPAN!";
+            saveBtn.classList.replace('from-blue-600', 'from-emerald-500');
+            saveBtn.classList.replace('to-indigo-600', 'to-emerald-600');
+
+            setTimeout(() => {
+                saveBtn.innerHTML = "📥 SIMPAN NILAI SISWA";
+                saveBtn.classList.replace('from-emerald-500', 'from-blue-600');
+                saveBtn.classList.replace('to-emerald-600', 'to-indigo-600');
+            }, 1000);
+
+            const select = document.getElementById('select-siswa');
+            const currentIndex = select.selectedIndex;
+            
+            updateSiswaDropdown();
+
+            if (currentIndex < select.options.length - 1) {
+                select.selectedIndex = currentIndex + 1;
+                activeSiswaId = select.value;
+                muatNilaiSiswaAktif();
+            } else {
+                activeSiswaId = "";
+                document.getElementById('select-siswa').value = "";
+                muatNilaiSiswaAktif();
+            }
+        }
+
+        // --- REKAPITULASI & EKSPOR EXCEL (CSV) ---
+        function bukaRekapNilai() {
+            if(!currentClassName) {
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+            
+            document.getElementById('rekap-class-tag').innerText = currentClassName;
+            const body = document.getElementById('tabel-rekap-body');
+            body.innerHTML = "";
+
+            const siswaList = databaseSiswa[currentClassName] || [];
+            document.getElementById('rekap-total-siswa').innerText = `Total: ${siswaList.length} Siswa`;
+
+            if(siswaList.length === 0) {
+                body.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-10 italic">Belum ada daftar siswa...</p>`;
+                toggleModal('rekap-modal', true);
+                return;
+            }
+
+            siswaList.forEach((s, idx) => {
+                const n = dataNilaiSiswa[s.id];
+                const rincian = n ? (n.mode === 'romawi' ? `Rom I: ${n.r1 || 0}, Rom II: ${n.r2 || 0}, Rom III: ${n.r3 || 0}` : `Total Skor: ${n.total || 0}`) : 'Belum diisi';
+                const scoreDisplay = n ? `<div class="text-right"><div class="text-xs font-black text-emerald-600">${n.bulat}</div><div class="text-[9px] text-slate-400">Asli: ${n.asli}</div></div>` : `<span class="text-slate-300 font-bold italic text-[10px]">Kosong</span>`;
+
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-slate-400 font-bold">${idx + 1}</span>
+                        <div>
+                            <p class="text-xs font-black text-slate-700 leading-tight">${s.nama}</p>
+                            <p class="text-[8px] text-slate-400 font-bold">${rincian}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${scoreDisplay}
+                        <button onclick="hapusSiswaDariList('${s.id}')" class="text-rose-400 hover:text-rose-600 text-sm font-black px-1">&times;</button>
+                    </div>
+                `;
+                body.appendChild(row);
+            });
+
+            toggleModal('rekap-modal', true);
+        }
+
+        function hapusSiswaDariList(id) {
+            if(confirm("Apakah Anda yakin ingin menghapus siswa ini dari daftar?")) {
+                const list = databaseSiswa[currentClassName];
+                const index = list.findIndex(s => s.id === id);
+                if(index > -1) {
+                    list.splice(index, 1);
+                    delete dataNilaiSiswa[id];
+                    simpanSiswaKeLocal();
+                    simpanNilaiKeLocal();
+                    bukaRekapNilai();
+                    updateSiswaDropdown();
                 }
-            } catch (e) {}
-            return false;
+            }
         }
 
+        function clearSemuaNilai() {
+            if(confirm("Yakin ingin mengosongkan seluruh nilai di kelas ini?")) {
+                const list = databaseSiswa[currentClassName] || [];
+                list.forEach(s => {
+                    delete dataNilaiSiswa[s.id];
+                });
+                simpanNilaiKeLocal();
+                bukaRekapNilai();
+                updateSiswaDropdown();
+            }
+        }
+
+        function exportExcel() {
+            if(!currentClassName) return;
+            const siswaList = databaseSiswa[currentClassName] || [];
+            if(siswaList.length === 0) {
+                alert("Daftar siswa kosong!");
+                return;
+            }
+
+            const pembagi = activeKelas;
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "No,Nama Siswa,Kelas,Mode Penilaian,Romawi 1,Romawi 2,Romawi 3,Total Skor,Nilai Asli (Pembagi " + pembagi + "),Nilai Akhir (Pembulatan)\n";
+
+            siswaList.forEach((s, idx) => {
+                const n = dataNilaiSiswa[s.id];
+                if (n) {
+                    csvContent += `${idx + 1},"${s.nama}",${currentClassName},${n.mode.toUpperCase()},${n.r1 || 0},${n.r2 || 0},${n.r3 || 0},${n.total || 0},${n.asli},${n.bulat}\n`;
+                } else {
+                    csvContent += `${idx + 1},"${s.nama}",${currentClassName},-,0,0,0,0,0.00,0\n`;
+                }
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Rekap_Nilai_${currentClassName.replace(" ", "_")}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- SISTEM BACKGROUND MELAYANG ---
         function initMathBg() {
             const bg = document.getElementById('mathBg');
             const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
@@ -482,65 +1740,39 @@
         }
         initMathBg();
 
+        // --- RESET GLOBAL KE DEFAULT ---
         function resetGlobal() {
-            activeKelas = null;
-            document.getElementById('area-kelas').classList.remove('needs-class');
-            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-
-            ['55', '60', '65', '45'].forEach(k => {
-                const btn = document.getElementById('btn-' + k);
-                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                btn.classList.remove('class-active');
-            });
-
-            const viewRomawi = document.getElementById('view-romawi');
-            const boxR3 = document.getElementById('box-r3');
-            const labelR2 = document.getElementById('label-r2');
-            
-            viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
-            boxR3.classList.remove('hidden');
-            labelR2.innerText = 'ROM II (x2)'; 
-
-            document.getElementById('max-r1').innerText = 'Maks: ?';
-            document.getElementById('max-r2').innerText = 'Maks: ?';
-            document.getElementById('max-r3').innerText = 'Maks: ?';
-            document.getElementById('max-total').innerText = 'Maks: ?';
-            
-            updateTampilan();
-            setMode('jumlah'); 
-
-            document.getElementById('nilaiAsli').innerText = '0.00';
-            document.getElementById('nilaiBulat').innerText = '0';
-            
-            const gifEl = document.getElementById('gif-reaction');
-            gifEl.classList.remove('scale-100');
-            gifEl.classList.add('scale-0');
-            gifEl.innerHTML = '';
-
-            simpanDataOffline();
+            if(confirm("Apakah Anda yakin ingin me-reset seluruh setelan, daftar siswa, dan nilai kembali ke setelan pabrik?")) {
+                localStorage.clear();
+                location.reload();
+            }
         }
 
-        function pilihKelas(kelas) {
-            activeKelas = kelas;
-            
-            document.getElementById('area-kelas').classList.remove('needs-class');
-            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+        // --- MEMILIH KATEGORI KELAS UTAMA ---
+        function pilihKelasAktif(pembagi, namaKelas) {
+            activeKelas = pembagi;
+            currentClassName = namaKelas;
 
+            // Update UI warna tombol kelas aktif
             ['55', '60', '65', '45'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
-                btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                btn.classList.remove('class-active');
+                if(btn) {
+                    btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
+                    btn.classList.remove('class-active');
+                }
             });
 
-            const activeBtn = document.getElementById('btn-' + kelas);
-            activeBtn.classList.remove('bg-white');
-            activeBtn.classList.add(configKelas[kelas].color, 'class-active');
+            const activeBtn = document.getElementById('btn-' + pembagi);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-white');
+                activeBtn.classList.add(configKelas[pembagi].color, 'class-active');
+            }
 
             const viewRomawi = document.getElementById('view-romawi');
             const boxR3 = document.getElementById('box-r3');
             const labelR2 = document.getElementById('label-r2');
 
-            if (kelas === '45') {
+            if (pembagi === '45') {
                 viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2');
                 boxR3.classList.add('hidden');
                 labelR2.innerText = 'ROM II (x1)'; 
@@ -551,13 +1783,14 @@
                 labelR2.innerText = 'ROM II (x2)'; 
             }
 
-            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1;
-            document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2;
-            if (kelas !== '45') {
-                document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
+            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[pembagi].maxR1;
+            document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[pembagi].maxR2;
+            if (pembagi !== '45') {
+                document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[pembagi].maxR3;
             }
-            document.getElementById('max-total').innerText = 'Maks: ' + kelas;
+            document.getElementById('max-total').innerText = 'Maks: ' + pembagi;
             
+            updateSiswaDropdown();
             validasiNilai();
             updateTampilan();
             kalkulasi();
@@ -570,16 +1803,16 @@
             const tJumlah = document.getElementById('tab-jumlah');
             
             if(mode === 'romawi') {
-                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-indigo-500 text-white shadow-md";
-                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
+                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md";
+                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-romawi').classList.remove('hidden');
                 document.getElementById('view-romawi').classList.add('grid');
                 document.getElementById('view-jumlah').classList.add('hidden');
                 document.getElementById('view-jumlah').classList.remove('flex');
                 setFokus('r1'); 
             } else {
-                tJumlah.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
-                tRomawi.className = "flex-1 py-1 rounded-full text-[11px] font-bold transition-all text-slate-500 bg-transparent";
+                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
+                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-jumlah').classList.remove('hidden');
                 document.getElementById('view-jumlah').classList.add('flex');
                 document.getElementById('view-romawi').classList.add('hidden');
@@ -596,16 +1829,17 @@
                 const el = document.getElementById('box-' + id);
                 if(el) el.classList.remove('input-active');
             });
-            document.getElementById('box-' + idBox).classList.add('input-active');
+            const target = document.getElementById('box-' + idBox);
+            if(target) target.classList.add('input-active');
         }
 
+        // --- INTERAKSI NUMPAD ---
         function tekanTombol(kunci) {
             if (!activeKelas) {
                 const areaKelas = document.getElementById('area-kelas');
                 areaKelas.classList.remove('needs-class');
                 void areaKelas.offsetWidth; 
                 areaKelas.classList.add('needs-class');
-                
                 tampilkanPeringatanLucu('nokelas');
                 return;
             }
@@ -697,6 +1931,7 @@
             const gifEl = document.getElementById('gif-reaction');
 
             if (totalSkor === 0 || !activeKelas) {
+                gifEl.innerHTML = '';
                 gifEl.classList.remove('scale-100');
                 gifEl.classList.add('scale-0');
             } else {
@@ -713,6 +1948,23 @@
             }
         }
 
+        // --- LOAD AWAL ---
+        window.addEventListener('load', () => {
+            muatAturanDariLocal();
+            muatSiswaDariLocal();
+            muatNilaiDariLocal();
+            initLongPressEvents();
+            updateKelasDropdownOptions();
+            
+            // Set default kelas ke kelas pertama yaitu "1 ICP A"
+            const firstClass = "1 ICP A";
+            document.getElementById('select-kelas-grading').value = firstClass;
+            pilihKelasAktif("55", firstClass);
+
+            setMode('jumlah');
+        });
+
+        // Keyboard Fisik Laptop/PC
         document.addEventListener('keydown', function(e) {
             const key = e.key;
             if (/^[0-9]$/.test(key)) {
@@ -721,12 +1973,10 @@
                 tekanTombol('DEL');
             } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
                 tekanTombol('C');
+            } else if (key === 'Enter') {
+                simpanNilaiKeSiswa();
             }
         });
-
-        if (!muatDataOffline()) {
-            setMode('jumlah');
-        }
 
     </script>
 </body>
