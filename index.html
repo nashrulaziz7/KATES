@@ -1846,9 +1846,13 @@
 
         function clearSemuaNilai() {
             if(confirm("Yakin ingin mengosongkan seluruh nilai di kelas ini?")) {
-                const list = databaseSiswa[activeKelas] || [];
+                const list = getSiswaList(currentClassName) || [];
                 list.forEach(s => {
-                    delete dataNilaiSiswa[s.id];
+                    let lookupId = s.id;
+                    if (activeKelas === '45') {
+                        lookupId = s.id + "_45";
+                    }
+                    delete dataNilaiSiswa[lookupId];
                 });
                 simpanNilaiKeLocal();
                 bukaRekapNilai();
@@ -1858,12 +1862,12 @@
 
         function prosesUnduhExcel() {
             const mapelName = document.getElementById('export-mapel-name').value.trim() || "Sumatif Akhir Tahun";
-            const siswaList = databaseSiswa[activeKelas] || [];
+            const siswaList = getSiswaList(currentClassName) || [];
             
             const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             const d = new Date();
-            const dateStr = `${namaHari[d.getDay()]}, ${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
+            const dateStr = `${namaHari[d.getDay()]} , ${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
 
             // Inline styles untuk kompatibilitas mutlak 100% di Microsoft Excel Mobile, WPS Office, dan Excel Laptop
             const styleTitleMain = 'font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; text-align: center; color: #1e3a8a; padding: 10px 0; border: none;';
@@ -1889,7 +1893,7 @@
                 <body>
                     <table>
                         <tr>
-                            <td colspan="4" style="${styleTitleMain}">DAFTAR NILAI KELAS ${configKelas[activeKelas].name.toUpperCase()}</td>
+                            <td colspan="4" style="${styleTitleMain}">DAFTAR NILAI KELAS ${currentClassName.toUpperCase()}</td>
                         </tr>
                         <tr>
                             <td colspan="4" style="${styleTitleSub}">Mata Pelajaran: ${mapelName.toUpperCase()}</td>
@@ -1946,7 +1950,7 @@
             const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Daftar_Nilai_Kelas_${configKelas[activeKelas].name.replace(" ", "_")}_${mapelName.replace(/\s+/g, '_')}.xls`;
+            link.download = `Daftar_Nilai_Kelas_${currentClassName.replace(" ", "_")}_${mapelName.replace(/\s+/g, '_')}.xls`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
