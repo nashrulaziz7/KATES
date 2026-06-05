@@ -6,7 +6,7 @@
     <title>KATES Pro - Kalkulator & Rekap Siswa</title>
     
     <!-- Icon & PWA Manifest Inline -->
-    <link rel="icon" href="LOGO.png" type="image/png">
+    <link class="favicon" rel="icon" href="LOGO.png" type="image/png">
     <link rel="apple-touch-icon" href="LOGO.png">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20Pro%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%20Pro%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
@@ -207,8 +207,8 @@
 
             <!-- List Menu Export -->
             <div class="flex gap-2 mb-4">
-                <button onclick="exportExcel()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">
-                    🟢 EXPORT EXCEL (CSV)
+                <button onclick="bukaExportDialog()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">
+                    🟢 EXPORT EXCEL
                 </button>
                 <button onclick="toggleModal('tambah-siswa-modal', true)" class="bg-blue-600 text-white font-black px-4 py-2.5 rounded-xl text-xs hover:bg-blue-700">
                     + Siswa
@@ -233,10 +233,27 @@
     <!-- MODAL 2: TAMBAH SISWA BARU -->
     <div id="tambah-siswa-modal" class="fixed inset-0 z-[60] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('tambah-siswa-modal', false)"></div>
-        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 text-center flex flex-col items-center">
-            <h3 class="font-black text-slate-800 text-lg mb-3">Tambah Siswa Baru</h3>
-            <p class="text-xs text-slate-400 mb-3" id="tambah-siswa-subtitle">Menambahkan siswa ke kelas...</p>
-            <input type="text" id="input-nama-baru" placeholder="Nama lengkap siswa..." class="w-full p-3 border-2 border-slate-200 rounded-xl outline-none focus:border-blue-500 text-center text-sm font-bold mb-4">
+        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 text-left flex flex-col items-center">
+            <h3 class="font-black text-slate-800 text-lg mb-2 text-center w-full">Tambah Siswa Baru</h3>
+            <p class="text-xs text-slate-400 mb-4 text-center w-full" id="tambah-siswa-subtitle">Mengisi data presensi siswa</p>
+            
+            <div class="w-full space-y-3 mb-5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">KELAS</label>
+                    <select id="add-siswa-kelas" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs bg-white">
+                        <!-- Diisi secara dinamis -->
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NOMOR URUT PRESENSI</label>
+                    <input type="number" id="add-siswa-presensi" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs" placeholder="Contoh: 15">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA LENGKAP SISWA</label>
+                    <input type="text" id="input-nama-baru" placeholder="Nama lengkap siswa..." class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500">
+                </div>
+            </div>
+
             <div class="flex gap-2 w-full">
                 <button onclick="toggleModal('tambah-siswa-modal', false)" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
                 <button onclick="simpanSiswaBaru()" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs">Tambahkan</button>
@@ -265,6 +282,27 @@
             <div class="flex gap-2">
                 <button onclick="toggleModal('edit-kelas-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
                 <button onclick="simpanEditAturan()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: INPUT NAMA MAPEL SEBELUM DOWNLOAD EXCEL -->
+    <div id="export-excel-modal" class="fixed inset-0 z-[70] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('export-excel-modal', false)"></div>
+        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col text-center">
+            <h3 class="font-black text-slate-800 text-lg mb-1">Atur Laporan Excel</h3>
+            <p class="text-xs text-slate-400 mb-4">Masukkan nama mata pelajaran duls</p>
+            
+            <div class="space-y-3 mb-5 text-left">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA MATA PELAJARAN (MAPEL)</label>
+                    <input type="text" id="export-mapel-name" value="Sumatif Akhir Tahun" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="toggleModal('export-excel-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
+                <button onclick="prosesUnduhExcel()" class="flex-1 py-2 bg-emerald-500 text-white font-extrabold rounded-xl text-xs">Download</button>
             </div>
         </div>
     </div>
@@ -315,8 +353,9 @@
                         <span id="label-name-65" class="text-[9px] font-black">KLS 4-5</span>
                         <span id="label-sub-65" class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
                     </button>
-                    <button id="btn-45" data-kelas="45" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
-                        <span id="label-name-45" class="text-[9px] font-black tracking-widest text-purple-600">KODING</span>
+                    <!-- Koding menggunakan Cyan-500 -->
+                    <button id="btn-45" data-kelas="45" style="--glow-color: rgba(6,182,212,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-45" class="text-[9px] font-black text-cyan-600">KODING</span>
                         <span id="label-sub-45" class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
                     </button>
                 </div>
@@ -365,7 +404,7 @@
                 </div>
             </div>
 
-            <!-- DROPDOWN SELECTOR SISWA DEWA (Dipindahkan ke bawah, tepat di atas tombol simpan) -->
+            <!-- DROPDOWN SELECTOR SISWA DEWA -->
             <div class="bg-white/80 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1.5 anim-scores relative z-20 mx-3">
                 <div class="flex items-center justify-between gap-2">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Target Grading:</span>
@@ -375,13 +414,13 @@
                     </button>
                 </div>
                 <div class="flex gap-1.5 items-center w-full">
-                    <!-- Dropdown Pemilihan Kelas (Baru!) -->
+                    <!-- Dropdown Pemilihan Kelas (Ramping 85px) -->
                     <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-1.5 py-1 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
                         <option value="">-- KELAS --</option>
                     </select>
 
                     <div class="flex-1 flex gap-1 min-w-0">
-                        <!-- Dropdown Nama Siswa -->
+                        <!-- Dropdown Nama Siswa (Sifat Simetris & Lebih Panjang) -->
                         <select id="select-siswa" onchange="pilihSiswaManual()" class="flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-1.5 py-1 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500 truncate">
                             <option value="">-- SISWA --</option>
                         </select>
@@ -442,7 +481,7 @@
             '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500', name: 'KLS 1' },
             '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500', name: 'KLS 2-3' },
             '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500', name: 'KLS 4-5' },
-            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-purple-500', name: 'KODING' } 
+            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'KODING' } 
         };
 
         // --- LOOKUP KELAS KE PEMBAGI ---
@@ -459,798 +498,794 @@
         // --- DATABASE SISWA FULL (SESUAI PRESENSI) ---
         const defaultSiswa = {
             "1 ICP A": [
-                { id: "1_icp_a_1", nama: "ALTHAF SHAQUILLE ABHIVANDYA" },
-                { id: "1_icp_a_2", nama: "ANDARU GESIT YANARTA" },
-                { id: "1_icp_a_3", nama: "Atarazka Syahnan Haziq" },
-                { id: "1_icp_a_4", nama: "Balqis Akasha Shafiyah" },
-                { id: "1_icp_a_5", nama: "BOY ATHALLAH BAKHRY" },
-                { id: "1_icp_a_6", nama: "Elvara Aiza Santosa" },
-                { id: "1_icp_a_7", nama: "Hamda Batrisya Seika" },
-                { id: "1_icp_a_8", nama: "Inara Putri Arkadewi" },
-                { id: "1_icp_a_9", nama: "LUKITA ASKANA SAKHI" },
-                { id: "1_icp_a_10", nama: "Muhammad Tangguh Asnawi" },
-                { id: "1_icp_a_11", nama: "Nizar Abdillah Ghazwan" },
-                { id: "1_icp_a_12", nama: "PESONA HARUM HUMAIRA" },
-                { id: "1_icp_a_13", nama: "RIFANI REYYA ANNISA" },
-                { id: "1_icp_a_14", nama: "WAFAZENA JANITRALESHA" }
+                { id: "1_icp_a_1", nama: "ALTHAF SHAQUILLE ABHIVANDYA", presensi: 1 },
+                { id: "1_icp_a_2", nama: "ANDARU GESIT YANARTA", presensi: 2 },
+                { id: "1_icp_a_3", nama: "Atarazka Syahnan Haziq", presensi: 3 },
+                { id: "1_icp_a_4", nama: "Balqis Akasha Shafiyah", presensi: 4 },
+                { id: "1_icp_a_5", nama: "BOY ATHALLAH BAKHRY", presensi: 5 },
+                { id: "1_icp_a_6", nama: "Elvara Aiza Santosa", presensi: 6 },
+                { id: "1_icp_a_7", nama: "Hamda Batrisya Seika", presensi: 7 },
+                { id: "1_icp_a_8", nama: "Inara Putri Arkadewi", presensi: 8 },
+                { id: "1_icp_a_9", nama: "LUKITA ASKANA SAKHI", presensi: 9 },
+                { id: "1_icp_a_10", nama: "Muhammad Tangguh Asnawi", presensi: 10 },
+                { id: "1_icp_a_11", nama: "Nizar Abdillah Ghazwan", presensi: 11 },
+                { id: "1_icp_a_12", nama: "PESONA HARUM HUMAIRA", presensi: 12 },
+                { id: "1_icp_a_13", nama: "RIFANI REYYA ANNISA", presensi: 13 },
+                { id: "1_icp_a_14", nama: "WAFAZENA JANITRALESHA", presensi: 14 }
             ],
             "1 ICP B": [
-                { id: "1_icp_b_1", nama: "CINTA AFIA SYAILENDRA" },
-                { id: "1_icp_b_2", nama: "DAVIN AL CHALIEF ERABBANI" },
-                { id: "1_icp_b_3", nama: "Diana Aiza Hudaya" },
-                { id: "1_icp_b_4", nama: "Illona Nusaibah Azzahra" },
-                { id: "1_icp_b_5", nama: "Jihan Arsylia Nugroho" },
-                { id: "1_icp_b_6", nama: "KHALISTA ALIFIA GUNTORO" },
-                { id: "1_icp_b_7", nama: "KHAWLA ADIBA DHATU" },
-                { id: "1_icp_b_8", nama: "MALVEN RAFIIANDRA ARLY WIBOWO" },
-                { id: "1_icp_b_9", nama: "MOZEIN ARKEVIN" },
-                { id: "1_icp_b_10", nama: "Muhammad Zhafran Abdurrahman" },
-                { id: "1_icp_b_11", nama: "Ocean Hoki Praditya" },
-                { id: "1_icp_b_12", nama: "Zharif Almuqaffi Digit" },
-                { id: "1_icp_b_13", nama: "Herdinar Siti Noorjehan Fidiyanto" }
+                { id: "1_icp_b_1", nama: "CINTA AFIA SYAILENDRA", presensi: 1 },
+                { id: "1_icp_b_2", nama: "DAVIN AL CHALIEF ERABBANI", presensi: 2 },
+                { id: "1_icp_b_3", nama: "Diana Aiza Hudaya", presensi: 3 },
+                { id: "1_icp_b_4", nama: "Illona Nusaibah Azzahra", presensi: 4 },
+                { id: "1_icp_b_5", nama: "Jihan Arsylia Nugroho", presensi: 5 },
+                { id: "1_icp_b_6", nama: "KHALISTA ALIFIA GUNTORO", presensi: 6 },
+                { id: "1_icp_b_7", nama: "KHAWLA ADIBA DHATU", presensi: 7 },
+                { id: "1_icp_b_8", nama: "MALVEN RAFIIANDRA ARLY WIBOWO", presensi: 8 },
+                { id: "1_icp_b_9", nama: "MOZEIN ARKEVIN", presensi: 9 },
+                { id: "1_icp_b_10", nama: "Muhammad Zhafran Abdurrahman", presensi: 10 },
+                { id: "1_icp_b_11", nama: "Ocean Hoki Praditya", presensi: 11 },
+                { id: "1_icp_b_12", nama: "Zharif Almuqaffi Digit", presensi: 12 },
+                { id: "1_icp_b_13", nama: "Herdinar Siti Noorjehan Fidiyanto", presensi: 13 }
             ],
             "1A": [
-                { id: "1a_1", nama: "ABDULLAH AFKAR" },
-                { id: "1a_2", nama: "ABIDZAR HASAN ALFARISI" },
-                { id: "1a_3", nama: "Adreena Agil Maheswari" },
-                { id: "1a_4", nama: "ADZKIYA PINKA FADHEELA" },
-                { id: "1a_5", nama: "ALIF MAULANA ADHYASTHA" },
-                { id: "1a_6", nama: "ATHARRAZKA SAPUTRA" },
-                { id: "1a_7", nama: "AWFA RANIA AZZAHRA" },
-                { id: "1a_8", nama: "DANIS ABRISAM" },
-                { id: "1a_9", nama: "ELHASIQ KSATRIA IBAD EFENDI" },
-                { id: "1a_10", nama: "FREYA SAILA WIDIYANTO" },
-                { id: "1a_11", nama: "HAEDAR AL GHANY YAZEED" },
-                { id: "1a_12", nama: "HAIDAR KIANO ALRAFAEYZA" },
-                { id: "1a_13", nama: "HASNAH KHAIRUNNISA HUMAIROH" },
-                { id: "1a_14", nama: "IBRAHIM AHMAD ABDUR ROUUF" },
-                { id: "1a_15", nama: "KEINARRA AZKADINA WIJAYA" },
-                { id: "1a_16", nama: "KHANSA PARAMITA WIBOWO" },
-                { id: "1a_17", nama: "Khayra Mutiara Khalidiya" },
-                { id: "1a_18", nama: "MAHANTA LEON ARRASYID" },
-                { id: "1a_19", nama: "MUHAMMAD ABBIYA RAZKAJATI" },
-                { id: "1a_20", nama: "Muhammad Idris Asy Syafii" },
-                { id: "1a_21", nama: "NOURA KHANZANIA MECCA WIRAWAN" },
-                { id: "1a_22", nama: "Nusaibah Aqila Choirunnisa" },
-                { id: "1a_23", nama: "Omarizz Adrintaka Zayn" },
-                { id: "1a_24", nama: "Rania Arsyi Nailazaara" },
-                { id: "1a_25", nama: "RM Aldianurrasyid Rajendra Kusumo" },
-                { id: "1a_26", nama: "Sakura Reiwa Gunawan" },
-                { id: "1a_27", nama: "ZALENZIO MAULANA FACHRIANSYAH" },
-                { id: "1a_28", nama: "KINARA TAQIYYA ADLA" }
+                { id: "1a_1", nama: "ABDULLAH AFKAR", presensi: 1 },
+                { id: "1a_2", nama: "ABIDZAR HASAN ALFARISI", presensi: 2 },
+                { id: "1a_3", nama: "Adreena Agil Maheswari", presensi: 3 },
+                { id: "1a_4", nama: "ADZKIYA PINKA FADHEELA", presensi: 4 },
+                { id: "1a_5", nama: "ALIF MAULANA ADHYASTHA", presensi: 5 },
+                { id: "1a_6", nama: "ATHARRAZKA SAPUTRA", presensi: 6 },
+                { id: "1a_7", nama: "AWFA RANIA AZZAHRA", presensi: 7 },
+                { id: "1a_8", nama: "DANIS ABRISAM", presensi: 8 },
+                { id: "1a_9", nama: "ELHASIQ KSATRIA IBAD EFENDI", presensi: 9 },
+                { id: "1a_10", nama: "FREYA SAILA WIDIYANTO", presensi: 10 },
+                { id: "1a_11", nama: "HAEDAR AL GHANY YAZEED", presensi: 11 },
+                { id: "1a_12", nama: "HAIDAR KIANO ALRAFAEYZA", presensi: 12 },
+                { id: "1a_13", nama: "HASNAH KHAIRUNNISA HUMAIROH", presensi: 13 },
+                { id: "1a_14", nama: "IBRAHIM AHMAD ABDUR ROUUF", presensi: 14 },
+                { id: "1a_15", nama: "KEINARRA AZKADINA WIJAYA", presensi: 15 },
+                { id: "1a_16", nama: "KHANSA PARAMITA WIBOWO", presensi: 16 },
+                { id: "1a_17", nama: "Khayra Mutiara Khalidiya", presensi: 17 },
+                { id: "1a_18", nama: "MAHANTA LEON ARRASYID", presensi: 18 },
+                { id: "1a_19", nama: "MUHAMMAD ABBIYA RAZKAJATI", presensi: 19 },
+                { id: "1a_20", nama: "Muhammad Idris Asy Syafii", presensi: 20 },
+                { id: "1a_21", nama: "NOURA KHANZANIA MECCA WIRAWAN", presensi: 21 },
+                { id: "1a_22", nama: "Nusaibah Aqila Choirunnisa", presensi: 22 },
+                { id: "1a_23", nama: "Omarizz Adrintaka Zayn", presensi: 23 },
+                { id: "1a_24", nama: "Rania Arsyi Nailazaara", presensi: 24 },
+                { id: "1a_25", nama: "RM Aldianurrasyid Rajendra Kusumo", presensi: 25 },
+                { id: "1a_26", nama: "Sakura Reiwa Gunawan", presensi: 26 },
+                { id: "1a_27", nama: "ZALENZIO MAULANA FACHRIANSYAH", presensi: 27 },
+                { id: "1a_28", nama: "KINARA TAQIYYA ADLA", presensi: 28 }
             ],
             "1B": [
-                { id: "1b_1", nama: "ADERA KIREINA HUTOMO" },
-                { id: "1b_2", nama: "Aerish Qia Adzkadina" },
-                { id: "1b_3", nama: "AISYAH NAYLA SALSABILA" },
-                { id: "1b_4", nama: "ALESHA HANA ELSHANUM" },
-                { id: "1b_5", nama: "ATHAFARIZ DANISH PRATAMA" },
-                { id: "1b_6", nama: "AZKADINA FAKHRA FAOZI" },
-                { id: "1b_7", nama: "BERYL SALSABELA" },
-                { id: "1b_8", nama: "Ceisya Azzahra Hardian" },
-                { id: "1b_9", nama: "DZIHANDRA RAFIF SANTOSA" },
-                { id: "1b_10", nama: "FATHAN HAIDAR HAMIDI" },
-                { id: "1b_11", nama: "Fawwaz Diaurahman Hiroshi Abqori" },
-                { id: "1b_12", nama: "FAZIA NURAISHA BIANTARA" },
-                { id: "1b_13", nama: "GHAFI ATHAZAKY DIRGANTORO" },
-                { id: "1b_14", nama: "IBRAHIM ALFARIZI NUR ALDY" },
-                { id: "1b_15", nama: "Ibrahim Arsa Wicaksono" },
-                { id: "1b_16", nama: "Kenziano Tyaga Alfarizqi" },
-                { id: "1b_17", nama: "KEYNARA ABRINA NADHIFA" },
-                { id: "1b_18", nama: "MAHAJANA CARL PASSANDO" },
-                { id: "1b_19", nama: "Muhammad Alfatih" },
-                { id: "1b_20", nama: "MUHAMMAD AZKA RYUZAKI" },
-                { id: "1b_21", nama: "MUHAMMAD RAFFI AL GHIFARI" },
-                { id: "1b_22", nama: "Muhammad Rifky" },
-                { id: "1b_23", nama: "Nazeera Anum Asy'Ari" },
-                { id: "1b_24", nama: "Rafif Athafariz" },
-                { id: "1b_25", nama: "Rania Zalfa Ramadhani" },
-                { id: "1b_26", nama: "Riga Gilbyan" },
-                { id: "1b_27", nama: "Shakeil El Barra Aditia" },
-                { id: "1b_28", nama: "SHALOOM BETSY SANTOSO" }
+                { id: "1b_1", nama: "ADERA KIREINA HUTOMO", presensi: 1 },
+                { id: "1b_2", nama: "Aerish Qia Adzkadina", presensi: 2 },
+                { id: "1b_3", nama: "AISYAH NAYLA SALSABILA", presensi: 3 },
+                { id: "1b_4", nama: "ALESHA HANA ELSHANUM", presensi: 4 },
+                { id: "1b_5", nama: "ATHAFARIZ DANISH PRATAMA", presensi: 5 },
+                { id: "1b_6", nama: "AZKADINA FAKHRA FAOZI", presensi: 6 },
+                { id: "1b_7", nama: "BERYL SALSABELA", presensi: 7 },
+                { id: "1b_8", nama: "Ceisya Azzahra Hardian", presensi: 8 },
+                { id: "1b_9", nama: "DZIHANDRA RAFIF SANTOSA", presensi: 9 },
+                { id: "1b_10", nama: "FATHAN HAIDAR HAMIDI", presensi: 10 },
+                { id: "1b_11", nama: "Fawwaz Diaurahman Hiroshi Abqori", presensi: 11 },
+                { id: "1b_12", nama: "FAZIA NURAISHA BIANTARA", presensi: 12 },
+                { id: "1b_13", nama: "GHAFI ATHAZAKY DIRGANTORO", presensi: 13 },
+                { id: "1b_14", nama: "IBRAHIM ALFARIZI NUR ALDY", presensi: 14 },
+                { id: "1b_15", nama: "Ibrahim Arsa Wicaksono", presensi: 15 },
+                { id: "1b_16", nama: "Kenziano Tyaga Alfarizqi", presensi: 16 },
+                { id: "1b_17", nama: "KEYNARA ABRINA NADHIFA", presensi: 17 },
+                { id: "1b_18", nama: "MAHAJANA CARL PASSANDO", presensi: 18 },
+                { id: "1b_19", nama: "Muhammad Alfatih", presensi: 19 },
+                { id: "1b_20", nama: "MUHAMMAD AZKA RYUZAKI", presensi: 20 },
+                { id: "1b_21", nama: "MUHAMMAD RAFFI AL GHIFARI", presensi: 21 },
+                { id: "1b_22", nama: "Muhammad Rifky", presensi: 22 },
+                { id: "1b_23", nama: "Nazeera Anum Asy'Ari", presensi: 23 },
+                { id: "1b_24", nama: "Rafif Athafariz", presensi: 24 },
+                { id: "1b_25", nama: "Rania Zalfa Ramadhani", presensi: 25 },
+                { id: "1b_26", nama: "Riga Gilbyan", presensi: 26 },
+                { id: "1b_27", nama: "Shakeil El Barra Aditia", presensi: 27 },
+                { id: "1b_28", nama: "SHALOOM BETSY SANTOSO", presensi: 28 }
             ],
             "1C": [
-                { id: "1c_1", nama: "Abizar Zain Alby Devkhan" },
-                { id: "1c_2", nama: "ALDRIC FAHREZA PURNOMO" },
-                { id: "1c_3", nama: "ALESHA PUTRI KINANTI" },
-                { id: "1c_4", nama: "AQMAR NADHIF AL AZIZ" },
-                { id: "1c_5", nama: "AQUILA BRAMARA CHOIRUZZEIN" },
-                { id: "1c_6", nama: "AYSILA NURA RASHNA" },
-                { id: "1c_7", nama: "DAVIANDRA RADEVA ATHARRAZKA" },
-                { id: "1c_8", nama: "FATIMAH HASNA ARIFAH" },
-                { id: "1c_9", nama: "FILIO FARZANA ZHIODA" },
-                { id: "1c_10", nama: "GIBRAN KHIAR WALIUDDIN" },
-                { id: "1c_11", nama: "HANA SYARIF BAWAZIR" },
-                { id: "1c_12", nama: "IBRAHIM AHMAD ABDUL FATTAAH" },
-                { id: "1c_13", nama: "KARIN ALESHA AZZAHRA" },
-                { id: "1c_14", nama: "MONERA ALIFIA ASRIKAN" },
-                { id: "1c_15", nama: "MUHAMMAD ATTHAR ALHUSAIN" },
-                { id: "1c_16", nama: "Muhammad Saka Maladira Alfahreza" },
-                { id: "1c_17", nama: "Mutia Nur Afifah" },
-                { id: "1c_18", nama: "NAYLA AZZAHRA SAVINA" },
-                { id: "1c_19", nama: "Nazhan Azwar Algani" },
-                { id: "1c_20", nama: "QANEITA KHAIRUN NISA" },
-                { id: "1c_21", nama: "Rafa Alfarizi" },
-                { id: "1c_22", nama: "Rasya Mochamad Athaya Bakti" },
-                { id: "1c_23", nama: "Shabia Elmedina Farras" },
-                { id: "1c_24", nama: "Yumna Latifah Ilmi Saputro" }
+                { id: "1c_1", nama: "Abizar Zain Alby Devkhan", presensi: 1 },
+                { id: "1c_2", nama: "ALDRIC FAHREZA PURNOMO", presensi: 2 },
+                { id: "1c_3", nama: "ALESHA PUTRI KINANTI", presensi: 3 },
+                { id: "1c_4", nama: "AQMAR NADHIF AL AZIZ", presensi: 4 },
+                { id: "1c_5", nama: "AQUILA BRAMARA CHOIRUZZEIN", presensi: 5 },
+                { id: "1c_6", nama: "AYSILA NURA RASHNA", presensi: 6 },
+                { id: "1c_7", nama: "DAVIANDRA RADEVA ATHARRAZKA", presensi: 7 },
+                { id: "1c_8", nama: "FATIMAH HASNA ARIFAH", presensi: 8 },
+                { id: "1c_9", nama: "FILIO FARZANA ZHIODA", presensi: 9 },
+                { id: "1c_10", nama: "GIBRAN KHIAR WALIUDDIN", presensi: 10 },
+                { id: "1c_11", nama: "HANA SYARIF BAWAZIR", presensi: 11 },
+                { id: "1c_12", nama: "IBRAHIM AHMAD ABDUL FATTAAH", presensi: 12 },
+                { id: "1c_13", nama: "KARIN ALESHA AZZAHRA", presensi: 13 },
+                { id: "1c_14", nama: "MONERA ALIFIA ASRIKAN", presensi: 14 },
+                { id: "1c_15", nama: "MUHAMMAD ATTHAR ALHUSAIN", presensi: 15 },
+                { id: "1c_16", nama: "Muhammad Saka Maladira Alfahreza", presensi: 16 },
+                { id: "1c_17", nama: "Mutia Nur Afifah", presensi: 17 },
+                { id: "1c_18", nama: "NAYLA AZZAHRA SAVINA", presensi: 18 },
+                { id: "1c_19", nama: "Nazhan Azwar Algani", presensi: 19 },
+                { id: "1c_20", nama: "QANEITA KHAIRUN NISA", presensi: 20 },
+                { id: "1c_21", nama: "Rafa Alfarizi", presensi: 21 },
+                { id: "1c_22", nama: "Rasya Mochamad Athaya Bakti", presensi: 22 },
+                { id: "1c_23", nama: "Shabia Elmedina Farras", presensi: 23 },
+                { id: "1c_24", nama: "Yumna Latifah Ilmi Saputro", presensi: 24 }
             ],
             "1D": [
-                { id: "1d_1", nama: "AIZA SHANUM MAFAZA" },
-                { id: "1d_2", nama: "AL IHYA ULUMUDDIN" },
-                { id: "1d_3", nama: "ALEENA HANY SHAFIQAH" },
-                { id: "1d_4", nama: "Alesha Qinara Sakhi" },
-                { id: "1d_5", nama: "ALMAHYRA YUMNA KHALISA" },
-                { id: "1d_6", nama: "ANAM KHAIRUL LUTHFI" },
-                { id: "1d_7", nama: "ARKA ALI PRADANA" },
-                { id: "1d_8", nama: "Chayra Putri Basyirah" },
-                { id: "1d_9", nama: "Cirrillo Kyo Saputro Wiyono" },
-                { id: "1d_10", nama: "FELISHA AZMA TSANIA" },
-                { id: "1d_11", nama: "Ghazal Ilario Liban" },
-                { id: "1d_12", nama: "HANA HAFIZA ANINDYA" },
-                { id: "1d_13", nama: "Humaira Embun Putri Ardiansyah" },
-                { id: "1d_14", nama: "Juang Ammar Al Syaddad" },
-                { id: "1d_15", nama: "KALANDRA RAYYAN ALFARIZI" },
-                { id: "1d_16", nama: "KAYYARA YASMENA AHMAD" },
-                { id: "1d_17", nama: "KEANU ARSHAKA ZAFEER" },
-                { id: "1d_18", nama: "KHADIJAH HAURA WIRDA" },
-                { id: "1d_19", nama: "LAVENIA ARISHA MAHARANI SETIAWAN" },
-                { id: "1d_20", nama: "MUHAMMAD ABIZAR AL FARIZI" },
-                { id: "1d_21", nama: "Mushab Hafizan Abqary" },
-                { id: "1d_22", nama: "RAFKA ABIMANYU NUKMAN" },
-                { id: "1d_23", nama: "RAJENDRA VENENO ALFARIZKI" },
-                { id: "1d_24", nama: "RASYAD ABDURRAHMAN SYAUKANI" },
-                { id: "1d_25", nama: "Raysakha Janitra Saskara" },
-                { id: "1d_26", nama: "SYAFIRA RAMADHANI" },
-                { id: "1d_27", nama: "Tita Faranisa Birdella" },
-                { id: "1d_28", nama: "YASMINA ISMAIL MARWAZI" }
+                { id: "1d_1", nama: "AIZA SHANUM MAFAZA", presensi: 1 },
+                { id: "1d_2", nama: "AL IHYA ULUMUDDIN", presensi: 2 },
+                { id: "1d_3", nama: "ALEENA HANY SHAFIQAH", presensi: 3 },
+                { id: "1d_4", nama: "Alesha Qinara Sakhi", presensi: 4 },
+                { id: "1d_5", nama: "ALMAHYRA YUMNA KHALISA", presensi: 5 },
+                { id: "1d_6", nama: "ANAM KHAIRUL LUTHFI", presensi: 6 },
+                { id: "1d_7", nama: "ARKA ALI PRADANA", presensi: 7 },
+                { id: "1d_8", nama: "Chayra Putri Basyirah", presensi: 8 },
+                { id: "1d_9", nama: "Cirrillo Kyo Saputro Wiyono", presensi: 9 },
+                { id: "1d_10", nama: "FELISHA AZMA TSANIA", presensi: 10 },
+                { id: "1d_11", nama: "Ghazal Ilario Liban", presensi: 11 },
+                { id: "1d_12", nama: "HANA HAFIZA ANINDYA", presensi: 12 },
+                { id: "1d_13", nama: "Humaira Embun Putri Ardiansyah", presensi: 13 },
+                { id: "1d_14", nama: "Juang Ammar Al Syaddad", presensi: 14 },
+                { id: "1d_15", nama: "KALANDRA RAYYAN ALFARIZI", presensi: 15 },
+                { id: "1d_16", nama: "KAYYARA YASMENA AHMAD", presensi: 16 },
+                { id: "1d_17", nama: "KEANU ARSHAKA ZAFEER", presensi: 17 },
+                { id: "1d_18", nama: "KHADIJAH HAURA WIRDA", presensi: 18 },
+                { id: "1d_19", nama: "LAVENIA ARISHA MAHARANI SETIAWAN", presensi: 19 },
+                { id: "1d_20", nama: "MUHAMMAD ABIZAR AL FARIZI", presensi: 20 },
+                { id: "1d_21", nama: "Mushab Hafizan Abqary", presensi: 21 },
+                { id: "1d_22", nama: "RAFKA ABIMANYU NUKMAN", presensi: 22 },
+                { id: "1d_23", nama: "RAJENDRA VENENO ALFARIZKI", presensi: 23 },
+                { id: "1d_24", nama: "RASYAD ABDURRAHMAN SYAUKANI", presensi: 24 },
+                { id: "1d_25", nama: "Raysakha Janitra Saskara", presensi: 25 },
+                { id: "1d_26", nama: "SYAFIRA RAMADHANI", presensi: 26 },
+                { id: "1d_27", nama: "Tita Faranisa Birdella", presensi: 27 },
+                { id: "1d_28", nama: "YASMINA ISMAIL MARWAZI", presensi: 28 }
             ],
             "2 ICP A": [
-                { id: "2_icp_a_1", nama: "AFZAR HAZIQ MUSYAFFA" },
-                { id: "2_icp_a_2", nama: "ALISHA SHAKAYLA FAYANI" },
-                { id: "2_icp_a_3", nama: "ALNILAM ZEA FAIRUZA" },
-                { id: "2_icp_a_4", nama: "ALTHAF VIRENDRA ARSALAN" },
-                { id: "2_icp_a_5", nama: "Arshaka Gibran Daniswara" },
-                { id: "2_icp_a_6", nama: "CORDELIA NADHIFA SAFANI" },
-                { id: "2_icp_a_7", nama: "Davin Heksa Ardhana" },
-                { id: "2_icp_a_8", nama: "ELZIO BARRA MAULANA" },
-                { id: "2_icp_a_9", nama: "FAKHRI ASYRAF SHOFWAN MUSTAQIM" },
-                { id: "2_icp_a_10", nama: "Gisella Zahira Joice" },
-                { id: "2_icp_a_11", nama: "KANEZKA SAKHA ALVARENDRA" },
-                { id: "2_icp_a_12", nama: "KHAIREEN ADIKARAPUTRI ALMAHYRA" },
-                { id: "2_icp_a_13", nama: "KINARIAN SHAFA KIRANA" },
-                { id: "2_icp_a_14", nama: "MIKHAYLA ANDREA AZZAHRA" },
-                { id: "2_icp_a_15", nama: "MUTIARA SYAFIA JAZZYVANIA" },
-                { id: "2_icp_a_16", nama: "RAMADHAN RAYYAN" },
-                { id: "2_icp_a_17", nama: "REYHAN DZAKIANDRA WIDJAYA" },
-                { id: "2_icp_a_18", nama: "RISANG EESHA KUMANDANG" },
-                { id: "2_icp_a_19", nama: "Sheryl Anindya Elmarisa" },
-                { id: "2_icp_a_20", nama: "SYAILENDRA SAMODRO JATI WASESO" }
+                { id: "2_icp_a_1", nama: "AFZAR HAZIQ MUSYAFFA", presensi: 1 },
+                { id: "2_icp_a_2", nama: "ALISHA SHAKAYLA FAYANI", presensi: 2 },
+                { id: "2_icp_a_3", nama: "ALNILAM ZEA FAIRUZA", presensi: 3 },
+                { id: "2_icp_a_4", nama: "ALTHAF VIRENDRA ARSALAN", presensi: 4 },
+                { id: "2_icp_a_5", nama: "Arshaka Gibran Daniswara", presensi: 5 },
+                { id: "2_icp_a_6", nama: "CORDELIA NADHIFA SAFANI", presensi: 6 },
+                { id: "2_icp_a_7", nama: "Davin Heksa Ardhana", presensi: 7 },
+                { id: "2_icp_a_8", nama: "ELZIO BARRA MAULANA", presensi: 8 },
+                { id: "2_icp_a_9", nama: "FAKHRI ASYRAF SHOFWAN MUSTAQIM", presensi: 9 },
+                { id: "2_icp_a_10", nama: "Gisella Zahira Joice", presensi: 10 },
+                { id: "2_icp_a_11", nama: "KANEZKA SAKHA ALVARENDRA", presensi: 11 },
+                { id: "2_icp_a_12", nama: "KHAIREEN ADIKARAPUTRI ALMAHYRA", presensi: 12 },
+                { id: "2_icp_a_13", nama: "KINARIAN SHAFA KIRANA", presensi: 13 },
+                { id: "2_icp_a_14", nama: "MIKHAYLA ANDREA AZZAHRA", presensi: 14 },
+                { id: "2_icp_a_15", nama: "MUTIARA SYAFIA JAZZYVANIA", presensi: 15 },
+                { id: "2_icp_a_16", nama: "RAMADHAN RAYYAN", presensi: 16 },
+                { id: "2_icp_a_17", nama: "REYHAN DZAKIANDRA WIDJAYA", presensi: 17 },
+                { id: "2_icp_a_18", nama: "RISANG EESHA KUMANDANG", presensi: 18 },
+                { id: "2_icp_a_19", nama: "Sheryl Anindya Elmarisa", presensi: 19 },
+                { id: "2_icp_a_20", nama: "SYAILENDRA SAMODRO JATI WASESO", presensi: 20 }
             ],
             "2A": [
-                { id: "2a_1", nama: "Abibah Maida Nahda Prasanda" },
-                { id: "2a_2", nama: "Aksa D Rafael" },
-                { id: "2a_3", nama: "Alea Briona Raqqema" },
-                { id: "2a_4", nama: "ALESHA SYAFA CARRENISA" },
-                { id: "2a_5", nama: "Alifa Adzkiya Putri Arifin" },
-                { id: "2a_6", nama: "ALIYA MAHARANI ROOSSETYO" },
-                { id: "2a_7", nama: "Althafunnizar Mauza Putra" },
-                { id: "2a_8", nama: "Alvisco Ocean Wibowo" },
-                { id: "2a_9", nama: "Andara Herfi Maulida" },
-                { id: "2a_10", nama: "APRILLA SIHAN PUTRI ATMAJA" },
-                { id: "2a_11", nama: "ARKANA PRATAMA DINIYAN" },
-                { id: "2a_12", nama: "Ashalina Makayla Almahyra" },
-                { id: "2a_13", nama: "Audrey Anggita Putri" },
-                { id: "2a_14", nama: "Ayesha Inara Havika Sakti" },
-                { id: "2a_15", nama: "AZRIL MAUZA ADHITAMA" },
-                { id: "2a_16", nama: "AZZAM AL ARKHAN" },
-                { id: "2a_17", nama: "BELVIA JEEHANDYA JAYA" },
-                { id: "2a_18", nama: "DEARSYILA VINCA VIOLETTA" },
-                { id: "2a_19", nama: "DHANESH RASHAAD ARTANABIL" },
-                { id: "2a_20", nama: "Enver Dhafin Shakeel" },
-                { id: "2a_21", nama: "FALAH FERDIANSYAH" },
-                { id: "2a_22", nama: "Faqih Ariendra Keenan Alfarezel" },
-                { id: "2a_23", nama: "Fatur Al-Ghifari Mekka Rahardjo" },
-                { id: "2a_24", nama: "HAMIZAN AZFAR" },
-                { id: "2a_25", nama: "HUMAIRA AZKA HERYUDI" },
-                { id: "2a_26", nama: "SAPHENA ANNASYA SOFYAN" }
+                { id: "2a_1", nama: "Abibah Maida Nahda Prasanda", presensi: 1 },
+                { id: "2a_2", nama: "Aksa D Rafael", presensi: 2 },
+                { id: "2a_3", nama: "Alea Briona Raqqema", presensi: 3 },
+                { id: "2a_4", nama: "ALESHA SYAFA CARRENISA", presensi: 4 },
+                { id: "2a_5", nama: "Alifa Adzkiya Putri Arifin", presensi: 5 },
+                { id: "2a_6", nama: "ALIYA MAHARANI ROOSSETYO", presensi: 6 },
+                { id: "2a_7", nama: "Althofunnizar Mauza Putra", presensi: 7 },
+                { id: "2a_8", nama: "Alvisco Ocean Wibowo", presensi: 8 },
+                { id: "2a_9", nama: "Andara Herfi Maulida", presensi: 9 },
+                { id: "2a_10", nama: "APRILLA SIHAN PUTRI ATMAJA", presensi: 10 },
+                { id: "2a_11", nama: "ARKANA PRATAMA DINIYAN", presensi: 11 },
+                { id: "2a_12", nama: "Ashalina Makayla Almahyra", presensi: 12 },
+                { id: "2a_13", nama: "Audrey Anggita Putri", presensi: 13 },
+                { id: "2a_14", nama: "Ayesha Inara Havika Sakti", presensi: 14 },
+                { id: "2a_15", nama: "AZRIL MAUZA ADHITAMA", presensi: 15 },
+                { id: "2a_16", nama: "AZZAM AL ARKHAN", presensi: 16 },
+                { id: "2a_17", nama: "BELVIA JEEHANDYA JAYA", presensi: 17 },
+                { id: "2a_18", nama: "DEARSYILA VINCA VIOLETTA", presensi: 18 },
+                { id: "2a_19", nama: "DHANESH RASHAAD ARTANABIL", presensi: 19 },
+                { id: "2a_20", nama: "Enver Dhafin Shakeel", presensi: 20 },
+                { id: "2a_21", nama: "FALAH FERDIANSYAH", presensi: 21 },
+                { id: "2a_22", nama: "Faqih Ariendra Keenan Alfarezel", presensi: 22 },
+                { id: "2a_23", nama: "Fatur Al-Ghifari Mekka Rahardjo", presensi: 23 },
+                { id: "2a_24", nama: "HAMIZAN AZFAR", presensi: 24 },
+                { id: "2a_25", nama: "HUMAIRA AZKA HERYUDI", presensi: 25 },
+                { id: "2a_26", nama: "SAPHENA ANNASYA SOFYAN", presensi: 26 }
             ],
             "2B": [
-                { id: "2b_1", nama: "ADIVA SHAQUEENA AZZAHRA" },
-                { id: "2b_2", nama: "ANNASTASYA ELENA QAMRA" },
-                { id: "2b_3", nama: "Aqila Putri ashalina" },
-                { id: "2b_4", nama: "ARSENIO BERRYL ABQARI" },
-                { id: "2b_5", nama: "ARSYAD ABDURAHMAN" },
-                { id: "2b_6", nama: "Arsyfa Syabella Humaira" },
-                { id: "2b_7", nama: "ATHAFARIZ ALVARENDRA OSTIN" },
-                { id: "2b_8", nama: "Ayyash Tsaqif Alfatih" },
-                { id: "2b_9", nama: "Dalane Jo D'angel" },
-                { id: "2b_10", nama: "El Wafa Bintang Nawwarulhuda" },
-                { id: "2b_11", nama: "GEORGIA SYANUM GIYANTO PRASODJO" },
-                { id: "2b_12", nama: "Gibran Evano Pramudita" },
-                { id: "2b_13", nama: "ILYAS FATAHILLAH ZAIN" },
-                { id: "2b_14", nama: "Inara Oktaviani Putri Kusuma" },
-                { id: "2b_15", nama: "ISTIB SYARUNANJALA" },
-                { id: "2b_16", nama: "KAHISHA ARTA SAFFIYA" },
-                { id: "2b_17", nama: "Kyna Asyakina Zahira Badegesy" },
-                { id: "2b_18", nama: "Lionel Alvaro Zanetti" },
-                { id: "2b_19", nama: "Muhammad Althof Zahirul Haq" },
-                { id: "2b_20", nama: "NAFIRZHA RIZKYLLAH FATHONY" },
-                { id: "2b_21", nama: "NATASYA ALMIRA" },
-                { id: "2b_22", nama: "RAFANIA AZZAHRA" },
-                { id: "2b_23", nama: "Rafif Akhmar Santoso" },
-                { id: "2b_24", nama: "SANG ALAMRAZD HAQ" },
-                { id: "2b_25", nama: "SHAZFA HANANIA AZAHRA" },
-                { id: "2b_26", nama: "TANAYA REKHA OPALINA" },
-                { id: "2b_27", nama: "ZIANNISA FAHMIDA AFRA" }
+                { id: "2b_1", nama: "ADIVA SHAQUEENA AZZAHRA", presensi: 1 },
+                { id: "2b_2", nama: "ANNASTASYA ELENA QAMRA", presensi: 2 },
+                { id: "2b_3", nama: "Aqila Putri ashalina", presensi: 3 },
+                { id: "2b_4", nama: "ARSENIO BERRYL ABQARI", presensi: 4 },
+                { id: "2b_5", nama: "ARSYAD ABDURAHMAN", presensi: 5 },
+                { id: "2b_6", nama: "Arsyfa Syabella Humaira", presensi: 6 },
+                { id: "2b_7", nama: "ATHAFARIZ ALVARENDRA OSTIN", presensi: 7 },
+                { id: "2b_8", nama: "Ayyash Tsaqif Alfatih", presensi: 8 },
+                { id: "2b_9", nama: "Dalane Jo D'angel", presensi: 9 },
+                { id: "2b_10", nama: "El Wafa Bintang Nawwarulhuda", presensi: 10 },
+                { id: "2b_11", nama: "GEORGIA SYANUM GIYANTO PRASODJO", presensi: 11 },
+                { id: "2b_12", nama: "Gibran Evano Pramudita", presensi: 12 },
+                { id: "2b_13", nama: "ILYAS FATAHILLAH ZAIN", presensi: 13 },
+                { id: "2b_14", nama: "Inara Oktaviani Putri Kusuma", presensi: 14 },
+                { id: "2b_15", nama: "ISTIB SYARUNANJALA", presensi: 15 },
+                { id: "2b_16", nama: "KAHISHA ARTA SAFFIYA", presensi: 16 },
+                { id: "2b_17", nama: "Kyna Asyakina Zahira Badegesy", presensi: 17 },
+                { id: "2b_18", nama: "Lionel Alvaro Zanetti", presensi: 18 },
+                { id: "2b_19", nama: "Muhammad Althof Zahirul Haq", presensi: 19 },
+                { id: "2b_20", nama: "NAFIRZHA RIZKYLLAH FATHONY", presensi: 20 },
+                { id: "2b_21", nama: "NATASYA ALMIRA", presensi: 21 },
+                { id: "2b_22", nama: "RAFANIA AZZAHRA", presensi: 22 },
+                { id: "2b_23", nama: "Rafif Akhmar Santoso", presensi: 23 },
+                { id: "2b_24", nama: "SANG ALAMRAZD HAQ", presensi: 24 },
+                { id: "2b_25", nama: "SHAZFA HANANIA AZAHRA", presensi: 25 },
+                { id: "2b_26", nama: "TANAYA REKHA OPALINA", presensi: 26 },
+                { id: "2b_27", nama: "ZIANNISA FAHMIDA AFRA", presensi: 27 }
             ],
             "2C": [
-                { id: "2c_1", nama: "Abidzar Emyr Amrullah" },
-                { id: "2c_2", nama: "Abrisam Ahmad Abdillah" },
-                { id: "2c_3", nama: "ADLAN AHZA MAKARIM" },
-                { id: "2c_4", nama: "AFIZA GHANIA EFENDI" },
-                { id: "2c_5", nama: "AHMAD ARSYA SYAWALUL ARIF" },
-                { id: "2c_6", nama: "Aisyah Nuha Zahira" },
-                { id: "2c_7", nama: "Alesha Azkadina Putri Alfariz" },
-                { id: "2c_8", nama: "Alessandro Alano Aprillio" },
-                { id: "2c_9", nama: "Arindi Putri Nurdiyanwibowo" },
-                { id: "2c_10", nama: "HAFIDZ EL HAZIQ SAPUTRA" },
-                { id: "2c_11", nama: "Khairunnisa Salsabila" },
-                { id: "2c_12", nama: "Mahreen Adna Almahyra" },
-                { id: "2c_13", nama: "MIKHAYLA FITRIYADI" },
-                { id: "2c_14", nama: "Muhammad Alfatan Ardana" },
-                { id: "2c_15", nama: "MUHAMMAD ARSYA GHIFARI" },
-                { id: "2c_16", nama: "Muhammad Daffa Abyan Pamungkas" },
-                { id: "2c_17", nama: "MUHAMMAD DZAKI AKBAR" },
-                { id: "2c_18", nama: "Muhammad Nizam Alfatih" },
-                { id: "2c_19", nama: "NADIA WISMA PURWOKO" },
-                { id: "2c_20", nama: "NASYIFA AZALIA PUTRI BERNOWO" },
-                { id: "2c_21", nama: "QUINNE ZAHIRA ANINDRA" },
-                { id: "2c_22", nama: "Raffasya Ahmad Luthfi" },
-                { id: "2c_23", nama: "SABEEYA SYAHRASYID RAYYANADA" },
-                { id: "2c_24", nama: "MALIQ ZHIAN HARES" }
+                { id: "2c_1", nama: "Abidzar Emyr Amrullah", presensi: 1 },
+                { id: "2c_2", nama: "Abrisam Ahmad Abdillah", presensi: 2 },
+                { id: "2c_3", nama: "ADLAN AHZA MAKARIM", presensi: 3 },
+                { id: "2c_4", nama: "AFIZA GHANIA EFENDI", presensi: 4 },
+                { id: "2c_5", nama: "AHMAD ARSYA SYAWALUL ARIF", presensi: 5 },
+                { id: "2c_6", nama: "Aisyah Nuha Zahira", presensi: 6 },
+                { id: "2c_7", nama: "Alesha Azkadina Putri Alfariz", presensi: 7 },
+                { id: "2c_8", nama: "Alessandro Alano Aprillio", presensi: 8 },
+                { id: "2c_9", nama: "Arindi Putri Nurdiyanwibowo", presensi: 9 },
+                { id: "2c_10", nama: "HAFIDZ EL HAZIQ SAPUTRA", presensi: 10 },
+                { id: "2c_11", nama: "Khairunnisa Salsabila", presensi: 11 },
+                { id: "2c_12", nama: "Mahreen Adna Almahyra", presensi: 12 },
+                { id: "2c_13", nama: "MIKHAYLA FITRIYADI", presensi: 13 },
+                { id: "2c_14", nama: "Muhammad Alfatan Ardana", presensi: 14 },
+                { id: "2c_15", nama: "MUHAMMAD ARSYA GHIFARI", presensi: 15 },
+                { id: "2c_16", nama: "Muhammad Daffa Abyan Pamungkas", presensi: 16 },
+                { id: "2c_17", nama: "MUHAMMAD DZAKI AKBAR", presensi: 17 },
+                { id: "2c_18", nama: "Muhammad Nizam Alfatih", presensi: 18 },
+                { id: "2c_19", nama: "NADIA WISMA PURWOKO", presensi: 19 },
+                { id: "2c_20", nama: "NASYIFA AZALIA PUTRI BERNOWO", presensi: 20 },
+                { id: "2c_21", nama: "QUINNE ZAHIRA ANINDRA", presensi: 21 },
+                { id: "2c_22", nama: "Raffasya Ahmad Luthfi", presensi: 22 },
+                { id: "2c_23", nama: "SABEEYA SYAHRASYID RAYYANADA", presensi: 23 },
+                { id: "2c_24", nama: "MALIQ ZHIAN HARES", presensi: 24 }
             ],
             "2D": [
-                { id: "2d_1", nama: "AISYAH IZZATUNNISA PUTRI NUGROHO" },
-                { id: "2d_2", nama: "ARSHAKA RAMAZHAN ALGIFARI MANTOW" },
-                { id: "2d_3", nama: "CARLO ZEESHAN RUMI KURNIAWAN" },
-                { id: "2d_4", nama: "Fatih Akhtar Raiffaza" },
-                { id: "2d_5", nama: "FAUZAN AYDIN ZULKIFLI" },
-                { id: "2d_6", nama: "HANIFA AQILA BAHEERA" },
-                { id: "2d_7", nama: "Kamila Noveara Athifa" },
-                { id: "2d_8", nama: "Kenes Pratista Vinala Putri" },
-                { id: "2d_9", nama: "KHANZA ADELIA PUTRI WIJAYA" },
-                { id: "2d_10", nama: "MUHAMMAD UBAY PRASETYO" },
-                { id: "2d_11", nama: "MUHAMMAD ADHYAKSA BISMA" },
-                { id: "2d_12", nama: "MUHAMMAD FARIZ SETYAWAN" },
-                { id: "2d_13", nama: "MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH" },
-                { id: "2d_14", nama: "MUHAMMAD RAFFI RAFASYA NUGROHO" },
-                { id: "2d_15", nama: "Nathan Haven Akmal Alfaruq" },
-                { id: "2d_16", nama: "Quinsha Qiana Zakeysha" },
-                { id: "2d_17", nama: "RAFA FEBIAN ALFARIZKY" },
-                { id: "2d_18", nama: "RAFISQY YUSUF ALFARIZA" },
-                { id: "2d_19", nama: "RHEA ALZEA NUGROHO" },
-                { id: "2d_20", nama: "Rifaul Zhafran Ghazani" },
-                { id: "2d_21", nama: "Riffat Ahmad Luthfi" },
-                { id: "2d_22", nama: "Rumaisha Pragya Raharja" },
-                { id: "2d_23", nama: "SADDAM MUHAMMAD AFKARI" },
-                { id: "2d_24", nama: "SAILA AYUDIA PUTRI" },
-                { id: "2d_25", nama: "VENUS ALMAHYRA HARIYANTO" },
-                { id: "2d_26", nama: "ABIYYU DHABITH AL HAMIZ" }
+                { id: "2d_1", nama: "AISYAH IZZATUNNISA PUTRI NUGROHO", presensi: 1 },
+                { id: "2d_2", nama: "ARSHAKA RAMAZHAN ALGIFARI MANTOW", presensi: 2 },
+                { id: "2d_3", nama: "CARLO ZEESHAN RUMI KURNIAWAN", presensi: 3 },
+                { id: "2d_4", nama: "Fatih Akhtar Raiffaza", presensi: 4 },
+                { id: "2d_5", nama: "FAUZAN AYDIN ZULKIFLI", presensi: 5 },
+                { id: "2d_6", nama: "HANIFA AQILA BAHEERA", presensi: 6 },
+                { id: "2d_7", nama: "Kamila Noveara Athifa", presensi: 7 },
+                { id: "2d_8", nama: "Kenes Pratista Vinala Putri", presensi: 8 },
+                { id: "2d_9", nama: "KHANZA ADELIA PUTRI WIJAYA", presensi: 9 },
+                { id: "2d_10", nama: "MUHAMMAD UBAY PRASETYO", presensi: 10 },
+                { id: "2d_11", nama: "MUHAMMAD ADHYAKSA BISMA", presensi: 11 },
+                { id: "2d_12", nama: "MUHAMMAD FARIZ SETYAWAN", presensi: 12 },
+                { id: "2d_13", nama: "MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH", presensi: 13 },
+                { id: "2d_14", nama: "MUHAMMAD RAFFI RAFASYA NUGROHO", presensi: 14 },
+                { id: "2d_15", nama: "Nathan Haven Akmal Alfaruq", presensi: 15 },
+                { id: "2d_16", nama: "Quinsha Qiana Zakeysha", presensi: 16 },
+                { id: "2d_17", nama: "RAFA FEBIAN ALFARIZKY", presensi: 17 },
+                { id: "2d_18", nama: "RAFISQY YUSUF ALFARIZA", presensi: 18 },
+                { id: "2d_19", nama: "RHEA ALZEA NUGROHO", presensi: 19 },
+                { id: "2d_20", nama: "Rifaul Zhafran Ghazani", presensi: 20 },
+                { id: "2d_21", nama: "Riffat Ahmad Luthfi", presensi: 21 },
+                { id: "2d_22", nama: "Rumaisha Pragya Raharja", presensi: 22 },
+                { id: "2d_23", nama: "SADDAM MUHAMMAD AFKARI", presensi: 23 },
+                { id: "2d_24", nama: "SAILA AYUDIA PUTRI", presensi: 24 },
+                { id: "2d_25", nama: "VENUS ALMAHYRA HARIYANTO", presensi: 25 },
+                { id: "2d_26", nama: "ABIYYU DHABITH AL HAMIZ", presensi: 26 }
             ],
             "3A": [
-                { id: "3a_1", nama: "Abdillah Ali Arzan" },
-                { id: "3a_2", nama: "Abid Luqman Rajendra" },
-                { id: "3a_3", nama: "ADIVA SHAFINA PUTRI" },
-                { id: "3a_4", nama: "Adzkiya Nurrizqi Rakhmawati" },
-                { id: "3a_5", nama: "Afsheena Hananezka Ar Razzan" },
-                { id: "3a_6", nama: "Aisyah Ayudia Inara" },
-                { id: "3a_7", nama: "Akifa Naila Asy'ari" },
-                { id: "3a_8", nama: "Alfath Ataya Abqary Arzam" },
-                { id: "3a_9", nama: "ARSYILA KIKANDRYA SUSANTO" },
-                { id: "3a_10", nama: "Arsyillah Nur Sofiani" },
-                { id: "3a_11", nama: "Aruna Sachi Philia" },
-                { id: "3a_12", nama: "Ashadiyara Haflasea" },
-                { id: "3a_13", nama: "Athifa Mahira Khansa" },
-                { id: "3a_14", nama: "AZZAHRA ALNAIRA" },
-                { id: "3a_15", nama: "DINATA ALLEN DHYO AL LATIF" },
-                { id: "3a_16", nama: "FAEYZA SYATHIR KURNIAWAN" },
-                { id: "3a_17", nama: "Fakhri Luthfi Hardianto" },
-                { id: "3a_18", nama: "Garland Mashka Rafeyfa" },
-                { id: "3a_19", nama: "Juang Haidar Athalla" },
-                { id: "3a_20", nama: "Kalazahy Nadwa Zayn" },
-                { id: "3a_21", nama: "MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI" },
-                { id: "3a_22", nama: "MUHAMMAD RAFKA VIRENDRA" },
-                { id: "3a_23", nama: "Nadhira Khaerani Hariyadi" },
-                { id: "3a_24", nama: "Nayyara Aqila Razanah" },
-                { id: "3a_25", nama: "Omar Abdul Aziz" },
-                { id: "3a_26", nama: "Raditya Pradipta Ardhani" },
-                { id: "3a_27", nama: "Rashya Alrafaeyza Hajam" },
-                { id: "3a_28", nama: "Shafira Noreen Choirunnisa" },
-                { id: "3a_29", nama: "SHAZFA LASIRA GUNARSO" },
-                { id: "3a_30", nama: "Syakira Tsaqif Choirunnisa" }
+                { id: "3a_1", nama: "Abdillah Ali Arzan", presensi: 1 },
+                { id: "3a_2", nama: "Abid Luqman Rajendra", presensi: 2 },
+                { id: "3a_3", nama: "ADIVA SHAFINA PUTRI", presensi: 3 },
+                { id: "3a_4", nama: "Adzkiya Nurrizqi Rakhmawati", presensi: 4 },
+                { id: "3a_5", nama: "Afsheena Hananezka Ar Razzan", presensi: 5 },
+                { id: "3a_6", nama: "Aisyah Ayudia Inara", presensi: 6 },
+                { id: "3a_7", nama: "Akifa Naila Asy'ari", presensi: 7 },
+                { id: "3a_8", nama: "Alfath Ataya Abqary Arzam", presensi: 8 },
+                { id: "3a_9", nama: "ARSYILA KIKANDRYA SUSANTO", presensi: 9 },
+                { id: "3a_10", nama: "Arsyillah Nur Sofiani", presensi: 10 },
+                { id: "3a_11", nama: "Aruna Sachi Philia", presensi: 11 },
+                { id: "3a_12", nama: "Ashadiyara Haflasea", presensi: 12 },
+                { id: "3a_13", nama: "Athifa Mahira Khansa", presensi: 13 },
+                { id: "3a_14", nama: "AZZAHRA ALNAIRA", presensi: 14 },
+                { id: "3a_15", nama: "DINATA ALLEN DHYO AL LATIF", presensi: 15 },
+                { id: "3a_16", nama: "FAEYZA SYATHIR KURNIAWAN", presensi: 16 },
+                { id: "3a_17", nama: "Fakhri Luthfi Hardianto", presensi: 17 },
+                { id: "3a_18", nama: "Garland Mashka Rafeyfa", presensi: 18 },
+                { id: "3a_19", nama: "Juang Haidar Athalla", presensi: 19 },
+                { id: "3a_20", nama: "Kalazahy Nadwa Zayn", presensi: 20 },
+                { id: "3a_21", nama: "MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI", presensi: 21 },
+                { id: "3a_22", nama: "MUHAMMAD RAFKA VIRENDRA", presensi: 22 },
+                { id: "3a_23", nama: "Nadhira Khaerani Hariyadi", presensi: 23 },
+                { id: "3a_24", nama: "Nayyara Aqila Razanah", presensi: 24 },
+                { id: "3a_25", nama: "Omar Abdul Aziz", presensi: 25 },
+                { id: "3a_26", nama: "Raditya Pradipta Ardhani", presensi: 26 },
+                { id: "3a_27", nama: "Rashya Alrafaeyza Hajam", presensi: 27 },
+                { id: "3a_28", nama: "Shafira Noreen Choirunnisa", presensi: 28 },
+                { id: "3a_29", nama: "SHAZFA LASIRA GUNARSO", presensi: 29 },
+                { id: "3a_30", nama: "Syakira Tsaqif Choirunnisa", presensi: 30 }
             ],
             "3B": [
-                { id: "3b_1", nama: "Abiy Vishaka Budi Nugroho" },
-                { id: "3b_2", nama: "Adeeva Meidina Assyifatama" },
-                { id: "3b_3", nama: "Adzkiya Naila Arsyila Atmadja" },
-                { id: "3b_4", nama: "Aello Mezaluna Arubby" },
-                { id: "3b_5", nama: "AERILYN VLA ADZKADINA" },
-                { id: "3b_6", nama: "AHMAD ALFARIZQI SHAQUILLE PUTRA" },
-                { id: "3b_7", nama: "AHNAF KHALIFAZIL AFRIANSAH" },
-                { id: "3b_8", nama: "Aldena Dwisitta Wildani" },
-                { id: "3b_9", nama: "Altaz Qianno Al Barra" },
-                { id: "3b_10", nama: "Candrika Althafunnisa" },
-                { id: "3b_11", nama: "FADLI ABQARY ALHUSNA" },
-                { id: "3b_12", nama: "Fahreza Fathan Abdillah" },
-                { id: "3b_13", nama: "Gavin Yoga Alvaro" },
-                { id: "3b_14", nama: "Ghaida Azkayra Khairani" },
-                { id: "3b_15", nama: "HAFIZH KHWARIZMI AL HANI" },
-                { id: "3b_16", nama: "Jihan Aisharani Zea Zayyana" },
-                { id: "3b_17", nama: "KEENAN KANAKA ALLI ZAFLAN" },
-                { id: "3b_18", nama: "Khansa Monaya Rumaysha" },
-                { id: "3b_19", nama: "Khanza Athifa Ningrum" },
-                { id: "3b_20", nama: "KHAYLILA QUEENA AHMAD" },
-                { id: "3b_21", nama: "KIRANA SHAQILA RAMADHANI" },
-                { id: "3b_22", nama: "Mikhayla Kinanti Azkadina" },
-                { id: "3b_23", nama: "Muhammad Al Ahsan Iqbal Setyo" },
-                { id: "3b_24", nama: "Narulita Beryl Ramadhani" },
-                { id: "3b_25", nama: "Nashila Zia Fahranie" },
-                { id: "3b_26", nama: "RAIHAN ADITYA PRAWIRA" },
-                { id: "3b_27", nama: "REYHAN ATHARIZ WIRAWAN" },
-                { id: "3b_28", nama: "Romaisha Celina Okvin" },
-                { id: "3b_29", nama: "Sarah Ali Hudzaifi" },
-                { id: "3b_30", nama: "SYAMIL YAHYA AL HAFIDZI" }
+                { id: "3b_1", nama: "Abiy Vishaka Budi Nugroho", presensi: 1 },
+                { id: "3b_2", nama: "Adeeva Meidina Assyifatama", presensi: 2 },
+                { id: "3b_3", nama: "Adzkiya Naila Arsyila Atmadja", presensi: 3 },
+                { id: "3b_4", nama: "Aello Mezaluna Arubby", presensi: 4 },
+                { id: "3b_5", nama: "AERILYN VLA ADZKADINA", presensi: 5 },
+                { id: "3b_6", nama: "AHMAD ALFARIZQI SHAQUILLE PUTRA", presensi: 6 },
+                { id: "3b_7", nama: "AHNAF KHALIFAZIL AFRIANSAH", presensi: 7 },
+                { id: "3b_8", nama: "Aldena Dwisitta Wildani", presensi: 8 },
+                { id: "3b_9", nama: "Altaz Qianno Al Barra", presensi: 9 },
+                { id: "3b_10", nama: "Candrika Althafunnisa", presensi: 10 },
+                { id: "3b_11", nama: "FADLI ABQARY ALHUSNA", presensi: 11 },
+                { id: "3b_12", nama: "Fahreza Fathan Abdillah", presensi: 12 },
+                { id: "3b_13", nama: "Gavin Yoga Alvaro", presensi: 13 },
+                { id: "3b_14", nama: "Ghaida Azkayra Khairani", presensi: 14 },
+                { id: "3b_15", nama: "HAFIZH KHWARIZMI AL HANI", presensi: 15 },
+                { id: "3b_16", nama: "Jihan Aisharani Zea Zayyana", presensi: 16 },
+                { id: "3b_17", nama: "KEENAN KANAKA ALLI ZAFLAN", presensi: 17 },
+                { id: "3b_18", nama: "Khansa Monaya Rumaysha", presensi: 18 },
+                { id: "3b_19", nama: "Khanza Athifa Ningrum", presensi: 19 },
+                { id: "3b_20", nama: "KHAYLILA QUEENA AHMAD", presensi: 20 },
+                { id: "3b_21", nama: "KIRANA SHAQILA RAMADHANI", presensi: 21 },
+                { id: "3b_22", nama: "Mikhayla Kinanti Azkadina", presensi: 22 },
+                { id: "3b_23", nama: "Muhammad Al Ahsan Iqbal Setyo", presensi: 23 },
+                { id: "3b_24", nama: "Narulita Beryl Ramadhani", presensi: 24 },
+                { id: "3b_25", nama: "Nashila Zia Fahranie", presensi: 25 },
+                { id: "3b_26", nama: "RAIHAN ADITYA PRAWIRA", presensi: 26 },
+                { id: "3b_27", nama: "REYHAN ATHARIZ WIRAWAN", presensi: 27 },
+                { id: "3b_28", nama: "Romaisha Celina Okvin", presensi: 28 },
+                { id: "3b_29", nama: "Sarah Ali Hudzaifi", presensi: 29 },
+                { id: "3b_30", nama: "SYAMIL YAHYA AL HAFIDZI", presensi: 30 }
             ],
             "3C": [
-                { id: "3c_1", nama: "Abizar Fatih Pratama" },
-                { id: "3c_2", nama: "ADEEVA AULIASYIFA" },
-                { id: "3c_3", nama: "AISYAH AYUDIA INARA" },
-                { id: "3c_4", nama: "AISYAH NAMEERA FATHIYYATURAHMA" },
-                { id: "3c_5", nama: "AL-GHAZALI AISY ARFA DEANDRA" },
-                { id: "3c_6", nama: "Alisha Natania Khumaira Dachlan" },
-                { id: "3c_7", nama: "ALMEERA SHABIRA EKATARA" },
-                { id: "3c_8", nama: "Almira Shanum Medina Sungkan" },
-                { id: "3c_9", nama: "Aqila Salma Kamila" },
-                { id: "3c_10", nama: "ARJUNA SYAILENDRA AL KHALIFI" },
-                { id: "3c_11", nama: "Arka Leander Raffasya" },
-                { id: "3c_12", nama: "ARSHAKA BINTANG ARLINGGA JATI" },
-                { id: "3c_13", nama: "ARSYA AQUILA MUSYAFFA" },
-                { id: "3c_14", nama: "Azhar Zalfa Faradisa" },
-                { id: "3c_15", nama: "BARRAHILAL AMAHU MANGGANA" },
-                { id: "3c_16", nama: "Callista Nabila Utomo" },
-                { id: "3c_17", nama: "Fathir Alvissyahbana Mudjaed" },
-                { id: "3c_18", nama: "FEARGAL V MARSA" },
-                { id: "3c_19", nama: "KANZIA NAIRA AQILA" },
-                { id: "3c_20", nama: "KHAIRINA FATIMA AL ADHA" },
-                { id: "3c_21", nama: "Khayra Zakiyya Ferris" },
-                { id: "3c_22", nama: "Kimora Humaira Azzahra" },
-                { id: "3c_23", nama: "Laksita Shanumpadma Elhadi" },
-                { id: "3c_24", nama: "MUHAMMAD ELRAJA HABIBIE SANTOSO" },
-                { id: "3c_25", nama: "Muhammad Saifan Asykar Alfansyah" },
-                { id: "3c_26", nama: "Rumaisha Nuha Muhammad" },
-                { id: "3c_27", nama: "Shaula Alya Setiawan" },
-                { id: "3c_28", nama: "Sybilla Jelita Aditia" },
-                { id: "3c_29", nama: "Zavier Elfa'az Zayn Hariyono" },
-                { id: "3c_30", nama: "Zulfadhli Fayyad Hidayat" }
+                { id: "3c_1", nama: "Abizar Fatih Pratama", presensi: 1 },
+                { id: "3c_2", nama: "ADEEVA AULIASYIFA", presensi: 2 },
+                { id: "3c_3", nama: "AISYAH AYUDIA INARA", presensi: 3 },
+                { id: "3c_4", nama: "AISYAH NAMEERA FATHIYYATURAHMA", presensi: 4 },
+                { id: "3c_5", nama: "AL-GHAZALI AISY ARFA DEANDRA", presensi: 5 },
+                { id: "3c_6", nama: "Alisha Natania Khumaira Dachlan", presensi: 6 },
+                { id: "3c_7", nama: "ALMEERA SHABIRA EKATARA", presensi: 7 },
+                { id: "3c_8", nama: "Almira Shanum Medina Sungkan", presensi: 8 },
+                { id: "3c_9", nama: "Aqila Salma Kamila", presensi: 9 },
+                { id: "3c_10", nama: "ARJUNA SYAILENDRA AL KHALIFI", presensi: 10 },
+                { id: "3c_11", nama: "Arka Leander Raffasya", presensi: 11 },
+                { id: "3c_12", nama: "ARSHAKA BINTANG ARLINGGA JATI", presensi: 12 },
+                { id: "3c_13", nama: "ARSYA AQUILA MUSYAFFA", presensi: 13 },
+                { id: "3c_14", nama: "Azhar Zalfa Faradisa", presensi: 14 },
+                { id: "3c_15", nama: "BARRAHILAL AMAHU MANGGANA", presensi: 15 },
+                { id: "3c_16", nama: "Callista Nabila Utomo", presensi: 16 },
+                { id: "3c_17", nama: "Fathir Alvissyahbana Mudjaed", presensi: 17 },
+                { id: "3c_18", nama: "FEARGAL V MARSA", presensi: 18 },
+                { id: "3c_19", nama: "KANZIA NAIRA AQILA", presensi: 19 },
+                { id: "3c_20", nama: "KHAIRINA FATIMA AL ADHA", presensi: 20 },
+                { id: "3c_21", nama: "Khayra Zakiyya Ferris", presensi: 21 },
+                { id: "3c_22", nama: "Kimora Humaira Azzahra", presensi: 22 },
+                { id: "3c_23", nama: "Laksita Shanumpadma Elhadi", presensi: 23 },
+                { id: "3c_24", nama: "MUHAMMAD ELRAJA HABIBIE SANTOSO", presensi: 24 },
+                { id: "3c_25", nama: "Muhammad Saifan Asykar Alfansyah", presensi: 25 },
+                { id: "3c_26", nama: "Rumaisha Nuha Muhammad", presensi: 26 },
+                { id: "3c_27", nama: "Shaula Alya Setiawan", presensi: 27 },
+                { id: "3c_28", nama: "Sybilla Jelita Aditia", presensi: 28 },
+                { id: "3c_29", nama: "Zavier Elfa'az Zayn Hariyono", presensi: 29 },
+                { id: "3c_30", nama: "Zulfadhli Fayyad Hidayat", presensi: 30 }
             ],
             "3D": [
-                { id: "3d_1", nama: "Afiza Azkayra Setyawan" },
-                { id: "3d_2", nama: "Ahnaf Hashif Wibowo" },
-                { id: "3d_3", nama: "Aisyah Ayunda Hamidi" },
-                { id: "3d_4", nama: "AQILLA MUFIA LASHIRA RIVAI" },
-                { id: "3d_5", nama: "Arshaka Radinka Shakeel" },
-                { id: "3d_6", nama: "ARSY FISYAH KHUSNUL" },
-                { id: "3d_7", nama: "Arsyila Ashadiya Adzra Faozi" },
-                { id: "3d_8", nama: "Deisya Azzahra Pradana" },
-                { id: "3d_9", nama: "Deva Aquina Sakhi" },
-                { id: "3d_10", nama: "GINDA ARSYIL VINALES" },
-                { id: "3d_11", nama: "HASNA NUR HUWA YIDA" },
-                { id: "3d_12", nama: "Iqbal Bintang Pramudya" },
-                { id: "3d_13", font: "bold", nama: "KEANU DANISH KURNIAWAN" },
-                { id: "3d_14", nama: "KEN ARUNA GENDHIS NARESWARI" },
-                { id: "3d_15", nama: "Khaila Putri Pradipta" },
-                { id: "3d_16", nama: "KHALISA SABRIA RANAA SUGIARTA" },
-                { id: "3d_17", nama: "LASHIRA IZZATI SHANUM ZULKARNAIN" },
-                { id: "3d_18", nama: "LETYCIA YUPI QURRATU'AIN BUDIARSO" },
-                { id: "3d_19", nama: "Muhammad Gibran Al Fath Widhiananto" },
-                { id: "3d_20", nama: "NAFISA AQILA PUTRI" },
-                { id: "3d_21", nama: "Nafla Aina Rohman" },
-                { id: "3d_22", nama: "RAKA ADHYASTHA PARADILLA" },
-                { id: "3d_23", nama: "Respati Zayyan Abid" },
-                { id: "3d_24", nama: "SYAFIQ ABQORY" },
-                { id: "3d_25", nama: "Syahira Naura Herlambang" },
-                { id: "3d_26", nama: "VAREL ATHAFARIZ ZHAFRAN SAPUTRA" },
-                { id: "3d_27", nama: "Zayn Khalifa Riswardana" },
-                { id: "3d_28", nama: "Zeevana Shaqeen Azzahra Santoso" },
-                { id: "3d_29", nama: "ZIDAN ATHALLA DHIAULHAQ" },
-                { id: "3d_30", nama: "Zidan Faiz Ramadhan" }
+                { id: "3d_1", nama: "Afiza Azkayra Setyawan", presensi: 1 },
+                { id: "3d_2", nama: "Ahnaf Hashif Wibowo", presensi: 2 },
+                { id: "3d_3", nama: "Aisyah Ayunda Hamidi", presensi: 3 },
+                { id: "3d_4", nama: "AQILLA MUFIA LASHIRA RIVAI", presensi: 4 },
+                { id: "3d_5", nama: "Arshaka Radinka Shakeel", presensi: 5 },
+                { id: "3d_6", nama: "ARSY FISYAH KHUSNUL", presensi: 6 },
+                { id: "3d_7", nama: "Arsyila Ashadiya Adzra Faozi", presensi: 7 },
+                { id: "3d_8", nama: "Deisya Azzahra Pradana", presensi: 8 },
+                { id: "3d_9", nama: "Deva Aquina Sakhi", presensi: 9 },
+                { id: "3d_10", nama: "GINDA ARSYIL VINALES", presensi: 10 },
+                { id: "3d_11", nama: "HASNA NUR HUWA YIDA", presensi: 11 },
+                { id: "3d_12", nama: "Iqbal Bintang Pramudya", presensi: 12 },
+                { id: "3d_13", nama: "KEANU DANISH KURNIAWAN", presensi: 13 },
+                { id: "3d_14", nama: "KEN ARUNA GENDHIS NARESWARI", presensi: 14 },
+                { id: "3d_15", nama: "Khaila Putri Pradipta", presensi: 15 },
+                { id: "3d_16", nama: "KHALISA SABRIA RANAA SUGIARTA", presensi: 16 },
+                { id: "3d_17", nama: "LASHIRA IZZATI SHANUM ZULKARNAIN", presensi: 17 },
+                { id: "3d_18", nama: "LETYCIA YUPI QURRATU'AIN BUDIARSO", presensi: 18 },
+                { id: "3d_19", nama: "Muhammad Gibran Al Fath Widhiananto", presensi: 19 },
+                { id: "3d_20", nama: "NAFISA AQILA PUTRI", presensi: 20 },
+                { id: "3d_21", nama: "Nafla Aina Rohman", presensi: 21 },
+                { id: "3d_22", nama: "RAKA ADHYASTHA PARADILLA", presensi: 22 },
+                { id: "3d_23", nama: "Respati Zayyan Abid", presensi: 23 },
+                { id: "3d_24", nama: "SYAFIQ ABQORY", presensi: 24 },
+                { id: "3d_25", nama: "Syahira Naura Herlambang", presensi: 25 },
+                { id: "3d_26", nama: "VAREL ATHAFARIZ ZHAFRAN SAPUTRA", presensi: 26 },
+                { id: "3d_27", nama: "Zayn Khalifa Riswardana", presensi: 27 },
+                { id: "3d_28", nama: "Zeevana Shaqeen Azzahra Santoso", presensi: 28 },
+                { id: "3d_29", nama: "ZIDAN ATHALLA DHIAULHAQ", presensi: 29 },
+                { id: "3d_30", nama: "Zidan Faiz Ramadhan", presensi: 30 }
             ],
             "4A": [
-                { id: "4a_1", nama: "Aisha Ziya Shayfa" },
-                { id: "4a_2", nama: "Al Syarawi Arfa Gunawan" },
-                { id: "4a_3", nama: "Annisa Salsabila Zafarani" },
-                { id: "4a_4", nama: "AQILA BELLATRIX HUMAIRAH" },
-                { id: "4a_5", nama: "Assyifa Ar Razi" },
-                { id: "4a_6", nama: "Athariz Calief Arganta" },
-                { id: "4a_7", nama: "AZKA RAQILA AL GHIFARI" },
-                { id: "4a_8", nama: "BINTANG PRADHIPTA HERMAWAN" },
-                { id: "4a_9", nama: "BYANCA CHIARA SYAFIQA" },
-                { id: "4a_10", nama: "DISTYA RACHYANANENDRA ALMAHYRA" },
-                { id: "4a_11", nama: "FAAIZ TSAANI KAMILAN EL CHOIRI" },
-                { id: "4a_12", nama: "Farrel Arkaan Oktora" },
-                { id: "4a_13", nama: "HANINDYA JATI PRAMUDITA" },
-                { id: "4a_14", nama: "Hans Aulia Khawari" },
-                { id: "4a_15", nama: "Keisha Amandla Shareefa Iskandar" },
-                { id: "4a_16", nama: "KEYSHA AZZAHRA ZAHFIRA" },
-                { id: "4a_17", nama: "Khanza Naila Santosa" },
-                { id: "4a_18", nama: "MUHAMMAD ALTEZZA ZABDAN" },
-                { id: "4a_19", nama: "Muhammad Althof Attarizq Wishaka" },
-                { id: "4a_20", nama: "Muhammad Irsyad At Tamimi" },
-                { id: "4a_21", nama: "MUHAMMAD REVAN PRADITYA" },
-                { id: "4a_22", nama: "Muhammad Yusuf Ramadhan Ar-Rasyid" },
-                { id: "4a_23", nama: "NADIA APRILIA SYAKILA" },
-                { id: "4a_24", nama: "NAUFAL ABQARI ARADHANA" },
-                { id: "4a_25", nama: "Nayaka Fajar Sriyanto" },
-                { id: "4a_26", nama: "PARADUTA ISNAN SUSILO" },
-                { id: "4a_27", nama: "RAISYA RIZKY RAFIFAH PUTRI" },
-                { id: "4a_28", nama: "Rumaysha Numa Reis" },
-                { id: "4a_29", nama: "Sadryan Bima Ar Rizky" },
-                { id: "4a_30", nama: "Syanala Kania Salsabila" }
+                { id: "4a_1", nama: "Aisha Ziya Shayfa", presensi: 1 },
+                { id: "4a_2", nama: "Al Syarawi Arfa Gunawan", presensi: 2 },
+                { id: "4a_3", nama: "Annisa Salsabila Zafarani", presensi: 3 },
+                { id: "4a_4", nama: "AQILA BELLATRIX HUMAIRAH", presensi: 4 },
+                { id: "4a_5", nama: "Assyifa Ar Razi", presensi: 5 },
+                { id: "4a_6", nama: "Athariz Calief Arganta", presensi: 6 },
+                { id: "4a_7", nama: "AZKA RAQILA AL GHIFARI", presensi: 7 },
+                { id: "4a_8", nama: "BINTANG PRADHIPTA HERMAWAN", presensi: 8 },
+                { id: "4a_9", nama: "BYANCA CHIARA SYAFIQA", presensi: 9 },
+                { id: "4a_10", nama: "DISTYA RACHYANANENDRA ALMAHYRA", presensi: 10 },
+                { id: "4a_11", nama: "FAAIZ TSAANI KAMILAN EL CHOIRI", presensi: 11 },
+                { id: "4a_12", nama: "Farrel Arkaan Oktora", presensi: 12 },
+                { id: "4a_13", nama: "HANINDYA JATI PRAMUDITA", presensi: 13 },
+                { id: "4a_14", nama: "Hans Aulia Khawari", presensi: 14 },
+                { id: "4a_15", nama: "Keisha Amandla Shareefa Iskandar", presensi: 15 },
+                { id: "4a_16", nama: "KEYSHA AZZAHRA ZAHFIRA", presensi: 16 },
+                { id: "4a_17", nama: "Khanza Naila Santosa", presensi: 17 },
+                { id: "4a_18", nama: "MUHAMMAD ALTEZZA ZABDAN", presensi: 18 },
+                { id: "4a_19", nama: "Muhammad Althof Attarizq Wishaka", presensi: 19 },
+                { id: "4a_20", nama: "Muhammad Irsyad At Tamimi", presensi: 20 },
+                { id: "4a_21", nama: "MUHAMMAD REVAN PRADITYA", presensi: 21 },
+                { id: "4a_22", nama: "Muhammad Yusuf Ramadhan Ar-Rasyid", presensi: 22 },
+                { id: "4a_23", nama: "NADIA APRILIA SYAKILA", presensi: 23 },
+                { id: "4a_24", nama: "NAUFAL ABQARI ARADHANA", presensi: 24 },
+                { id: "4a_25", nama: "Nayaka Fajar Sriyanto", presensi: 25 },
+                { id: "4a_26", nama: "PARADUTA ISNAN SUSILO", presensi: 26 },
+                { id: "4a_27", nama: "RAISYA RIZKY RAFIFAH PUTRI", presensi: 27 },
+                { id: "4a_28", nama: "Rumaysha Numa Reis", presensi: 28 },
+                { id: "4a_29", nama: "Sadryan Bima Ar Rizky", presensi: 29 },
+                { id: "4a_30", nama: "Syanala Kania Salsabila", presensi: 30 }
             ],
             "4B": [
-                { id: "4b_1", nama: "ADIRA AZZAHRA PUTRI" },
-                { id: "4b_2", nama: "AISYAH ZEA ALMAHYRA" },
-                { id: "4b_3", nama: "Aleesha Afsheen Amarudin" },
-                { id: "4b_4", nama: "ALZAIDAN KHALIQ PERMANA" },
-                { id: "4b_5", nama: "Annaas Rokah Athallah" },
-                { id: "4b_6", nama: "Citrahayi Abbidah Embun Kirana" },
-                { id: "4b_7", nama: "DAFFA CAESAR EFENDI" },
-                { id: "4b_8", nama: "Danendra Azzam Pambudi" },
-                { id: "4b_9", nama: "Delisha Silmi Afiqa" },
-                { id: "4b_10", nama: "Dhia Sabrina Azzalea" },
-                { id: "4b_11", nama: "Fahreza Khalifa Rizky Harun" },
-                { id: "4b_12", nama: "FATIH ALI TSAQIF" },
-                { id: "4b_13", nama: "Hafiza Asyifa Risdana" },
-                { id: "4b_14", nama: "Hafizh Athar Suprapto" },
-                { id: "4b_15", nama: "HAFSA NADHIRA HISAN" },
-                { id: "4b_16", nama: "Irsyad Thohir Putra Irawan" },
-                { id: "4b_17", nama: "KANUGRAHAN ADI WICAKSONO" },
-                { id: "4b_18", nama: "Keanu Putra Hariyadi" },
-                { id: "4b_19", nama: "KEJORA LANGGENG BILITANIA" },
-                { id: "4b_20", nama: "Lucky Arvin Qaid" },
-                { id: "4b_21", nama: "Mikayla Putri Prasetyo" },
-                { id: "4b_22", nama: "Muhamad Adien Taufik" },
-                { id: "4b_23", nama: "NAIRA SYABILA AZZAHRA PUTRI" },
-                { id: "4b_24", nama: "Prince Muhammadiyah El Azzami Sukoco" },
-                { id: "4b_25", nama: "RAJENDRA FADHIL ALFAYI PRAMONO" },
-                { id: "4b_26", nama: "SHEZAN INARA NAJMA" },
-                { id: "4b_27", nama: "Tristan Adelio Setiawan" },
-                { id: "4b_28", nama: "WERKUDARA VINCENT SANTOSO" },
-                { id: "4b_29", nama: "ZAHSY QUEENSHA ELNAURA" }
+                { id: "4b_1", nama: "ADIRA AZZAHRA PUTRI", presensi: 1 },
+                { id: "4b_2", nama: "AISYAH ZEA ALMAHYRA", presensi: 2 },
+                { id: "4b_3", nama: "Aleesha Afsheen Amarudin", presensi: 3 },
+                { id: "4b_4", nama: "ALZAIDAN KHALIQ PERMANA", presensi: 4 },
+                { id: "4b_5", nama: "Annaas Rokah Athallah", presensi: 5 },
+                { id: "4b_6", nama: "Citrahayi Abbidah Embun Kirana", presensi: 6 },
+                { id: "4b_7", nama: "DAFFA CAESAR EFENDI", presensi: 7 },
+                { id: "4b_8", nama: "Danendra Azzam Pambudi", presensi: 8 },
+                { id: "4b_9", nama: "Delisha Silmi Afiqa", presensi: 9 },
+                { id: "4b_10", nama: "Dhia Sabrina Azzalea", presensi: 10 },
+                { id: "4b_11", nama: "Fahreza Khalifa Rizky Harun", presensi: 11 },
+                { id: "4b_12", nama: "FATIH ALI TSAQIF", presensi: 12 },
+                { id: "4b_13", nama: "Hafiza Asyifa Risdana", presensi: 13 },
+                { id: "4b_14", nama: "Hafizh Athar Suprapto", presensi: 14 },
+                { id: "4b_15", nama: "HAFSA NADHIRA HISAN", presensi: 15 },
+                { id: "4b_16", nama: "Irsyad Thohir Putra Irawan", presensi: 16 },
+                { id: "4b_17", nama: "KANUGRAHAN ADI WICAKSONO", presensi: 17 },
+                { id: "4b_18", nama: "Keanu Putra Hariyadi", presensi: 18 },
+                { id: "4b_19", nama: "KEJORA LANGGENG BILITANIA", presensi: 19 },
+                { id: "4b_20", nama: "Lucky Arvin Qaid", presensi: 20 },
+                { id: "4b_21", nama: "Mikayla Putri Prasetyo", presensi: 21 },
+                { id: "4b_22", nama: "Muhamad Adien Taufik", presensi: 22 },
+                { id: "4b_23", nama: "NAIRA SYABILA AZZAHRA PUTRI", presensi: 23 },
+                { id: "4b_24", nama: "Prince Muhammadiyah El Azzami Sukoco", presensi: 24 },
+                { id: "4b_25", nama: "RAJENDRA FADHIL ALFAYI PRAMONO", presensi: 25 },
+                { id: "4b_26", nama: "SHEZAN INARA NAJMA", presensi: 26 },
+                { id: "4b_27", nama: "Tristan Adelio Setiawan", presensi: 27 },
+                { id: "4b_28", nama: "WERKUDARA VINCENT SANTOSO", presensi: 28 },
+                { id: "4b_29", nama: "ZAHSY QUEENSHA ELNAURA", presensi: 29 }
             ],
             "4C": [
-                { id: "4c_1", nama: "Airlangga Gibran Maulana" },
-                { id: "4c_2", nama: "AISYAH DINDA RAMANIA" },
-                { id: "4c_3", nama: "Aisyah Putri Ayudia" },
-                { id: "4c_4", nama: "ARIFIN ARKANA RAMADHAN" },
-                { id: "4c_5", nama: "Arya Fahreza Kurniawan" },
-                { id: "4c_6", nama: "Ayyash Jaisha Mohammad" },
-                { id: "4c_7", nama: "Davira Alesha Pradana" },
-                { id: "4c_8", nama: "FAHLAVI ROMI DEVANKA" },
-                { id: "4c_9", nama: "Farah Nabila Azzahra" },
-                { id: "4c_10", nama: "Fellicia Adeeva Cahya Lacita" },
-                { id: "4c_11", nama: "Gendis Alitha Silmi" },
-                { id: "4c_12", nama: "GHAISAN DZAKY ARIFBOWO" },
-                { id: "4c_13", nama: "HAFIZH MAHARDIKA" },
-                { id: "4c_14", nama: "Henisa Azzahra Silvia" },
-                { id: "4c_15", nama: "INARA AYUNINDYA" },
-                { id: "4c_16", nama: "JESSICA JASMINE" },
-                { id: "4c_17", nama: "KENZI APRILLIO ALFARISQI" },
-                { id: "4c_18", nama: "Kevin Arfandio" },
-                { id: "4c_19", nama: "Kimi Shakila Ajunta" },
-                { id: "4c_20", nama: "MARSYA ALEA ZANINDYA" },
-                { id: "4c_21", nama: "Mirza Zaim Arrafif" },
-                { id: "4c_22", nama: "Muhammad Arfan Arrazan" },
-                { id: "4c_23", nama: "Muhammad Arkan" },
-                { id: "4c_24", nama: "Musyaffa Dzakyandra Raffa Setiyawan" },
-                { id: "4c_25", nama: "Nabila Zahwa Humaira" },
-                { id: "4c_26", nama: "NAUFAL FADHIL RAMADHAN" },
-                { id: "4c_27", nama: "NAURA KINANDRA SUJADI" },
-                { id: "4c_28", nama: "QUEEN RAVENA AISYAH TOBING" },
-                { id: "4c_29", nama: "Radhika Zefa Utomo" },
-                { id: "4c_30", nama: "RAFIF ADYTAMA MULYA" },
-                { id: "4c_31", nama: "Rifqi Hamidan" },
-                { id: "4c_32", nama: "SHIDQIA FATIHAH AL ZENA KURNIAWAN" }
+                { id: "4c_1", nama: "Airlangga Gibran Maulana", presensi: 1 },
+                { id: "4c_2", nama: "AISYAH DINDA RAMANIA", presensi: 2 },
+                { id: "4c_3", nama: "Aisyah Putri Ayudia", presensi: 3 },
+                { id: "4c_4", nama: "ARIFIN ARKANA RAMADHAN", presensi: 4 },
+                { id: "4c_5", nama: "Arya Fahreza Kurniawan", presensi: 5 },
+                { id: "4c_6", nama: "Ayyash Jaisha Mohammad", presensi: 6 },
+                { id: "4c_7", nama: "Davira Alesha Pradana", presensi: 7 },
+                { id: "4c_8", nama: "FAHLAVI ROMI DEVANKA", presensi: 8 },
+                { id: "4c_9", nama: "Farah Nabila Azzahra", presensi: 9 },
+                { id: "4c_10", nama: "Fellicia Adeeva Cahya Lacita", presensi: 10 },
+                { id: "4c_11", nama: "Gendis Alitha Silmi", presensi: 11 },
+                { id: "4c_12", nama: "GHAISAN DZAKY ARIFBOWO", presensi: 12 },
+                { id: "4c_13", nama: "HAFIZH MAHARDIKA", presensi: 13 },
+                { id: "4c_14", nama: "Henisa Azzahra Silvia", presensi: 14 },
+                { id: "4c_15", nama: "INARA AYUNINDYA", presensi: 15 },
+                { id: "4c_16", nama: "JESSICA JASMINE", presensi: 16 },
+                { id: "4c_17", nama: "KENZI APRILLIO ALFARISQI", presensi: 17 },
+                { id: "4c_18", nama: "Kevin Arfandio", presensi: 18 },
+                { id: "4c_19", nama: "Kimi Shakila Ajunta", presensi: 19 },
+                { id: "4c_20", nama: "MARSYA ALEA ZANINDYA", presensi: 20 },
+                { id: "4c_21", nama: "Mirza Zaim Arrafif", presensi: 21 },
+                { id: "4c_22", nama: "Muhammad Arfan Arrazan", presensi: 22 },
+                { id: "4c_23", nama: "Muhammad Arkan", presensi: 23 },
+                { id: "4c_24", nama: "Musyaffa Dzakyandra Raffa Setiyawan", presensi: 24 },
+                { id: "4c_25", nama: "Nabila Zahwa Humaira", presensi: 25 },
+                { id: "4c_26", nama: "NAUFAL FADHIL RAMADHAN", presensi: 26 },
+                { id: "4c_27", nama: "NAURA KINANDRA SUJADI", presensi: 27 },
+                { id: "4c_28", nama: "QUEEN RAVENA AISYAH TOBING", presensi: 28 },
+                { id: "4c_29", nama: "Radhika Zefa Utomo", presensi: 29 },
+                { id: "4c_30", nama: "RAFIF ADYTAMA MULYA", presensi: 30 },
+                { id: "4c_31", nama: "Rifqi Hamidan", presensi: 31 },
+                { id: "4c_32", nama: "SHIDQIA FATIHAH AL ZENA KURNIAWAN", presensi: 32 }
             ],
             "4D": [
-                { id: "4d_1", nama: "Adeeva Afsheen Abdillah" },
-                { id: "4d_2", nama: "ALILA KAIA MAULANA" },
-                { id: "4d_3", nama: "Alkhalifi Arkan Sakha Fatardo" },
-                { id: "4d_4", nama: "Alva Rizky Andrianto" },
-                { id: "4d_5", nama: "Anindya shakila putri" },
-                { id: "4d_6", nama: "Anugrah Daviandra Calisto Alfarez" },
-                { id: "4d_7", nama: "ARIF FAITH RAHMAN" },
-                { id: "4d_8", nama: "ARSAKHA TIMUR PAMUNGKAS" },
-                { id: "4d_9", nama: "Azzahra aulia angelina nugraha" },
-                { id: "4d_10", nama: "BASTIAN DANISH RAYYAN RABBANI" },
-                { id: "4d_11", nama: "Herjuno Ahmad Fidiyanto" },
-                { id: "4d_12", nama: "Kaelare Gandewa Murdani" },
-                { id: "4d_13", nama: "Kaysa Elkhaira Shanum" },
-                { id: "4d_14", nama: "KHAYLA AZZA BATRISYA ZAHRA" },
-                { id: "4d_15", nama: "MIKAILA LAQUITTA HENZIE PRASODJO" },
-                { id: "4d_16", nama: "Mirza Ahnaf Putra Winaris" },
-                { id: "4d_17", nama: "MUHAMMAD ADIPATI BAGASKARA" },
-                { id: "4d_18", nama: "MUHAMMAD KHARENDIO DARIS NIBRAS" },
-                { id: "4d_19", nama: "NAILA ALESHA SAFIRA" },
-                { id: "4d_20", nama: "Nandana Adzaki Naswan" },
-                { id: "4d_21", nama: "Oryza Ziggy El Fatta Rosadi" },
-                { id: "4d_22", nama: "Rania Saffa Hafisyah" },
-                { id: "4d_23", nama: "Ravendra Elano Al Kahfi" },
-                { id: "4d_24", nama: "SYAFIYA SALMA KIRANIA CAHYANTO" },
-                { id: "4d_25", nama: "Thalita Maiza Eltsania" },
-                { id: "4d_26", nama: "Tsaniyah Adhifa Nugroho" },
-                { id: "4d_27", nama: "YASNA ISMAIL MARWAZI" },
-                { id: "4d_28", nama: "Yuna Luserina Sanjaya" },
-                { id: "4d_29", nama: "Yusuf Arsyad Abdulloh" },
-                { id: "4d_30", nama: "ZAHIDA RISTYA MAHESWARI" }
+                { id: "4d_1", nama: "Adeeva Afsheen Abdillah", presensi: 1 },
+                { id: "4d_2", nama: "ALILA KAIA MAULANA", presensi: 2 },
+                { id: "4d_3", nama: "Alkhalifi Arkan Sakha Fatardo", presensi: 3 },
+                { id: "4d_4", nama: "Alva Rizky Andrianto", presensi: 4 },
+                { id: "4d_5", nama: "Anindya shakila putri", presensi: 5 },
+                { id: "4d_6", nama: "Anugrah Daviandra Calisto Alfarez", presensi: 6 },
+                { id: "4d_7", nama: "ARIF FAITH RAHMAN", presensi: 7 },
+                { id: "4d_8", nama: "ARSAKHA TIMUR PAMUNGKAS", presensi: 8 },
+                { id: "4d_9", nama: "Azzahra aulia angelina nugraha", presensi: 9 },
+                { id: "4d_10", nama: "BASTIAN DANISH RAYYAN RABBANI", presensi: 10 },
+                { id: "4d_11", nama: "Herjuno Ahmad Fidiyanto", presensi: 11 },
+                { id: "4d_12", nama: "Kaelare Gandewa Murdani", presensi: 12 },
+                { id: "4d_13", nama: "Kaysa Elkhaira Shanum", presensi: 13 },
+                { id: "4d_14", nama: "KHAYLA AZZA BATRISYA ZAHRA", presensi: 14 },
+                { id: "4d_15", nama: "MIKAILA LAQUITTA HENZIE PRASODJO", presensi: 15 },
+                { id: "4d_16", nama: "Mirza Ahnaf Putra Winaris", presensi: 16 },
+                { id: "4d_17", nama: "MUHAMMAD ADIPATI BAGASKARA", presensi: 17 },
+                { id: "4d_18", nama: "MUHAMMAD KHARENDIO DARIS NIBRAS", presensi: 18 },
+                { id: "4d_19", nama: "NAILA ALESHA SAFIRA", presensi: 19 },
+                { id: "4d_20", nama: "Nandana Adzaki Naswan", presensi: 20 },
+                { id: "4d_21", nama: "Oryza Ziggy El Fatta Rosadi", presensi: 21 },
+                { id: "4d_22", nama: "Rania Saffa Hafisyah", presensi: 22 },
+                { id: "4d_23", nama: "Ravendra Elano Al Kahfi", presensi: 23 },
+                { id: "4d_24", nama: "SYAFIYA SALMA KIRANIA CAHYANTO", presensi: 24 },
+                { id: "4d_25", nama: "Thalita Maiza Eltsania", presensi: 25 },
+                { id: "4d_26", nama: "Tsaniyah Adhifa Nugroho", presensi: 26 },
+                { id: "4d_27", nama: "YASNA ISMAIL MARWAZI", presensi: 27 },
+                { id: "4d_28", nama: "Yuna Luserina Sanjaya", presensi: 28 },
+                { id: "4d_29", nama: "Yusuf Arsyad Abdulloh", presensi: 29 },
+                { id: "4d_30", nama: "ZAHIDA RISTYA MAHESWARI", presensi: 30 }
             ],
             "5A": [
-                { id: "5a_1", nama: "Adnan Faeyza Al Farrukh" },
-                { id: "5a_2", nama: "Alexi Permana Pribadi" },
-                { id: "5a_3", nama: "Alfaraziq Hafy Ar-Razzan" },
-                { id: "5a_4", nama: "Alnadeem Akbar Ramadhan" },
-                { id: "5a_5", nama: "Apta Janitra Passando" },
-                { id: "5a_6", nama: "Aqilasha Porsche Queenarinda" },
-                { id: "5a_7", nama: "Athaliana Alfarisa Wibowo" },
-                { id: "5a_8", nama: "Aulia Syamil Almumtaza" },
-                { id: "5a_9", nama: "Ayudia Inara Alesha Putri" },
-                { id: "5a_10", nama: "Azzahra Humaira Fadhillah" },
-                { id: "5a_11", nama: "Carissa Annisa Faiha" },
-                { id: "5a_12", nama: "Chelsea Oktavia Putri" },
-                { id: "5a_13", nama: "Davina Shava Khairiya Putri" },
-                { id: "5a_14", nama: "Dhabith Aqilah Munsif" },
-                { id: "5a_15", nama: "Fiorent Al Hafizzh Arjuna Dyan Putra" },
-                { id: "5a_16", nama: "Firhan dilfanajib" },
-                { id: "5a_17", nama: "Freya Ariana Callista Mohammad" },
-                { id: "5a_18", nama: "Gio Fadhil Satria Praditya" },
-                { id: "5a_19", nama: "Habil Athaya Zaahirulhaq" },
-                { id: "5a_20", nama: "Hadaya Sakinah Fajar Yin Yang" },
-                { id: "5a_21", nama: "Ikmal Zufar" },
-                { id: "5a_22", nama: "Krystal Adeeva Diandra Faradilla" },
-                { id: "5a_23", nama: "Melvin Rahmatullah Nizar" },
-                { id: "5a_24", nama: "Muhammad Adrian Banu Atiro" },
-                { id: "5a_25", nama: "Muhammad Ashraf Ardiansyah" },
-                { id: "5a_26", nama: "Nada Arsyifa Fredelina" },
-                { id: "5a_27", nama: "Naila Ulfa Caesarra" },
-                { id: "5a_28", nama: "Radja Anatan Wijaya" },
-                { id: "5a_29", nama: "Ramadhan Sandya Wahyu Jati" }
+                { id: "5a_1", nama: "Adnan Faeyza Al Farrukh", presensi: 1 },
+                { id: "5a_2", nama: "Alexi Permana Pribadi", presensi: 2 },
+                { id: "5a_3", nama: "Alfaraziq Hafy Ar-Razzan", presensi: 3 },
+                { id: "5a_4", nama: "Alnadeem Akbar Ramadhan", presensi: 4 },
+                { id: "5a_5", nama: "Apta Janitra Passando", presensi: 5 },
+                { id: "5a_6", nama: "Aqilasha Porsche Queenarinda", presensi: 6 },
+                { id: "5a_7", nama: "Athaliana Alfarisa Wibowo", presensi: 7 },
+                { id: "5a_8", nama: "Aulia Syamil Almumtaza", presensi: 8 },
+                { id: "5a_9", nama: "Ayudia Inara Alesha Putri", presensi: 9 },
+                { id: "5a_10", nama: "Azzahra Humaira Fadhillah", presensi: 10 },
+                { id: "5a_11", nama: "Carissa Annisa Faiha", presensi: 11 },
+                { id: "5a_12", nama: "Chelsea Oktavia Putri", presensi: 12 },
+                { id: "5a_13", nama: "Davina Shava Khairiya Putri", presensi: 13 },
+                { id: "5a_14", nama: "Dhabith Aqilah Munsif", presensi: 14 },
+                { id: "5a_15", nama: "Fiorent Al Hafizzh Arjuna Dyan Putra", presensi: 15 },
+                { id: "5a_16", nama: "Firhan dilfanajib", presensi: 16 },
+                { id: "5a_17", nama: "Freya Ariana Callista Mohammad", presensi: 17 },
+                { id: "5a_18", nama: "Gio Fadhil Satria Praditya", presensi: 18 },
+                { id: "5a_19", nama: "Habil Athaya Zaahirulhaq", presensi: 19 },
+                { id: "5a_20", nama: "Hadaya Sakinah Fajar Yin Yang", presensi: 20 },
+                { id: "5a_21", nama: "Ikmal Zufar", presensi: 21 },
+                { id: "5a_22", nama: "Krystal Adeeva Diandra Faradilla", presensi: 22 },
+                { id: "5a_23", nama: "Melvin Rahmatullah Nizar", presensi: 23 },
+                { id: "5a_24", nama: "Muhammad Adrian Banu Atiro", presensi: 24 },
+                { id: "5a_25", nama: "Muhammad Ashraf Ardiansyah", presensi: 25 },
+                { id: "5a_26", nama: "Nada Arsyifa Fredelina", presensi: 26 },
+                { id: "5a_27", nama: "Naila Ulfa Caesarra", presensi: 27 },
+                { id: "5a_28", nama: "Radja Anatan Wijaya", presensi: 28 },
+                { id: "5a_29", nama: "Ramadhan Sandya Wahyu Jati", presensi: 29 }
             ],
             "5B": [
-                { id: "5b_1", nama: "Abidah Husna Humaniora" },
-                { id: "5b_2", nama: "Abiyyu Radyta Fawwas" },
-                { id: "5b_3", nama: "Adsila Nur Aisyah" },
-                { id: "5b_4", nama: "Airin Palomarinka" },
-                { id: "5b_5", nama: "Alifa Nabilah Putri Kusumawati" },
-                { id: "5b_6", nama: "Anagata Premieranda" },
-                { id: "5b_7", nama: "Azbin Hisyam Linoko" },
-                { id: "5b_8", nama: "Basmalah Faisal Al Ghozali" },
-                { id: "5b_9", nama: "Callysta Annisa Faiha" },
-                { id: "5b_10", nama: "Daud Abdul Majiid" },
-                { id: "5b_11", nama: "Dyah Pratista Nareswari" },
-                { id: "5b_12", nama: "Edgar zaidan aditya" },
-                { id: "5b_13", nama: "Fadlan Athar Sugiarta" },
-                { id: "5b_14", nama: "Fathiya Fella Ramadyana" },
-                { id: "5b_15", nama: "Hafiza Khaira Lubna" },
-                { id: "5b_16", nama: "Hanum Maryam Istafa" },
-                { id: "5b_17", nama: "Iqbal Sakha Abiyyu" },
-                { id: "5b_18", nama: "Kaynarra Shanum Aufanisa" },
-                { id: "5b_19", nama: "Kayyisa Maza Adisti" },
-                { id: "5b_20", nama: "Khaizuran Raziq Abbasy" },
-                { id: "5b_21", nama: "Khalid Satya Abdillah" },
-                { id: "5b_22", nama: "Muhammad Dzikron Almusawa" },
-                { id: "5b_23", nama: "Naufal Ahza Fahryan" },
-                { id: "5b_24", nama: "Nayla Adiva Putri Arga" },
-                { id: "5b_25", nama: "Rislaila Karamina Nareswari" },
-                { id: "5b_26", nama: "Sabina Nindya El Yasin" },
-                { id: "5b_27", nama: "Shafira Alhusna Denastya" },
-                { id: "5b_28", nama: "Zaki Al Fariz" },
-                { id: "5b_29", nama: "Ze Abdul Ghany Fahradienn" }
+                { id: "5b_1", nama: "Abidah Husna Humaniora", presensi: 1 },
+                { id: "5b_2", nama: "Abiyyu Radyta Fawwas", presensi: 2 },
+                { id: "5b_3", nama: "Adsila Nur Aisyah", presensi: 3 },
+                { id: "5b_4", nama: "Airin Palomarinka", presensi: 4 },
+                { id: "5b_5", nama: "Alifa Nabilah Putri Kusumawati", presensi: 5 },
+                { id: "5b_6", nama: "Anagata Premieranda", presensi: 6 },
+                { id: "5b_7", nama: "Azbin Hisyam Linoko", presensi: 7 },
+                { id: "5b_8", nama: "Basmalah Faisal Al Ghozali", presensi: 8 },
+                { id: "5b_9", nama: "Callysta Annisa Faiha", presensi: 9 },
+                { id: "5b_10", nama: "Daud Abdul Majiid", presensi: 10 },
+                { id: "5b_11", nama: "Dyah Pratista Nareswari", presensi: 11 },
+                { id: "5b_12", nama: "Edgar zaidan aditya", presensi: 12 },
+                { id: "5b_13", nama: "Fadlan Athar Sugiarta", presensi: 13 },
+                { id: "5b_14", nama: "Fathiya Fella Ramadyana", presensi: 14 },
+                { id: "5b_15", nama: "Hafiza Khaira Lubna", presensi: 15 },
+                { id: "5b_16", nama: "Hanum Maryam Istafa", presensi: 16 },
+                { id: "5b_17", nama: "Iqbal Sakha Abiyyu", presensi: 17 },
+                { id: "5b_18", nama: "Kaynarra Shanum Aufanisa", presensi: 18 },
+                { id: "5b_19", nama: "Kayyisa Maza Adisti", presensi: 19 },
+                { id: "5b_20", nama: "Khaizuran Raziq Abbasy", presensi: 20 },
+                { id: "5b_21", nama: "Khalid Satya Abdillah", presensi: 21 },
+                { id: "5b_22", nama: "Muhammad Dzikron Almusawa", presensi: 22 },
+                { id: "5b_23", nama: "Naufal Ahza Fahryan", presensi: 23 },
+                { id: "5b_24", nama: "Nayla Adiva Putri Arga", presensi: 24 },
+                { id: "5b_25", nama: "Rislaila Karamina Nareswari", presensi: 25 },
+                { id: "5b_26", nama: "Sabina Nindya El Yasin", presensi: 26 },
+                { id: "5b_27", nama: "Shafira Alhusna Denastya", presensi: 27 },
+                { id: "5b_28", nama: "Zaki Al Fariz", presensi: 28 },
+                { id: "5b_29", nama: "Ze Abdul Ghany Fahradienn", presensi: 29 }
             ],
             "5C": [
-                { id: "5c_1", nama: "Abdillah Muhafizh" },
-                { id: "5c_2", nama: "Ahmad Dzakir El Basil Nelson" },
-                { id: "5c_3", nama: "Aisha Salsabil Darmawan" },
-                { id: "5c_4", nama: "Alif Aqmal Abqori" },
-                { id: "5c_5", nama: "Ariendra Salsabila Ostin" },
-                { id: "5c_6", nama: "Belva Caliana Aqila" },
-                { id: "5c_7", nama: "Diandra Alrafaeyza Wibowo" },
-                { id: "5c_8", nama: "Fadlin Athmar Sugiarta" },
-                { id: "5c_9", nama: "Fariq Akhdan Azkiya" },
-                { id: "5c_10", nama: "Fayyadh Ubaidillah Narendra" },
-                { id: "5c_11", nama: "Fazila Ariinda Lutfunisa" },
-                { id: "5c_12", nama: "Humayra lutifa Azizah nur chovie" },
-                { id: "5c_13", nama: "Irhad Ghani Ismail" },
-                { id: "5c_14", nama: "Jordan Aurio Wibowo" },
-                { id: "5c_15", nama: "Keisya Faiha Rifda Putri" },
-                { id: "5c_16", nama: "Maritza Farzana Aaliyah" },
-                { id: "5c_17", nama: "Mohammad Banu Rezon" },
-                { id: "5c_18", nama: "Muhammad Almer Zafrano" },
-                { id: "5c_19", nama: "Muhammad Ayyasy Al Fatih" },
-                { id: "5c_20", nama: "Muhammad Sabrang Piwulang Kautaman" },
-                { id: "5c_21", nama: "Muhammad Yusuf Hanafi" },
-                { id: "5c_22", nama: "Raffael Alfarizqi Novalino" },
-                { id: "5c_23", nama: "Rara Ayu Mefita Putri Az Zahra" },
-                { id: "5c_24", nama: "Rheva Almira Agatha" },
-                { id: "5c_25", nama: "Royyan Adikaraputra Syahbana" },
-                { id: "5c_26", nama: "Sabrina Aisyifa Haifa" },
-                { id: "5c_27", nama: "Safa Nadira Saraswati" },
-                { id: "5c_28", nama: "Sheikha Mahra Al Khawarizmi Muzakarisa" },
-                { id: "5c_29", nama: "Sybilla Embun Dinar" },
-                { id: "5c_30", nama: "Tsania Zeina Khumaira" }
+                { id: "5c_1", nama: "Abdillah Muhafizh", presensi: 1 },
+                { id: "5c_2", nama: "Ahmad Dzakir El Basil Nelson", presensi: 2 },
+                { id: "5c_3", nama: "Aisha Salsabil Darmawan", presensi: 3 },
+                { id: "5c_4", nama: "Alif Aqmal Abqori", presensi: 4 },
+                { id: "5c_5", nama: "Ariendra Salsabila Ostin", presensi: 5 },
+                { id: "5c_6", nama: "Belva Caliana Aqila", presensi: 6 },
+                { id: "5c_7", nama: "Diandra Alrafaeyza Wibowo", presensi: 7 },
+                { id: "5c_8", nama: "Fadlin Athmar Sugiarta", presensi: 8 },
+                { id: "5c_9", nama: "Fariq Akhdan Azkiya", presensi: 9 },
+                { id: "5c_10", nama: "Fayyadh Ubaidillah Narendra", presensi: 10 },
+                { id: "5c_11", nama: "Fazila Ariinda Lutfunisa", presensi: 11 },
+                { id: "5c_12", nama: "Humayra lutifa Azizah nur chovie", presensi: 12 },
+                { id: "5c_13", nama: "Irhad Ghani Ismail", presensi: 13 },
+                { id: "5c_14", nama: "Jordan Aurio Wibowo", presensi: 14 },
+                { id: "5c_15", nama: "Keisya Faiha Rifda Putri", presensi: 15 },
+                { id: "5c_16", nama: "Maritza Farzana Aaliyah", presensi: 16 },
+                { id: "5c_17", nama: "Mohammad Banu Rezon", presensi: 17 },
+                { id: "5c_18", nama: "Muhammad Almer Zafrano", presensi: 18 },
+                { id: "5c_19", nama: "Muhammad Ayyasy Al Fatih", presensi: 19 },
+                { id: "5c_20", nama: "Muhammad Sabrang Piwulang Kautaman", presensi: 20 },
+                { id: "5c_21", nama: "Muhammad Yusuf Hanafi", presensi: 21 },
+                { id: "5c_22", nama: "Raffael Alfarizqi Novalino", presensi: 22 },
+                { id: "5c_23", nama: "Rara Ayu Mefita Putri Az Zahra", presensi: 23 },
+                { id: "5c_24", nama: "Rheva Almira Agatha", presensi: 24 },
+                { id: "5c_25", nama: "Royyan Adikaraputra Syahbana", presensi: 25 },
+                { id: "5c_26", nama: "Sabrina Aisyifa Haifa", presensi: 26 },
+                { id: "5c_27", nama: "Safa Nadira Saraswati", presensi: 27 },
+                { id: "5c_28", nama: "Sheikha Mahra Al Khawarizmi Muzakarisa", presensi: 28 },
+                { id: "5c_29", nama: "Sybilla Embun Dinar", presensi: 29 },
+                { id: "5c_30", nama: "Tsania Zeina Khumaira", presensi: 30 }
             ],
             "5D": [
-                { id: "5d_1", nama: "Abidzar Athaya Dzaky Algifary" },
-                { id: "5d_2", nama: "AINA MACHYA ALSHIDDIQ" },
-                { id: "5d_3", nama: "Aisyah Dianov El Ghania" },
-                { id: "5d_4", nama: "Almira Syakib Rizqiya" },
-                { id: "5d_5", nama: "Alvaro Mahadana" },
-                { id: "5d_6", nama: "Arka Kelud Nova Widyanto" },
-                { id: "5d_7", nama: "Arsyil Hakim Al Fatih" },
-                { id: "5d_8", nama: "Calista Revani" },
-                { id: "5d_9", nama: "Dafa Arsya Wiyanda" },
-                { id: "5d_10", nama: "Fatimah Nurfaeyza Biantara" },
-                { id: "5d_11", nama: "Ghaziya Aqila Sutopo" },
-                { id: "5d_12", nama: "Ghouzan Zweikho Alghifari" },
-                { id: "5d_13", nama: "Hamizan Arfa Basyar" },
-                { id: "5d_14", nama: "Ibrahim Koji Kayana" },
-                { id: "5d_15", nama: "Javier Isco Setya Kurniawan" },
-                { id: "5d_16", nama: "Kannaya Tungga Dewi Rahardjo" },
-                { id: "5d_17", nama: "Keanu Putra Rafandra" },
-                { id: "5d_18", nama: "Marsya Anindya Pradipta" },
-                { id: "5d_19", nama: "Muhammad Zain Alkaf" },
-                { id: "5d_20", nama: "Nafisah Azzahra" },
-                { id: "5d_21", nama: "Naura Hasna Khumaira Alsaka" },
-                { id: "5d_22", nama: "Oktavia Jetri Kurnianada" },
-                { id: "5d_23", nama: "Qonita Humairo Latif" },
-                { id: "5d_24", nama: "Rafif dzaky ismail" },
-                { id: "5d_25", nama: "Raka Raditya Rasyid" },
-                { id: "5d_26", nama: "Reinhart Izzul Haq Muhammad" },
-                { id: "5d_27", nama: "RM Asyrafurahman Wiryawan Kusumo" },
-                { id: "5d_28", nama: "Shelby Azzahra Dzakira" },
-                { id: "5d_29", nama: "Syafira Khanza Fakhrudin" },
-                { id: "5d_30", nama: "Zhafir Mahendra Putra" }
+                { id: "5d_1", nama: "Abidzar Athaya Dzaky Algifary", presensi: 1 },
+                { id: "5d_2", nama: "AINA MACHYA ALSHIDDIQ", presensi: 2 },
+                { id: "5d_3", nama: "Aisyah Dianov El Ghania", presensi: 3 },
+                { id: "5d_4", nama: "Almira Syakib Rizqiya", presensi: 4 },
+                { id: "5d_5", nama: "Alvaro Mahadana", presensi: 5 },
+                { id: "5d_6", nama: "Arka Kelud Nova Widyanto", presensi: 6 },
+                { id: "5d_7", nama: "Arsyil Hakim Al Fatih", presensi: 7 },
+                { id: "5d_8", nama: "Calista Revani", presensi: 8 },
+                { id: "5d_9", nama: "Dafa Arsya Wiyanda", presensi: 9 },
+                { id: "5d_10", nama: "Fatimah Nurfaeyza Biantara", presensi: 10 },
+                { id: "5d_11", nama: "Ghaziya Aqila Sutopo", presensi: 11 },
+                { id: "5d_12", nama: "Ghouzan Zweikho Alghifari", presensi: 12 },
+                { id: "5d_13", nama: "Hamizan Arfa Basyar", presensi: 13 },
+                { id: "5d_14", nama: "Ibrahim Koji Kayana", presensi: 14 },
+                { id: "5d_15", nama: "Javier Isco Setya Kurniawan", presensi: 15 },
+                { id: "5d_16", nama: "Kannaya Tungga Dewi Rahardjo", presensi: 16 },
+                { id: "5d_17", nama: "Keanu Putra Rafandra", presensi: 17 },
+                { id: "5d_18", nama: "Marsya Anindya Pradipta", presensi: 18 },
+                { id: "5d_19", nama: "Muhammad Zain Alkaf", presensi: 19 },
+                { id: "5d_20", nama: "Nafisah Azzahra", presensi: 20 },
+                { id: "5d_21", nama: "Naura Hasna Khumaira Alsaka", presensi: 21 },
+                { id: "5d_22", nama: "Oktavia Jetri Kurnianada", presensi: 22 },
+                { id: "5d_23", nama: "Qonita Humairo Latif", presensi: 23 },
+                { id: "5d_24", nama: "Rafif dzaky ismail", presensi: 24 },
+                { id: "5d_25", nama: "Raka Raditya Rasyid", presensi: 25 },
+                { id: "5d_26", nama: "Reinhart Izzul Haq Muhammad", presensi: 26 },
+                { id: "5d_27", nama: "RM Asyrafurahman Wiryawan Kusumo", presensi: 27 },
+                { id: "5d_28", nama: "Shelby Azzahra Dzakira", presensi: 28 },
+                { id: "5d_29", nama: "Syafira Khanza Fakhrudin", presensi: 29 },
+                { id: "5d_30", nama: "Zhafir Mahendra Putra", presensi: 30 }
             ],
             "6A": [
-                { id: "6a_1", nama: "Abdullah Naafi' Haitami" },
-                { id: "6a_2", nama: "Adinda Kharisma Putri Kencono" },
-                { id: "6a_3", nama: "Ahmad Fadillah Ramdhani" },
-                { id: "6a_4", nama: "Almira Savaira Ayla Arwina Putri" },
-                { id: "6a_5", nama: "Ashilla Nafisha Salsabila" },
-                { id: "6a_6", nama: "Azzah Fatin Dinah" },
-                { id: "6a_7", nama: "Bintang Pramudita Dewani" },
-                { id: "6a_8", nama: "Clevara Ziven Arsy Erlandy" },
-                { id: "6a_9", nama: "Elina Farah Aulia" },
-                { id: "6a_10", nama: "Gadis Avisa Amalia" },
-                { id: "6a_11", nama: "Haisha Hanum Hanania" },
-                { id: "6a_12", nama: "Hanifan Faishal Akbar" },
-                { id: "6a_13", nama: "Keanu Aufaa Putra Kuncara" },
-                { id: "6a_14", nama: "Khalifa Alya Khairunnisa" },
-                { id: "6a_15", nama: "Lanika Alleia Nugroho" },
-                { id: "6a_16", nama: "Maekha Tria Al Ghazali" },
-                { id: "6a_17", nama: "Maheswara Sutodigdoyo Purbo Wiseso" },
-                { id: "6a_18", nama: "Mikhayla Zafirazka Sunu" },
-                { id: "6a_19", nama: "Muhammad Atha Rasyafa" },
-                { id: "6a_20", nama: "Nadya Asyifa Khairani" },
-                { id: "6a_21", nama: "Najwa Mufida Adaffi" },
-                { id: "6a_22", nama: "Narendra Faid Algibran" },
-                { id: "6a_23", nama: "Nediva Faranisa Arifa Putri" },
-                { id: "6a_24", nama: "Noni Lexa Amaretha Setyawan" },
-                { id: "6a_25", nama: "Pradipta Rasya Alfarizky" },
-                { id: "6a_26", nama: "Sakura Hana Humaira" },
-                { id: "6a_27", nama: "Zavier Fico El Rafif" }
+                { id: "6a_1", nama: "Abdullah Naafi' Haitami", presensi: 1 },
+                { id: "6a_2", nama: "Adinda Kharisma Putri Kencono", presensi: 2 },
+                { id: "6a_3", nama: "Ahmad Fadillah Ramdhani", presensi: 3 },
+                { id: "6a_4", nama: "Almira Savaira Ayla Arwina Putri", presensi: 4 },
+                { id: "6a_5", nama: "Ashilla Nafisha Salsabila", presensi: 5 },
+                { id: "6a_6", nama: "Azzah Fatin Dinah", presensi: 6 },
+                { id: "6a_7", nama: "Bintang Pramudita Dewani", presensi: 7 },
+                { id: "6a_8", nama: "Clevara Ziven Arsy Erlandy", presensi: 8 },
+                { id: "6a_9", nama: "Elina Farah Aulia", presensi: 9 },
+                { id: "6a_10", nama: "Gadis Avisa Amalia", presensi: 10 },
+                { id: "6a_11", nama: "Haisha Hanum Hanania", presensi: 11 },
+                { id: "6a_12", nama: "Hanifan Faishal Akbar", presensi: 12 },
+                { id: "6a_13", nama: "Keanu Aufaa Putra Kuncara", presensi: 13 },
+                { id: "6a_14", nama: "Khalifa Alya Khairunnisa", presensi: 14 },
+                { id: "6a_15", nama: "Lanika Alleia Nugroho", presensi: 15 },
+                { id: "6a_16", nama: "Maekha Tria Al Ghazali", presensi: 16 },
+                { id: "6a_17", nama: "Maheswara Sutodigdoyo Purbo Wiseso", presensi: 17 },
+                { id: "6a_18", nama: "Mikhayla Zafirazka Sunu", presensi: 18 },
+                { id: "6a_19", nama: "Muhammad Atha Rasyafa", presensi: 19 },
+                { id: "6a_20", nama: "Nadya Asyifa Khairani", presensi: 20 },
+                { id: "6a_21", nama: "Najwa Mufida Adaffi", presensi: 21 },
+                { id: "6a_22", nama: "Narendra Faid Algibran", presensi: 22 },
+                { id: "6a_23", nama: "Nediva Faranisa Arifa Putri", presensi: 23 },
+                { id: "6a_24", nama: "Noni Lexa Amaretha Setyawan", presensi: 24 },
+                { id: "6a_25", nama: "Pradipta Rasya Alfarizky", presensi: 25 },
+                { id: "6a_26", nama: "Sakura Hana Humaira", presensi: 26 },
+                { id: "6a_27", nama: "Zavier Fico El Rafif", presensi: 27 }
             ],
             "6B": [
-                { id: "6b_1", nama: "Abdurrahman Aziz Khairi" },
-                { id: "6b_2", nama: "Abdurrahman Yudha Iskandarsyah" },
-                { id: "6b_3", nama: "Allyssa Assyifatul Zahra" },
-                { id: "6b_4", nama: "Alvaro Aidan Santosa" },
-                { id: "6b_5", nama: "Andrina Larasati Roossetyo" },
-                { id: "6b_6", nama: "Annisa Adzkia Jasmine" },
-                { id: "6b_7", nama: "Azka Al Latif" },
-                { id: "6b_8", nama: "Elang Fachriza Wibowo" },
-                { id: "6b_9", nama: "Fadhil Al Maisan Sakha Setiyawan" },
-                { id: "6b_10", nama: "Fajria Shabihah Azzahra" },
-                { id: "6b_11", nama: "Falilah Ransi Kayana" },
-                { id: "6b_12", nama: "Faqih Alfarizi Utama" },
-                { id: "6b_13", nama: "Farah Atania Dumaj" },
-                { id: "6b_14", nama: "Fidelia Carlise Tasanee" },
-                { id: "6b_15", nama: "Hayden Aerozensa Sutrisno" },
-                { id: "6b_16", nama: "Ibni Amiir Al Farraas" },
-                { id: "6b_17", nama: "Muhammad Ahsan Haidar" },
-                { id: "6b_18", nama: "Muhammad Lutfie Sakhi Zaidan" },
-                { id: "6b_19", nama: "Mutiara Putri Santoso" },
-                { id: "6b_20", nama: "Nadzira Qurbah Shalihah" },
-                { id: "6b_21", nama: "Qudsia Khaira Arzami" },
-                { id: "6b_22", nama: "Raihana Salsabila Nadhifa" },
-                { id: "6b_23", nama: "Shakila Athaleta Defrina" },
-                { id: "6b_24", nama: "Shelcye Alya Bilbina" },
-                { id: "6b_25", nama: "Tsania Elrahma Setyawan" },
-                { id: "6b_26", nama: "Wira Adhyasta Wardhana" },
-                { id: "6b_27", nama: "Yaqdhan Rafa Atalla" },
-                { id: "6b_28", nama: "Yusuf Zian Arkana" }
+                { id: "6b_1", nama: "Abdurrahman Aziz Khairi", presensi: 1 },
+                { id: "6b_2", nama: "Abdurrahman Yudha Iskandarsyah", presensi: 2 },
+                { id: "6b_3", nama: "Allyssa Assyifatul Zahra", presensi: 3 },
+                { id: "6b_4", nama: "Alvaro Aidan Santosa", presensi: 4 },
+                { id: "6b_5", nama: "Andrina Larasati Roossetyo", presensi: 5 },
+                { id: "6b_6", nama: "Annisa Adzkia Jasmine", presensi: 6 },
+                { id: "6b_7", nama: "Azka Al Latif", presensi: 7 },
+                { id: "6b_8", nama: "Elang Fachriza Wibowo", presensi: 8 },
+                { id: "6b_9", nama: "Fadhil Al Maisan Sakha Setiyawan", presensi: 9 },
+                { id: "6b_10", nama: "Fajria Shabihah Azzahra", presensi: 10 },
+                { id: "6b_11", nama: "Falilah Ransi Kayana", presensi: 11 },
+                { id: "6b_12", nama: "Faqih Alfarizi Utama", presensi: 12 },
+                { id: "6b_13", nama: "Farah Atania Dumaj", presensi: 13 },
+                { id: "6b_14", nama: "Fidelia Carlise Tasanee", presensi: 14 },
+                { id: "6b_15", nama: "Hayden Aerozensa Sutrisno", presensi: 15 },
+                { id: "6b_16", nama: "Ibni Amiir Al Farraas", presensi: 16 },
+                { id: "6b_17", nama: "Muhammad Ahsan Haidar", presensi: 17 },
+                { id: "6b_18", nama: "Muhammad Lutfie Sakhi Zaidan", presensi: 18 },
+                { id: "6b_19", nama: "Mutiara Putri Santoso", presensi: 19 },
+                { id: "6b_20", nama: "Nadzira Qurbah Shalihah", presensi: 20 },
+                { id: "6b_21", nama: "Qudsia Khaira Arzami", presensi: 21 },
+                { id: "6b_22", nama: "Raihana Salsabila Nadhifa", presensi: 22 },
+                { id: "6b_23", nama: "Shakila Athaleta Defrina", presensi: 23 },
+                { id: "6b_24", nama: "Shelcye Alya Bilbina", presensi: 24 },
+                { id: "6b_25", nama: "Tsania Elrahma Setyawan", presensi: 25 },
+                { id: "6b_26", nama: "Wira Adhyasta Wardhana", presensi: 26 },
+                { id: "6b_27", nama: "Yaqdhan Rafa Atalla", presensi: 27 },
+                { id: "6b_28", nama: "Yusuf Zian Arkana", presensi: 28 }
             ],
             "6C": [
-                { id: "6c_1", nama: "Adelia Shazia Azzahra" },
-                { id: "6c_2", nama: "Aidan Syam Rachmad" },
-                { id: "6c_3", nama: "Akbar Nurta Alim" },
-                { id: "6c_4", nama: "Athalla Zafran Al Rafisqi" },
-                { id: "6c_5", nama: "Auliya Putri Rhamadani" },
-                { id: "6c_6", nama: "Daanya Ulima Saputro" },
-                { id: "6c_7", nama: "Diandra Nasya Azzahra" },
-                { id: "6c_8", nama: "Dzakira Fauzia Aftani" },
-                { id: "6c_9", nama: "Fatih Rahman" },
-                { id: "6c_10", nama: "Gilang Ramadhan" },
-                { id: "6c_11", nama: "Hafida Husna Akmalia" },
-                { id: "6c_12", nama: "Kalena Shafiyya Nailatul Izzah" },
-                { id: "6c_13", nama: "Kania Khanza Farzana Callysta" },
-                { id: "6c_14", nama: "Kayra Dzikri Kasyifa Aghna" },
-                { id: "6c_15", nama: "Kayyisa Zaida Windriya" },
-                { id: "6c_16", nama: "Ken Cordoba Hayam Wuruk Dhofir" },
-                { id: "6c_17", nama: "Keysha Calista Ramadhani" },
-                { id: "6c_18", nama: "Muhammad Afandi" },
-                { id: "6c_19", nama: "Muhammad Firman Abdillah" },
-                { id: "6c_20", nama: "Muhammad Keenan Wicaksono" },
-                { id: "6c_21", nama: "Nuria Azzahra Hartanto" },
-                { id: "6c_22", nama: "Oryza Sativa Khairunnisa'" },
-                { id: "6c_23", nama: "Qatrunada Shadrina Auni" },
-                { id: "6c_24", nama: "Sabiq Maulana Fakhrudin" },
-                { id: "6c_25", nama: "Sulthan Hanif Muhamad Taufik" },
-                { id: "6c_26", nama: "Tiara Khairun Nisa" },
-                { id: "6c_27", nama: "Urzuqnie Fahman" },
-                { id: "6c_28", nama: "Zhafran Axel Alfarizi" }
+                { id: "6c_1", nama: "Adelia Shazia Azzahra", presensi: 1 },
+                { id: "6c_2", nama: "Aidan Syam Rachmad", presensi: 2 },
+                { id: "6c_3", nama: "Akbar Nurta Alim", presensi: 3 },
+                { id: "6c_4", nama: "Athalla Zafran Al Rafisqi", presensi: 4 },
+                { id: "6c_5", nama: "Auliya Putri Rhamadani", presensi: 5 },
+                { id: "6c_6", nama: "Daanya Ulima Saputro", presensi: 6 },
+                { id: "6c_7", nama: "Diandra Nasya Azzahra", presensi: 7 },
+                { id: "6c_8", nama: "Dzakira Fauzia Aftani", presensi: 8 },
+                { id: "6c_9", nama: "Fatih Rahman", presensi: 9 },
+                { id: "6c_10", nama: "Gilang Ramadhan", presensi: 10 },
+                { id: "6c_11", nama: "Hafida Husna Akmalia", presensi: 11 },
+                { id: "6c_12", nama: "Kalena Shafiyya Nailatul Izzah", presensi: 12 },
+                { id: "6c_13", nama: "Kania Khanza Farzana Callysta", presensi: 13 },
+                { id: "6c_14", nama: "Kayra Dzikri Kasyifa Aghna", presensi: 14 },
+                { id: "6c_15", nama: "Kayyisa Zaida Windriya", presensi: 15 },
+                { id: "6c_16", nama: "Ken Cordoba Hayam Wuruk Dhofir", presensi: 16 },
+                { id: "6c_17", nama: "Keysha Calista Ramadhani", presensi: 17 },
+                { id: "6c_18", nama: "Muhammad Afandi", presensi: 18 },
+                { id: "6c_19", nama: "Muhammad Firman Abdillah", presensi: 19 },
+                { id: "6c_20", nama: "Muhammad Keenan Wicaksono", presensi: 20 },
+                { id: "6c_21", nama: "Nuria Azzahra Hartanto", presensi: 21 },
+                { id: "6c_22", nama: "Oryza Sativa Khairunnisa'", presensi: 22 },
+                { id: "6c_23", nama: "Qatrunada Shadrina Auni", presensi: 23 },
+                { id: "6c_24", nama: "Sabiq Maulana Fakhrudin", presensi: 24 },
+                { id: "6c_25", nama: "Sulthan Hanif Muhamad Taufik", presensi: 25 },
+                { id: "6c_26", nama: "Tiara Khairun Nisa", presensi: 26 },
+                { id: "6c_27", nama: "Urzuqnie Fahman", presensi: 27 },
+                { id: "6c_28", nama: "Zhafran Axel Alfarizi", presensi: 28 }
             ],
             "6D": [
-                { id: "6d_1", nama: "Adinda Aurelia" },
-                { id: "6d_2", nama: "Afifah Bilqis Azzahra" },
-                { id: "6d_3", nama: "Akma Safaraz Ajunta" },
-                { id: "6d_4", nama: "Alaina Arufa Nisa'" },
-                { id: "6d_5", nama: "Alisha Shafia Sugianto" },
-                { id: "6d_6", nama: "Anarta Kishar" },
-                { id: "6d_7", nama: "Annorafatech" },
-                { id: "6d_8", nama: "Aprilio Wifa" },
-                { id: "6d_9", nama: "Ceisya Hazkia" },
-                { id: "6d_10", nama: "Devandra Alvaro" },
-                { id: "6d_11", nama: "Dzakiyya Talita" },
-                { id: "6d_12", nama: "Dzaky Almair Jamil" },
-                { id: "6d_13", nama: "Fathiya Halwa Nisa" },
-                { id: "6d_14", nama: "Faza Hanifa" },
-                { id: "6d_15", nama: "Hafuza Gentza" },
-                { id: "6d_16", nama: "Helios Cakra" },
-                { id: "6d_17", nama: "Justitia Kafila" },
-                { id: "6d_18", nama: "Kaureen Fazeela" },
-                { id: "6d_19", nama: "Khafi Aqlan" },
-                { id: "6d_20", nama: "Kinasih Helga" },
-                { id: "6d_21", nama: "Lionel Castila" },
-                { id: "6d_22", nama: "Mosanda" },
-                { id: "6d_23", nama: "Muhammad Yahya" },
-                { id: "6d_24", nama: "Nadifa Nur" },
-                { id: "6d_25", nama: "Nailah Hafiza" },
-                { id: "6d_26", nama: "Novandra Arjuna" },
-                { id: "6d_27", nama: "Radinwangi" },
-                { id: "6d_28", nama: "Umar Al-Faruq" }
+                { id: "6d_1", nama: "Adinda Aurelia", presensi: 1 },
+                { id: "6d_2", nama: "Afifah Bilqis Azzahra", presensi: 2 },
+                { id: "6d_3", nama: "Akma Safaraz Ajunta", presensi: 3 },
+                { id: "6d_4", nama: "Alaina Arufa Nisa'", presensi: 4 },
+                { id: "6d_5", nama: "Alisha Shafia Sugianto", presensi: 5 },
+                { id: "6d_6", nama: "Anarta Regis Pratama", presensi: 6 },
+                { id: "6d_7", nama: "Annorafatech Aqilahamdah", presensi: 7 },
+                { id: "6d_8", nama: "Aprilio Wifa Albyansyah", presensi: 8 },
+                { id: "6d_9", nama: "Ceisya Hazkia Rizky Subagyo", presensi: 9 },
+                { id: "6d_10", nama: "Devandra Alvaro El Zahran", presensi: 10 },
+                { id: "6d_11", nama: "Dzakiyya Talita Sakhi Wicaksono", presensi: 11 },
+                { id: "6d_12", nama: "Dzaky Almair Jamil Wibowo", presensi: 12 },
+                { id: "6d_13", nama: "Fathiya Halwa Nisa", presensi: 13 },
+                { id: "6d_14", nama: "Faza Hanifa Nugroho", presensi: 14 },
+                { id: "6d_15", nama: "Hafuza Gentza Gunarso", presensi: 15 },
+                { id: "6d_16", nama: "Helios Cakrabirawa Samsudin", presensi: 16 },
+                { id: "6d_17", nama: "Justitia Kafila", presensi: 17 },
+                { id: "6d_18", nama: "Kaureen Fazeela Syakira", presensi: 18 },
+                { id: "6d_19", nama: "Khafi Aqlan Raiz", presensi: 19 },
+                { id: "6d_20", nama: "Kinasih Helga Hares", presensi: 20 },
+                { id: "6d_21", nama: "Lionel Castila", presensi: 21 },
+                { id: "6d_22", nama: "Mosanda Maarif", presensi: 22 },
+                { id: "6d_23", nama: "Muhammad Yahya Asy'ari", presensi: 23 },
+                { id: "6d_24", nama: "Nadifa Nur Medina", presensi: 24 },
+                { id: "6d_25", nama: "Nailah Hafiza Izzatunnisa", presensi: 25 },
+                { id: "6d_26", nama: "Novandra Arjuna Pratama", presensi: 26 },
+                { id: "6d_27", nama: "Radinwangi Avatara Azura Kertabhauma Cakraningrat", presensi: 27 },
+                { id: "6d_28", nama: "Umar Al-Faruq", presensi: 28 }
             ],
-            "KODING": [
-                { id: "kod_1", nama: "Den Ahmad Coder" },
-                { id: "kod_2", nama: "Zivi AI Master" }
-            ]
+            "KODING": [] // Sifat penampung koding, tapi proses grading diarahkan ke 4,5,6 riil
         };
 
         let databaseSiswa = {};
         let dataNilaiSiswa = {}; 
 
-        let activeKelas = null; // Menyimpan Pembagi Aktif ('55', '60', '65', '45')
-        let currentClassName = ""; // Menyimpan Nama Kelas Aktif ('1 ICP A', '2A', dsb)
+        let activeKelas = null; 
         let activeMode = 'jumlah'; 
         let fokusInput = 'total';
         let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
@@ -1268,8 +1303,14 @@
             if(saved) {
                 configKelas = JSON.parse(saved);
                 Object.keys(configKelas).forEach(key => {
-                    document.getElementById('label-name-' + key).innerText = configKelas[key].name;
-                    document.getElementById('label-sub-' + key).innerText = 'Bagi ' + key;
+                    const labelBtnName = document.getElementById('label-name-' + key);
+                    if (labelBtnName) {
+                        labelBtnName.innerText = configKelas[key].name;
+                    }
+                    const labelBtnSub = document.getElementById('label-sub-' + key);
+                    if (labelBtnSub) {
+                        labelBtnSub.innerText = 'Bagi ' + key;
+                    }
                 });
             }
         }
@@ -1299,7 +1340,7 @@
             }
         }
 
-        // --- STATE PERSISTENCE (PENYELAMAT DATA SAAT OFFLINE) ---
+        // --- STATE PERSISTENCE ---
         function simpanDataOffline() {
             const data = { activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId, currentClassName };
             localStorage.setItem('kates_offline_state_v3', JSON.stringify(data));
@@ -1335,6 +1376,11 @@
             return false;
         }
 
+        // --- AMBIL DAFTAR SISWA ---
+        function getSiswaList(className) {
+            return databaseSiswa[className] || [];
+        }
+
         // --- PENGELOLAAN EVENT LONG-PRESS (KUSTOMISASI KELAS) ---
         function initLongPressEvents() {
             ['55', '60', '65', '45'].forEach(key => {
@@ -1360,14 +1406,17 @@
 
                 btn.addEventListener('click', () => {
                     let firstClassOfPembagi = "";
-                    for (let c in mapKelasKePembagi) {
-                        if (mapKelasKePembagi[c] === key) {
-                            firstClassOfPembagi = c;
-                            break;
+                    if (key === '45') {
+                        firstClassOfPembagi = "4A"; // Kelas 4, 5, 6 koding, default ambil 4A
+                    } else {
+                        for (let c in mapKelasKePembagi) {
+                            if (mapKelasKePembagi[c] === key && c !== "KODING") {
+                                firstClassOfPembagi = c;
+                                break;
+                            }
                         }
                     }
                     if (firstClassOfPembagi) {
-                        document.getElementById('select-kelas-grading').value = firstClassOfPembagi;
                         pilihKelasAktif(key, firstClassOfPembagi);
                     }
                 });
@@ -1495,24 +1544,47 @@
             }, 250);
         }
 
-        // --- STREAMING_CHUNK: Processing interface select functions... ---
         // --- SISTEM DROPDOWN KELAS & SISWA DEWA ---
         function updateKelasDropdownOptions() {
             const selectKelas = document.getElementById('select-kelas-grading');
             selectKelas.innerHTML = '<option value="">-- KELAS --</option>';
-            Object.keys(mapKelasKePembagi).forEach(clsName => {
-                const opt = document.createElement('option');
-                opt.value = clsName;
-                opt.innerText = clsName;
-                selectKelas.appendChild(opt);
-            });
+            
+            if (!activeKelas) return;
+
+            if (activeKelas === '45') {
+                // Untuk kelas KODING yang dimunculkan di dropdown adalah Kelas 4, 5, 6
+                const kodingClasses = [
+                    "4A", "4B", "4C", "4D", 
+                    "5A", "5B", "5C", "5D", 
+                    "6A", "6B", "6C", "6D"
+                ];
+                kodingClasses.forEach(clsName => {
+                    const opt = document.createElement('option');
+                    opt.value = clsName;
+                    opt.innerText = clsName;
+                    selectKelas.appendChild(opt);
+                });
+            } else {
+                // Kategori normal
+                Object.keys(mapKelasKePembagi).forEach(clsName => {
+                    if (mapKelasKePembagi[clsName] === activeKelas && clsName !== "KODING") {
+                        // Jika kategori kelas 4-5 (pembagi 65) dipilih, jangan tampilkan Kelas 6
+                        if (activeKelas === '65' && clsName.startsWith('6')) {
+                            return; 
+                        }
+                        const opt = document.createElement('option');
+                        opt.value = clsName;
+                        opt.innerText = clsName;
+                        selectKelas.appendChild(opt);
+                    }
+                });
+            }
         }
 
         function pilihKelasDariDropdown() {
             const selectedClass = document.getElementById('select-kelas-grading').value;
             if(selectedClass) {
-                const pembagi = mapKelasKePembagi[selectedClass];
-                pilihKelasAktif(pembagi, selectedClass);
+                pilihKelasAktif(activeKelas, selectedClass);
             }
         }
 
@@ -1522,16 +1594,28 @@
             
             if(!currentClassName) return;
 
-            const siswaKelas = databaseSiswa[currentClassName] || [];
+            const siswaKelas = getSiswaList(currentClassName);
             siswaKelas.forEach(s => {
-                const statusSaved = dataNilaiSiswa[s.id] ? " ✅" : "";
+                let lookupId = s.id;
+                if (activeKelas === '45') {
+                    lookupId = s.id + "_45"; // Kunci unik koding agar nilai tidak tabrakan
+                }
+                const statusSaved = dataNilaiSiswa[lookupId] ? " ✅" : "";
                 const opt = document.createElement('option');
                 opt.value = s.id;
-                opt.innerText = s.nama + statusSaved;
+                // Memberikan no urut presensi
+                const presensiNo = s.presensi || (siswaKelas.indexOf(s) + 1);
+                opt.innerText = `${presensiNo}. ${s.nama}${statusSaved}`;
                 select.appendChild(opt);
             });
 
-            const belumTernilai = siswaKelas.find(s => !dataNilaiSiswa[s.id]);
+            // Cari yang belum dinilai
+            const belumTernilai = siswaKelas.find(s => {
+                let lookupId = s.id;
+                if (activeKelas === '45') lookupId = s.id + "_45";
+                return !dataNilaiSiswa[lookupId];
+            });
+
             if(belumTernilai) {
                 select.value = belumTernilai.id;
                 activeSiswaId = belumTernilai.id;
@@ -1552,8 +1636,13 @@
         function muatNilaiSiswaAktif() {
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
             
-            if (activeSiswaId && dataNilaiSiswa[activeSiswaId]) {
-                const nilai = dataNilaiSiswa[activeSiswaId];
+            let lookupId = activeSiswaId;
+            if (activeKelas === '45') {
+                lookupId = activeSiswaId + "_45";
+            }
+
+            if (activeSiswaId && dataNilaiSiswa[lookupId]) {
+                const nilai = dataNilaiSiswa[lookupId];
                 nilaiInput.r1 = nilai.r1 || '';
                 nilaiInput.r2 = nilai.r2 || '';
                 nilaiInput.r3 = nilai.r3 || '';
@@ -1573,30 +1662,53 @@
                 tampilkanPeringatanLucu('nokelas');
                 return;
             }
+            
+            // Populasikan list kelas di modal tambah siswa
+            const selectAddClass = document.getElementById('add-siswa-kelas');
+            selectAddClass.innerHTML = '';
+            Object.keys(mapKelasKePembagi).forEach(cName => {
+                if (cName !== "KODING") {
+                    const opt = document.createElement('option');
+                    opt.value = cName;
+                    opt.innerText = cName;
+                    selectAddClass.appendChild(opt);
+                }
+            });
+            selectAddClass.value = currentClassName;
+
             document.getElementById('tambah-siswa-subtitle').innerText = "Menambahkan siswa ke " + currentClassName;
+            document.getElementById('add-siswa-presensi').value = (getSiswaList(currentClassName).length + 1);
             document.getElementById('input-nama-baru').value = "";
             toggleModal('tambah-siswa-modal', true);
         }
 
         function simpanSiswaBaru() {
+            const kelasTarget = document.getElementById('add-siswa-kelas').value;
+            const presensi = parseInt(document.getElementById('add-siswa-presensi').value) || 1;
             const nama = document.getElementById('input-nama-baru').value.trim();
-            if(!nama) return;
+            if(!nama || !kelasTarget) return;
 
-            const newId = currentClassName.replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-6);
-            if(!databaseSiswa[currentClassName]) databaseSiswa[currentClassName] = [];
+            const newId = kelasTarget.replace(/\s+/g, '_').toLowerCase() + "_" + Date.now().toString().slice(-6);
+            if(!databaseSiswa[kelasTarget]) databaseSiswa[kelasTarget] = [];
             
-            databaseSiswa[currentClassName].push({ id: newId, nama: nama });
+            databaseSiswa[kelasTarget].push({ id: newId, nama: nama, presensi: presensi });
+            
+            // Urutkan siswa berdasarkan nomor presensi
+            databaseSiswa[kelasTarget].sort((a, b) => (parseInt(a.presensi) || 0) - (parseInt(b.presensi) || 0));
+            
             simpanSiswaKeLocal();
             
             toggleModal('tambah-siswa-modal', false);
-            updateSiswaDropdown();
-            document.getElementById('select-siswa').value = newId;
-            activeSiswaId = newId;
-            muatNilaiSiswaAktif();
+            
+            if (kelasTarget === currentClassName) {
+                updateSiswaDropdown();
+                document.getElementById('select-siswa').value = newId;
+                activeSiswaId = newId;
+                muatNilaiSiswaAktif();
+            }
         }
 
-        // --- STREAMING_CHUNK: Managing calculations and reports... ---
-        // --- SAVE DATA PENILAIAN SISWA (AUTO NEXT DEWA) ---
+        // --- SAVE DATA PENILAIAN SISWA ---
         function simpanNilaiKeSiswa() {
             if(!activeKelas) {
                 tampilkanPeringatanLucu('nokelas');
@@ -1614,7 +1726,12 @@
             const asli = document.getElementById('nilaiAsli').innerText;
             const bulat = document.getElementById('nilaiBulat').innerText;
 
-            dataNilaiSiswa[activeSiswaId] = {
+            let saveId = activeSiswaId;
+            if (activeKelas === '45') {
+                saveId = activeSiswaId + "_45"; 
+            }
+
+            dataNilaiSiswa[saveId] = {
                 mode: activeMode,
                 r1: r1,
                 r2: r2,
@@ -1654,7 +1771,7 @@
             }
         }
 
-        // --- REKAPITULASI & EKSPOR EXCEL (CSV) ---
+        // --- REKAPITULASI & DIALOG EXCEL ---
         function bukaRekapNilai() {
             if(!currentClassName) {
                 tampilkanPeringatanLucu('nokelas');
@@ -1665,7 +1782,7 @@
             const body = document.getElementById('tabel-rekap-body');
             body.innerHTML = "";
 
-            const siswaList = databaseSiswa[currentClassName] || [];
+            const siswaList = getSiswaList(currentClassName);
             document.getElementById('rekap-total-siswa').innerText = `Total: ${siswaList.length} Siswa`;
 
             if(siswaList.length === 0) {
@@ -1675,7 +1792,13 @@
             }
 
             siswaList.forEach((s, idx) => {
-                const n = dataNilaiSiswa[s.id];
+                let lookupId = s.id;
+                if (activeKelas === '45') {
+                    lookupId = s.id + "_45";
+                }
+                const n = dataNilaiSiswa[lookupId];
+                const presensiNo = s.presensi || (idx + 1);
+                
                 const rincian = n ? (n.mode === 'romawi' ? `Rom I: ${n.r1 || 0}, Rom II: ${n.r2 || 0}, Rom III: ${n.r3 || 0}` : `Total Skor: ${n.total || 0}`) : 'Belum diisi';
                 const scoreDisplay = n ? `<div class="text-right"><div class="text-xs font-black text-emerald-600">${n.bulat}</div><div class="text-[9px] text-slate-400">Asli: ${n.asli}</div></div>` : `<span class="text-slate-300 font-bold italic text-[10px]">Kosong</span>`;
 
@@ -1683,7 +1806,7 @@
                 row.className = "flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm";
                 row.innerHTML = `
                     <div class="flex items-center gap-2">
-                        <span class="text-[10px] text-slate-400 font-bold">${idx + 1}</span>
+                        <span class="text-[10px] text-slate-400 font-bold">${presensiNo}</span>
                         <div>
                             <p class="text-xs font-black text-slate-700 leading-tight">${s.nama}</p>
                             <p class="text-[8px] text-slate-400 font-bold">${rincian}</p>
@@ -1706,20 +1829,30 @@
                 const index = list.findIndex(s => s.id === id);
                 if(index > -1) {
                     list.splice(index, 1);
-                    delete dataNilaiSiswa[id];
-                    simpanSiswaKeLocal();
-                    simpanNilaiKeLocal();
-                    bukaRekapNilai();
-                    updateSiswaDropdown();
                 }
+                
+                let lookupId = id;
+                if (activeKelas === '45') {
+                    lookupId = id + "_45";
+                }
+                delete dataNilaiSiswa[lookupId];
+                
+                simpanSiswaKeLocal();
+                simpanNilaiKeLocal();
+                bukaRekapNilai();
+                updateSiswaDropdown();
             }
         }
 
         function clearSemuaNilai() {
             if(confirm("Yakin ingin mengosongkan seluruh nilai di kelas ini?")) {
-                const list = databaseSiswa[currentClassName] || [];
+                const list = getSiswaList(currentClassName);
                 list.forEach(s => {
-                    delete dataNilaiSiswa[s.id];
+                    let lookupId = s.id;
+                    if (activeKelas === '45') {
+                        lookupId = s.id + "_45";
+                    }
+                    delete dataNilaiSiswa[lookupId];
                 });
                 simpanNilaiKeLocal();
                 bukaRekapNilai();
@@ -1727,35 +1860,102 @@
             }
         }
 
-        function exportExcel() {
-            if(!currentClassName) return;
-            const siswaList = databaseSiswa[currentClassName] || [];
-            if(siswaList.length === 0) {
-                alert("Daftar siswa kosong!");
-                return;
-            }
+        function bukaExportDialog() {
+            toggleModal('rekap-modal', false);
+            toggleModal('export-excel-modal', true);
+        }
 
-            const pembagi = activeKelas;
+        function prosesUnduhExcel() {
+            const mapelName = document.getElementById('export-mapel-name').value.trim() || "Sumatif Akhir Tahun";
+            const siswaList = getSiswaList(currentClassName);
+            
+            const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const d = new Date();
+            const dateStr = `${namaHari[d.getDay()]}, ${d.getDate()} ${namaBulan[d.getMonth()]} ${d.getFullYear()}`;
 
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "No,Nama Siswa,Kelas,Mode Penilaian,Romawi 1,Romawi 2,Romawi 3,Total Skor,Nilai Asli (Pembagi " + pembagi + "),Nilai Akhir (Pembulatan)\n";
+            // Generate HTML-based Excel Table dengan css style warna premium
+            let excelTemplate = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        table { border-collapse: collapse; }
+                        td, th { border: 1px solid #cbd5e1; padding: 8px; font-family: 'Arial', sans-serif; font-size: 11pt; text-align: left; }
+                        th { background-color: #f1f5f9; font-weight: bold; color: #1e293b; text-align: center; }
+                        .title { font-size: 14pt; font-weight: bold; text-align: center; color: #1e3a8a; padding: 10px 0; }
+                        .filled { background-color: #d1fae5; color: #065f46; font-weight: bold; text-align: center; }
+                        .empty { background-color: #fce7f3; color: #9d174d; text-align: center; font-weight: bold; }
+                        .text-center { text-align: center; }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td colspan="4" class="title">DAFTAR NILAI KELAS ${currentClassName.toUpperCase()}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="title" style="font-size: 11pt; font-weight: normal; color: #475569; padding-bottom: 20px;">Mata Pelajaran: ${mapelName.toUpperCase()}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="title" style="font-size: 9pt; font-weight: normal; color: #64748b; padding-bottom: 20px;">Di download pada: ${dateStr}</td>
+                        </tr>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">No</th>
+                                <th style="width: 300px;">Nama</th>
+                                <th style="width: 110px;">Nilai Bulat</th>
+                                <th style="width: 110px;">Nilai Asli</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
 
             siswaList.forEach((s, idx) => {
-                const n = dataNilaiSiswa[s.id];
+                let lookupId = s.id;
+                if (activeKelas === '45') {
+                    lookupId = s.id + "_45";
+                }
+                const n = dataNilaiSiswa[lookupId];
+                const presensiNo = s.presensi || (idx + 1);
+
                 if (n) {
-                    csvContent += `${idx + 1},"${s.nama}",${currentClassName},${n.mode.toUpperCase()},${n.r1 || 0},${n.r2 || 0},${n.r3 || 0},${n.total || 0},${n.asli},${n.bulat}\n`;
+                    excelTemplate += `
+                        <tr>
+                            <td class="text-center">${presensiNo}</td>
+                            <td>${s.nama}</td>
+                            <td class="filled">${n.bulat}</td>
+                            <td class="filled">${n.asli}</td>
+                        </tr>
+                    `;
                 } else {
-                    csvContent += `${idx + 1},"${s.nama}",${currentClassName},-,0,0,0,0,0.00,0\n`;
+                    excelTemplate += `
+                        <tr>
+                            <td class="text-center">${presensiNo}</td>
+                            <td>${s.nama}</td>
+                            <td class="empty">-</td>
+                            <td class="empty">-</td>
+                        </tr>
+                    `;
                 }
             });
 
-            const encodedUri = encodeURI(csvContent);
+            excelTemplate += `
+                        </tbody>
+                    </table>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([excelTemplate], { type: 'application/vnd.ms-excel;charset=utf-8;' });
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Rekap_Nilai_${currentClassName.replace(" ", "_")}.csv`);
+            link.href = URL.createObjectURL(blob);
+            link.download = `Daftar_Nilai_Kelas_${currentClassName.replace(" ", "_")}_${mapelName.replace(/\s+/g, '_')}.xls`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+
+            toggleModal('export-excel-modal', false);
         }
 
         // --- SISTEM BACKGROUND MELAYANG ---
@@ -1784,23 +1984,38 @@
             }
         }
 
-        // --- MEMILIH KATEGORI KELAS UTAMA ---
+        // --- MEMILIH KATEGORI KELAS ---
         function pilihKelasAktif(pembagi, namaKelas) {
             activeKelas = pembagi;
             currentClassName = namaKelas;
 
+            // Reset indikator warna semua tombol kelas
             ['55', '60', '65', '45'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
                 if(btn) {
                     btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
                     btn.classList.remove('class-active');
+                    
+                    const labelName = document.getElementById('label-name-' + k);
+                    const labelSub = document.getElementById('label-sub-' + k);
+                    if (labelName) labelName.style.color = '';
+                    if (labelSub) labelSub.style.color = '';
                 }
             });
 
+            // Set tombol aktif sesuai pembagi
             const activeBtn = document.getElementById('btn-' + pembagi);
             if(activeBtn) {
                 activeBtn.classList.remove('bg-white');
                 activeBtn.classList.add(configKelas[pembagi].color, 'class-active');
+                
+                // Berikan pewarnaan khusus pada Koding agar tidak tabrakan (Ungu vs Cyan/Amber)
+                if (pembagi === '45') {
+                    const labelName = document.getElementById('label-name-45');
+                    const labelSub = document.getElementById('label-sub-45');
+                    if (labelName) labelName.style.color = '#fbbf24'; // text-amber-500
+                    if (labelSub) labelSub.style.color = '#fef08a';  // text-yellow-200
+                }
             }
 
             const viewRomawi = document.getElementById('view-romawi');
@@ -1825,6 +2040,14 @@
             }
             document.getElementById('max-total').innerText = 'Maks: ' + pembagi;
             
+            // Perbarui list dropdown kelas
+            updateKelasDropdownOptions();
+
+            const selectKelas = document.getElementById('select-kelas-grading');
+            if (selectKelas && namaKelas) {
+                selectKelas.value = namaKelas;
+            }
+
             updateSiswaDropdown();
             validasiNilai();
             updateTampilan();
@@ -1838,7 +2061,7 @@
             const tJumlah = document.getElementById('tab-jumlah');
             
             if(mode === 'romawi') {
-                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md";
+                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-white bg-indigo-500 shadow-md";
                 tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
                 document.getElementById('view-romawi').classList.remove('hidden');
                 document.getElementById('view-romawi').classList.add('grid');
@@ -1983,8 +2206,7 @@
             }
         }
 
-        // --- STREAMING_CHUNK: Setup and initialization on window load... ---
-        // --- SETUP DAN LOAD AWAL ---
+        // --- DEFAULTS / INSTALASI ---
         window.addEventListener('load', () => {
             muatAturanDariLocal();
             muatSiswaDariLocal();
@@ -1992,7 +2214,7 @@
             initLongPressEvents();
             updateKelasDropdownOptions();
             
-            // Set default benar-benar kosong (netral) agar popup "pilih kelas dulu" bekerja dengan sempurna
+            // Set default murni netral kosong saat baru masuk
             setNetralState();
         });
 
@@ -2007,6 +2229,11 @@
                 if(btn) {
                     btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
                     btn.classList.remove('class-active');
+                    
+                    const labelName = document.getElementById('label-name-' + k);
+                    const labelSub = document.getElementById('label-sub-' + k);
+                    if (labelName) labelName.style.color = '';
+                    if (labelSub) labelSub.style.color = '';
                 }
             });
 
@@ -2033,20 +2260,6 @@
             updateTampilan();
             setMode('jumlah'); 
         }
-
-        // Keyboard Fisik Laptop/PC
-        document.addEventListener('keydown', function(e) {
-            const key = e.key;
-            if (/^[0-9]$/.test(key)) {
-                tekanTombol(key);
-            } else if (key === 'Backspace') {
-                tekanTombol('DEL');
-            } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
-                tekanTombol('C');
-            } else if (key === 'Enter') {
-                simpanNilaiKeSiswa();
-            }
-        });
 
     </script>
 </body>
