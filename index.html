@@ -429,8 +429,8 @@
 
     <script>
         // --- OFFLINE SERVICE WORKER ---
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup:', err));
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup Gagal:', err));
         }
 
         function refreshApp() {
@@ -731,8 +731,8 @@
                 { id: "2d_18", nama: "RAFISQY YUSUF ALFARIZA" },
                 { id: "2d_19", nama: "RHEA ALZEA NUGROHO" },
                 { id: "2d_20", nama: "Rifaul Zhafran Ghazani" },
-                { id: "2d_21", nama: "Rumaisha Pragya Raharja" },
-                { id: "2d_22", nama: "Riffat Ahmad Luthfi" },
+                { id: "2d_21", nama: "Riffat Ahmad Luthfi" },
+                { id: "2d_22", nama: "Rumaisha Pragya Raharja" },
                 { id: "2d_23", nama: "SADDAM MUHAMMAD AFKARI" },
                 { id: "2d_24", nama: "SAILA AYUDIA PUTRI" },
                 { id: "2d_25", nama: "VENUS ALMAHYRA HARIYANTO" },
@@ -847,7 +847,7 @@
                 { id: "3d_10", nama: "GINDA ARSYIL VINALES" },
                 { id: "3d_11", nama: "HASNA NUR HUWA YIDA" },
                 { id: "3d_12", nama: "Iqbal Bintang Pramudya" },
-                { id: "3d_13", nama: "KEANU DANISH KURNIAWAN" },
+                { id: "3d_13", font: "bold", nama: "KEANU DANISH KURNIAWAN" },
                 { id: "3d_14", nama: "KEN ARUNA GENDHIS NARESWARI" },
                 { id: "3d_15", nama: "Khaila Putri Pradipta" },
                 { id: "3d_16", nama: "KHALISA SABRIA RANAA SUGIARTA" },
@@ -885,7 +885,7 @@
                 { id: "4a_16", nama: "KEYSHA AZZAHRA ZAHFIRA" },
                 { id: "4a_17", nama: "Khanza Naila Santosa" },
                 { id: "4a_18", nama: "MUHAMMAD ALTEZZA ZABDAN" },
-                { id: "4a_19", nama: "Muhammad Althaf Attarizq Wishaka" },
+                { id: "4a_19", nama: "Muhammad Althof Attarizq Wishaka" },
                 { id: "4a_20", nama: "Muhammad Irsyad At Tamimi" },
                 { id: "4a_21", nama: "MUHAMMAD REVAN PRADITYA" },
                 { id: "4a_22", nama: "Muhammad Yusuf Ramadhan Ar-Rasyid" },
@@ -1216,28 +1216,28 @@
                 { id: "6d_3", nama: "Akma Safaraz Ajunta" },
                 { id: "6d_4", nama: "Alaina Arufa Nisa'" },
                 { id: "6d_5", nama: "Alisha Shafia Sugianto" },
-                { id: "6d_6", nama: "Anarta Rizki Pratama" },
-                { id: "6d_7", nama: "Annorafatech Aqilahamdah" },
-                { id: "6d_8", nama: "Aprilio Wifa Albyansyah" },
-                { id: "6d_9", nama: "Ceisya Hazkia Rizky Subagyo" },
-                { id: "6d_10", nama: "Devandra Alvaro El Zahran" },
-                { id: "6d_11", nama: "Dzakiyya Talita Sakhi Wicaksono" },
-                { id: "6d_12", nama: "Dzaky Almair Jamil Wibowo" },
+                { id: "6d_6", nama: "Anarta Kishar" },
+                { id: "6d_7", nama: "Annorafatech" },
+                { id: "6d_8", nama: "Aprilio Wifa" },
+                { id: "6d_9", nama: "Ceisya Hazkia" },
+                { id: "6d_10", nama: "Devandra Alvaro" },
+                { id: "6d_11", nama: "Dzakiyya Talita" },
+                { id: "6d_12", nama: "Dzaky Almair Jamil" },
                 { id: "6d_13", nama: "Fathiya Halwa Nisa" },
-                { id: "6d_14", nama: "Faza Hanifa Nugroho" },
-                { id: "6d_15", nama: "Hafuza Gentza Gunarso" },
-                { id: "6d_16", nama: "Helios Cakrabirawa Samsudin" },
+                { id: "6d_14", nama: "Faza Hanifa" },
+                { id: "6d_15", nama: "Hafuza Gentza" },
+                { id: "6d_16", nama: "Helios Cakra" },
                 { id: "6d_17", nama: "Justitia Kafila" },
-                { id: "6d_18", nama: "Kaureen Fazeela Syakira" },
-                { id: "6d_19", nama: "Khafi Aqlan Raiz" },
-                { id: "6d_20", nama: "Kinasih Helga Hares" },
+                { id: "6d_18", nama: "Kaureen Fazeela" },
+                { id: "6d_19", nama: "Khafi Aqlan" },
+                { id: "6d_20", nama: "Kinasih Helga" },
                 { id: "6d_21", nama: "Lionel Castila" },
-                { id: "6d_22", nama: "Mosanda Maarif" },
-                { id: "6d_23", nama: "Muhammad Yahya Asy'ari" },
-                { id: "6d_24", nama: "Nadifa Nur Medina" },
-                { id: "6d_25", nama: "Nailah Hafiza Izzatunnisa" },
-                { id: "6d_26", nama: "Novandra Arjuna Pratama" },
-                { id: "6d_27", nama: "Radinwangi Avatara Azura Kertabhauma Cakraningrat" },
+                { id: "6d_22", nama: "Mosanda" },
+                { id: "6d_23", nama: "Muhammad Yahya" },
+                { id: "6d_24", nama: "Nadifa Nur" },
+                { id: "6d_25", nama: "Nailah Hafiza" },
+                { id: "6d_26", nama: "Novandra Arjuna" },
+                { id: "6d_27", nama: "Radinwangi" },
                 { id: "6d_28", nama: "Umar Al-Faruq" }
             ],
             "KODING": [
@@ -1299,6 +1299,42 @@
             }
         }
 
+        // --- STATE PERSISTENCE (PENYELAMAT DATA SAAT OFFLINE) ---
+        function simpanDataOffline() {
+            const data = { activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId, currentClassName };
+            localStorage.setItem('kates_offline_state_v3', JSON.stringify(data));
+        }
+
+        function muatDataOffline() {
+            try {
+                const data = JSON.parse(localStorage.getItem('kates_offline_state_v3'));
+                if (data && data.activeKelas) {
+                    nilaiInput = data.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
+                    activeMode = data.activeMode || 'jumlah';
+                    fokusInput = data.fokusInput || 'total';
+                    activeSiswaId = data.activeSiswaId || '';
+                    currentClassName = data.currentClassName || '';
+                    
+                    const selectKelas = document.getElementById('select-kelas-grading');
+                    if (currentClassName && selectKelas) {
+                        selectKelas.value = currentClassName;
+                    }
+                    
+                    pilihKelasAktif(data.activeKelas, currentClassName);
+                    setMode(activeMode);
+                    setFokus(fokusInput);
+                    
+                    if (activeSiswaId) {
+                        document.getElementById('select-siswa').value = activeSiswaId;
+                    }
+                    return true;
+                }
+            } catch (e) { 
+                console.log('Tidak ada state offline sebelumnya'); 
+            }
+            return false;
+        }
+
         // --- PENGELOLAAN EVENT LONG-PRESS (KUSTOMISASI KELAS) ---
         function initLongPressEvents() {
             ['55', '60', '65', '45'].forEach(key => {
@@ -1323,7 +1359,6 @@
                 btn.addEventListener('mouseleave', () => clearTimeout(touchTimer));
 
                 btn.addEventListener('click', () => {
-                    // Cari kelas ril pertama yang masuk dalam pembagi ini
                     let firstClassOfPembagi = "";
                     for (let c in mapKelasKePembagi) {
                         if (mapKelasKePembagi[c] === key) {
@@ -1393,7 +1428,7 @@
             }
         }
 
-        // --- POPUP PERINGATAN ---
+        // --- POPUP PERINGATAN LUCU ---
         function tampilkanPeringatanLucu(tipe, maxVal = 0) {
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
@@ -1460,6 +1495,7 @@
             }, 250);
         }
 
+        // --- STREAMING_CHUNK: Processing interface select functions... ---
         // --- SISTEM DROPDOWN KELAS & SISWA DEWA ---
         function updateKelasDropdownOptions() {
             const selectKelas = document.getElementById('select-kelas-grading');
@@ -1495,7 +1531,6 @@
                 select.appendChild(opt);
             });
 
-            // Cari siswa pertama yang belum memiliki nilai
             const belumTernilai = siswaKelas.find(s => !dataNilaiSiswa[s.id]);
             if(belumTernilai) {
                 select.value = belumTernilai.id;
@@ -1560,6 +1595,7 @@
             muatNilaiSiswaAktif();
         }
 
+        // --- STREAMING_CHUNK: Managing calculations and reports... ---
         // --- SAVE DATA PENILAIAN SISWA (AUTO NEXT DEWA) ---
         function simpanNilaiKeSiswa() {
             if(!activeKelas) {
@@ -1753,7 +1789,6 @@
             activeKelas = pembagi;
             currentClassName = namaKelas;
 
-            // Update UI warna tombol kelas aktif
             ['55', '60', '65', '45'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
                 if(btn) {
@@ -1923,7 +1958,7 @@
                 
                 elAsli.classList.remove('pop-effect');
                 elBulat.classList.remove('pop-effect');
-                void elAsli.offsetWidth; 
+                void elAsli.offsetWidth; // trigger reflow
                 elAsli.classList.add('pop-effect');
                 elBulat.classList.add('pop-effect');
             }
@@ -1948,7 +1983,8 @@
             }
         }
 
-        // --- LOAD AWAL ---
+        // --- STREAMING_CHUNK: Setup and initialization on window load... ---
+        // --- SETUP DAN LOAD AWAL ---
         window.addEventListener('load', () => {
             muatAturanDariLocal();
             muatSiswaDariLocal();
@@ -1956,13 +1992,47 @@
             initLongPressEvents();
             updateKelasDropdownOptions();
             
-            // Set default kelas ke kelas pertama yaitu "1 ICP A"
-            const firstClass = "1 ICP A";
-            document.getElementById('select-kelas-grading').value = firstClass;
-            pilihKelasAktif("55", firstClass);
-
-            setMode('jumlah');
+            // Set default benar-benar kosong (netral) agar popup "pilih kelas dulu" bekerja dengan sempurna
+            setNetralState();
         });
+
+        function setNetralState() {
+            activeKelas = null;
+            currentClassName = "";
+            activeSiswaId = "";
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+
+            ['55', '60', '65', '45'].forEach(k => {
+                const btn = document.getElementById('btn-' + k);
+                if(btn) {
+                    btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
+                    btn.classList.remove('class-active');
+                }
+            });
+
+            const selectKelas = document.getElementById('select-kelas-grading');
+            if (selectKelas) selectKelas.value = "";
+            const selectSiswa = document.getElementById('select-siswa');
+            if (selectSiswa) selectSiswa.innerHTML = '<option value="">-- SISWA --</option>';
+
+            document.getElementById('max-r1').innerText = 'Maks: ?';
+            document.getElementById('max-r2').innerText = 'Maks: ?';
+            document.getElementById('max-r3').innerText = 'Maks: ?';
+            document.getElementById('max-total').innerText = 'Maks: ?';
+
+            document.getElementById('nilaiAsli').innerText = '0.00';
+            document.getElementById('nilaiBulat').innerText = '0';
+
+            const gifEl = document.getElementById('gif-reaction');
+            if (gifEl) {
+                gifEl.classList.remove('scale-100');
+                gifEl.classList.add('scale-0');
+                gifEl.innerHTML = '';
+            }
+
+            updateTampilan();
+            setMode('jumlah'); 
+        }
 
         // Keyboard Fisik Laptop/PC
         document.addEventListener('keydown', function(e) {
