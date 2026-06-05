@@ -157,6 +157,7 @@
             100% { transform: scale(1); }
         }
 
+        .numpad-btn { height: 3.5rem; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: white; transition: all 0.1s; }
         .numpad-btn:active {
             transform: scale(0.92);
             background-color: #cbd5e1;
@@ -168,7 +169,7 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
-        /* Custom Select Design */
+        /* Modern Dropdown Design */
         select.custom-select {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -218,7 +219,7 @@
         </div>
     </div>
 
-    <!-- POPUP PERINGATAN LUCU (Dikembalikan) -->
+    <!-- POPUP PERINGATAN LUCU -->
     <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
         <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
@@ -248,9 +249,6 @@
             <div class="flex gap-2 mb-4">
                 <button onclick="bukaExportDialog()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">
                     🟢 EXPORT EXCEL
-                </button>
-                <button onclick="toggleModal('tambah-siswa-modal', true)" class="bg-blue-600 text-white font-black px-4 py-2.5 rounded-xl text-xs hover:bg-blue-700">
-                    + Siswa
                 </button>
             </div>
 
@@ -283,7 +281,6 @@
                     <select id="manage-kelas" onchange="onChangeManageKelas()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
                 </div>
                 
-                <!-- Dropdown Pilih Siswa (Hanya Muncul di Mode Edit) -->
                 <div id="box-manage-select" class="hidden">
                     <label class="text-[9px] font-bold text-slate-400 block mb-1">PILIH SISWA</label>
                     <select id="manage-siswa-select" onchange="onChangeManageSiswa()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
@@ -301,13 +298,11 @@
                 </div>
             </div>
 
-            <!-- Tombol Mode Tambah -->
             <div id="btn-group-tambah" class="flex gap-2">
                 <button onclick="toggleModal('tambah-siswa-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
                 <button onclick="simpanSiswaBaru()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Tambahkan</button>
             </div>
             
-            <!-- Tombol Mode Edit -->
             <div id="btn-group-edit" class="flex gap-2 hidden">
                 <button onclick="hapusSiswaManage()" class="flex-1 py-2 bg-rose-100 text-rose-600 font-extrabold rounded-xl text-xs">🗑️ Hapus</button>
                 <button onclick="simpanEditSiswa()" class="flex-1 py-2 bg-emerald-500 text-white font-extrabold rounded-xl text-xs">💾 Simpan</button>
@@ -315,7 +310,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDIT PENGATURAN KELAS (LONG PRESS) -->
+    <!-- MODAL 3: EDIT PENGATURAN KELAS -->
     <div id="edit-kelas-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('edit-kelas-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
@@ -412,15 +407,10 @@
         <!-- BAGIAN ATAS & TENGAH -->
         <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
             
-            <!-- --- Kapsul VIP Musik Super Tipis --- -->
+            <!-- Kapsul VIP Musik -->
             <div class="mx-auto flex flex-col items-center mb-1 relative z-30 pointer-events-auto w-full px-2">
+                <div id="equalizer" class="flex items-end justify-center gap-[2px] h-[14px] mb-1 opacity-0 transition-opacity duration-300 w-[80%] max-w-[200px]"></div>
                 
-                <!-- Animasi Equalizer Musik Melayang -->
-                <div id="equalizer" class="flex items-end justify-center gap-[2px] h-[14px] mb-1 opacity-0 transition-opacity duration-300 w-[80%] max-w-[200px]">
-                    <!-- Equalizer akan digenerate via JS -->
-                </div>
-                
-                <!-- Badan Kapsul Musik (Utama) Tengah -->
                 <div class="bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer" onclick="bukaManagerMusik()">
                     <span class="text-blue-400 text-[11px] shrink-0 animate-pulse">🎵</span>
                     
@@ -444,8 +434,6 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Input File Tersembunyi -->
                 <input type="file" id="upload-musik" accept="audio/*" multiple class="hidden" onchange="prosesUploadMusik(event)">
             </div>
 
@@ -538,11 +526,11 @@
                     <button onclick="bukaRekapNilai()" class="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-black border border-indigo-200 flex items-center gap-1">📊 REKAP & EXCEL</button>
                 </div>
                 <div class="flex gap-1.5 items-center w-full">
-                    <!-- Dropdown Kelas (Custom Design) -->
+                    <!-- Dropdown Kelas (Custom Modern) -->
                     <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="custom-select w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500"></select>
 
                     <div class="flex flex-1 gap-1 items-center min-w-0">
-                        <!-- Dropdown Siswa (Custom Design) -->
+                        <!-- Dropdown Siswa (Custom Modern) -->
                         <select id="select-siswa" onchange="pilihSiswaManual()" class="custom-select flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
                             <option value="">-- SISWA --</option>
                         </select>
@@ -561,21 +549,21 @@
         <!-- Keyboard Angka Bawaan -->
         <div class="w-[96%] max-w-[360px] mx-auto bg-white rounded-3xl border border-slate-200 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.05)] p-2.5 pb-3 h-[33vh] max-h-[220px] min-h-[150px] relative z-30 anim-numpad flex-shrink-0 mb-1 mt-1">
             <div class="grid grid-cols-3 gap-2 h-full">
-                <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">1</button>
-                <button onclick="tekanTombol('2')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">2</button>
-                <button onclick="tekanTombol('3')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">3</button>
+                <button onclick="tekanTombol('1')" class="numpad-btn text-slate-700 text-lg sm:text-xl">1</button>
+                <button onclick="tekanTombol('2')" class="numpad-btn text-slate-700 text-lg sm:text-xl">2</button>
+                <button onclick="tekanTombol('3')" class="numpad-btn text-slate-700 text-lg sm:text-xl">3</button>
                 
-                <button onclick="tekanTombol('4')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">4</button>
-                <button onclick="tekanTombol('5')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">5</button>
-                <button onclick="tekanTombol('6')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">6</button>
+                <button onclick="tekanTombol('4')" class="numpad-btn text-slate-700 text-lg sm:text-xl">4</button>
+                <button onclick="tekanTombol('5')" class="numpad-btn text-slate-700 text-lg sm:text-xl">5</button>
+                <button onclick="tekanTombol('6')" class="numpad-btn text-slate-700 text-lg sm:text-xl">6</button>
                 
-                <button onclick="tekanTombol('7')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">7</button>
-                <button onclick="tekanTombol('8')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">8</button>
-                <button onclick="tekanTombol('9')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">9</button>
+                <button onclick="tekanTombol('7')" class="numpad-btn text-slate-700 text-lg sm:text-xl">7</button>
+                <button onclick="tekanTombol('8')" class="numpad-btn text-slate-700 text-lg sm:text-xl">8</button>
+                <button onclick="tekanTombol('9')" class="numpad-btn text-slate-700 text-lg sm:text-xl">9</button>
                 
-                <button onclick="tekanTombol('C')" class="numpad-btn bg-red-50 border border-red-100 rounded-xl text-md font-black text-red-500 transition-colors">C</button>
-                <button onclick="tekanTombol('0')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">0</button>
-                <button onclick="tekanTombol('DEL')" class="numpad-btn bg-slate-100 border border-slate-200 rounded-xl text-md font-bold text-slate-600 transition-colors flex items-center justify-center">
+                <button onclick="tekanTombol('C')" class="numpad-btn text-red-500 bg-red-50 border-red-100">C</button>
+                <button onclick="tekanTombol('0')" class="numpad-btn text-slate-700 text-lg sm:text-xl">0</button>
+                <button onclick="tekanTombol('DEL')" class="numpad-btn text-slate-600 bg-slate-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
                     </svg>
@@ -594,19 +582,6 @@
 
         function refreshApp() {
             window.location.href = window.location.pathname + '?v=' + new Date().getTime();
-        }
-
-        function bersihkanLayar() {
-            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-            updateTampilan();
-            kalkulasi();
-            // Beri animasi visual numpad C
-            const disp = document.getElementById(activeMode === 'romawi' ? `disp-${fokusInput}` : 'disp-total');
-            if(disp) {
-                disp.classList.remove('pop-effect');
-                void disp.offsetWidth;
-                disp.classList.add('pop-effect');
-            }
         }
 
         // --- SISTEM PERINGATAN LUCU ---
@@ -834,7 +809,7 @@
 
         function toggleMusik() {
             if (musicLibrary.length === 0) {
-                alert("Daftar putar kosong! Silakan upload lagu dulu.");
+                alert("Daftar putar kosong! Silakan upload lagu dulu (tombol daftar putar di sebelah kanan).");
                 return;
             }
             if (!currentAudio.src) setTrack(0);
@@ -917,7 +892,8 @@
             '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'KODING' } 
         };
 
-        const defaultSiswaLengkap = {
+        // --- KOMPRESI DATABASE 1 BARIS ---
+        const defaultSiswa = {
             "1 ICP A": [{"presensi":1,"nama":"ALTHAF SHAQUILLE ABHIVANDYA"},{"presensi":2,"nama":"ANDARU GESIT YANARTA"},{"presensi":3,"nama":"Atarazka Syahnan Haziq"},{"presensi":4,"nama":"Balqis Akasha Shafiyah"},{"presensi":5,"nama":"BOY ATHALLAH BAKHRY"},{"presensi":6,"nama":"Elvara Aiza Santosa"},{"presensi":7,"nama":"Hamda Batrisya Seika"},{"presensi":8,"nama":"Inara Putri Arkadewi"},{"presensi":9,"nama":"LUKITA ASKANA SAKHI"},{"presensi":10,"nama":"Muhammad Tangguh Asnawi"},{"presensi":11,"nama":"Nizar Abdillah Ghazwan"},{"presensi":12,"nama":"PESONA HARUM HUMAIRA"},{"presensi":13,"nama":"RIFANI REYYA ANNISA"},{"presensi":14,"nama":"WAFAZENA JANITRALESHA"}],
             "1 ICP B": [{"presensi":1,"nama":"CINTA AFIA SYAILENDRA"},{"presensi":2,"nama":"DAVIN AL CHALIEF ERABBANI"},{"presensi":3,"nama":"Diana Aiza Hudaya"},{"presensi":4,"nama":"Illona Nusaibah Azzahra"},{"presensi":5,"nama":"Jihan Arsylia Nugroho"},{"presensi":6,"nama":"KHALISTA ALIFIA GUNTORO"},{"presensi":7,"nama":"KHAWLA ADIBA DHATU"},{"presensi":8,"nama":"MALVEN RAFIIANDRA ARLY WIBOWO"},{"presensi":9,"nama":"MOZEIN ARKEVIN"},{"presensi":10,"nama":"Muhammad Zhafran Abdurrahman"},{"presensi":11,"nama":"Ocean Hoki Praditya"},{"presensi":12,"nama":"Zharif Almuqaffi Digit"},{"presensi":13,"nama":"Herdinar Siti Noorjehan Fidiyanto"}],
             "1A": [{"presensi":1,"nama":"ABDULLAH AFKAR"},{"presensi":2,"nama":"ABIDZAR HASAN ALFARISI"},{"presensi":3,"nama":"Adreena Agil Maheswari"},{"presensi":4,"nama":"ADZKIYA PINKA FADHEELA"},{"presensi":5,"nama":"ALIF MAULANA ADHYASTHA"},{"presensi":6,"nama":"ATHARRAZKA SAPUTRA"},{"presensi":7,"nama":"AWFA RANIA AZZAHRA"},{"presensi":8,"nama":"DANIS ABRISAM"},{"presensi":9,"nama":"ELHASIQ KSATRIA IBAD EFENDI"},{"presensi":10,"nama":"FREYA SAILA WIDIYANTO"},{"presensi":11,"nama":"HAEDAR AL GHANY YAZEED"},{"presensi":12,"nama":"HAIDAR KIANO ALRAFAEYZA"},{"presensi":13,"nama":"HASNAH KHAIRUNNISA HUMAIROH"},{"presensi":14,"nama":"IBRAHIM AHMAD ABDUR ROUUF"},{"presensi":15,"nama":"KEINARRA AZKADINA WIJAYA"},{"presensi":16,"nama":"KHANSA PARAMITA WIBOWO"},{"presensi":17,"nama":"Khayra Mutiara Khalidiya"},{"presensi":18,"nama":"MAHANTA LEON ARRASYID"},{"presensi":19,"nama":"MUHAMMAD ABBIYA RAZKAJATI"},{"presensi":20,"nama":"Muhammad Idris Asy Syafii"},{"presensi":21,"nama":"NOURA KHANZANIA MECCA WIRAWAN"},{"presensi":22,"nama":"Nusaibah Aqila Choirunnisa"},{"presensi":23,"nama":"Omarizz Adrintaka Zayn"},{"presensi":24,"nama":"Rania Arsyi Nailazaara"},{"presensi":25,"nama":"RM Aldianurrasyid Rajendra Kusumo"},{"presensi":26,"nama":"Sakura Reiwa Gunawan"},{"presensi":27,"nama":"ZALENZIO MAULANA FACHRIANSYAH"},{"presensi":28,"nama":"KINARA TAQIYYA ADLA"}],
@@ -959,7 +935,7 @@
         let selectedEditClassKey = null;
         let modeManageSiswa = 'tambah';
 
-        // --- DATABASE LOCAL STORAGE PERSISTENCE ---
+        // --- SISTEM LOCAL STORAGE DAN INIT ---
         function simpanAturanKeLocal() {
             localStorage.setItem('kates_config_kelas', JSON.stringify(configKelas));
         }
@@ -986,7 +962,7 @@
             if(saved) {
                 databaseSiswa = JSON.parse(saved);
             } else {
-                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswaLengkap));
+                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
                 simpanSiswaKeLocal();
             }
         }
@@ -1002,7 +978,6 @@
             }
         }
 
-        // --- SISTEM OFFLINE REKORD ---
         function simpanDataOffline() {
             const state = { activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId };
             localStorage.setItem('kates_offline_state', JSON.stringify(state));
@@ -1029,7 +1004,6 @@
             return false;
         }
 
-        // --- EVENT LISENERS LONG PRESS ---
         function initLongPressEvents() {
             ['55', '60', '65', '45'].forEach(key => {
                 const btn = document.getElementById('btn-' + key);
@@ -1063,23 +1037,6 @@
                 btn.addEventListener('touchend', endAction);
                 btn.addEventListener('touchmove', () => clearTimeout(touchTimer));
             });
-        }
-
-        // --- MODAL CONTROLS ---
-        function toggleModal(id, show) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if(show) {
-                el.classList.remove('pointer-events-none', 'opacity-0');
-                el.classList.add('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-95');
-                el.querySelector('.relative').classList.add('scale-100');
-            } else {
-                el.classList.add('pointer-events-none', 'opacity-0');
-                el.classList.remove('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-100');
-                el.querySelector('.relative').classList.add('scale-95');
-            }
         }
 
         function bukaEditKelas(key) {
@@ -1117,7 +1074,22 @@
             location.reload();
         }
 
-        // --- SINKRONISASI DROPDOWN ---
+        function toggleModal(id, show) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if(show) {
+                el.classList.remove('pointer-events-none', 'opacity-0');
+                el.classList.add('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-95');
+                el.querySelector('.relative').classList.add('scale-100');
+            } else {
+                el.classList.add('pointer-events-none', 'opacity-0');
+                el.classList.remove('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-100');
+                el.querySelector('.relative').classList.add('scale-95');
+            }
+        }
+
         function updateKelasDropdownOptions() {
             const selectKelas = document.getElementById('select-kelas-grading');
             const selectManageKelas = document.getElementById('manage-kelas');
@@ -1229,7 +1201,6 @@
             kalkulasi();
         }
 
-        // --- SISTEM MANAJEMEN SISWA (TAMBAH / EDIT / HAPUS) ---
         function setModeManage(mode) {
             modeManageSiswa = mode;
             const tabTambah = document.getElementById('tab-manage-tambah');
@@ -1397,7 +1368,6 @@
             }
         }
 
-        // --- SIMPAN NILAI ---
         function simpanNilaiKeSiswa() {
             if(!activeKelas) {
                 tampilkanPeringatanLucu('nokelas');
@@ -1456,7 +1426,6 @@
             }
         }
 
-        // --- REKAP & EXPORT EXCEL ---
         function bukaRekapNilai() {
             const dropdownKelas = document.getElementById('select-kelas-grading');
             const currentClassName = dropdownKelas.value;
@@ -1497,29 +1466,12 @@
                     </div>
                     <div class="flex items-center gap-3">
                         ${scoreDisplay}
-                        <button onclick="hapusSiswaDariList('${s.nama}', '${currentClassName}')" class="text-rose-400 hover:text-rose-600 text-sm font-black px-1">&times;</button>
                     </div>
                 `;
                 body.appendChild(row);
             });
 
             toggleModal('rekap-modal', true);
-        }
-
-        function hapusSiswaDariList(nama, currentClassName) {
-            if(confirm("Apakah Anda yakin ingin menghapus siswa ini dari daftar?")) {
-                const list = databaseSiswa[currentClassName];
-                const index = list.findIndex(s => s.nama === nama);
-                if(index > -1) {
-                    list.splice(index, 1);
-                    const storageId = activeKelas === '45' ? nama + '_koding' : nama + '_' + currentClassName;
-                    delete dataNilaiSiswa[storageId];
-                    simpanSiswaKeLocal();
-                    simpanNilaiKeLocal();
-                    bukaRekapNilai();
-                    updateSiswaDropdown();
-                }
-            }
         }
 
         function clearSemuaNilai() {
@@ -1561,7 +1513,6 @@
             <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
             <head>
                 <meta charset="utf-8">
-                <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Sheet1</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
             </head>
             <body style="font-family: 'Arial'; font-size: 11px;">
                 <table border="1" style="border-collapse: collapse;">
@@ -1611,7 +1562,6 @@
             toggleModal('export-excel-modal', false);
         }
 
-        // --- MANAJEMEN PILIHAN KELAS AKTIF ---
         function pilihKelasAktif(kelas, forceSubClass = null) {
             activeKelas = kelas;
             document.getElementById('area-kelas').classList.remove('needs-class');
@@ -1722,6 +1672,105 @@
             kalkulasi();
         }
 
+        // --- SISTEM KALKULATOR UTAMA ---
+        function bersihkanLayar() {
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+            updateTampilan();
+            kalkulasi();
+            const disp = document.getElementById(activeMode === 'romawi' ? `disp-${fokusInput}` : 'disp-total');
+            if(disp) {
+                disp.classList.remove('pop-effect');
+                void disp.offsetWidth;
+                disp.classList.add('pop-effect');
+            }
+        }
+
+        function setMode(mode) {
+            activeMode = mode;
+            const tRomawi = document.getElementById('tab-romawi');
+            const tJumlah = document.getElementById('tab-jumlah');
+            
+            if(mode === 'romawi') {
+                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md";
+                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
+                document.getElementById('view-romawi').classList.remove('hidden');
+                document.getElementById('view-romawi').classList.add('grid');
+                document.getElementById('view-jumlah').classList.add('hidden');
+                document.getElementById('view-jumlah').classList.remove('flex');
+                setFokus('r1'); 
+            } else {
+                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
+                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
+                document.getElementById('view-jumlah').classList.remove('hidden');
+                document.getElementById('view-jumlah').classList.add('flex');
+                document.getElementById('view-romawi').classList.add('hidden');
+                document.getElementById('view-romawi').classList.remove('grid');
+                setFokus('total'); 
+            }
+            kalkulasi();
+            simpanDataOffline();
+        }
+
+        function setFokus(idBox) {
+            fokusInput = idBox;
+            ['r1', 'r2', 'r3', 'total'].forEach(id => {
+                const el = document.getElementById('box-' + id);
+                if(el) el.classList.remove('input-active');
+            });
+            const target = document.getElementById('box-' + idBox);
+            if(target) target.classList.add('input-active');
+        }
+
+        function tekanTombol(kunci) {
+            if (!activeKelas) {
+                const areaKelas = document.getElementById('area-kelas');
+                areaKelas.classList.add('needs-class');
+                tampilkanPeringatanLucu('nokelas');
+                return;
+            }
+
+            let strCurrent = nilaiInput[fokusInput];
+
+            if (kunci === 'C') {
+                strCurrent = '';
+            } else if (kunci === 'DEL') {
+                strCurrent = strCurrent.slice(0, -1);
+            } else {
+                if(strCurrent === '0' && kunci === '0') return;
+                strCurrent += kunci;
+            }
+
+            nilaiInput[fokusInput] = strCurrent;
+            validasiNilai();
+            updateTampilan();
+            kalkulasi();
+            simpanDataOffline();
+        }
+
+        function validasiNilai() {
+            if(!activeKelas) return;
+            const valNum = parseInt(nilaiInput[fokusInput]);
+            if(isNaN(valNum)) return;
+
+            let maxAllow = 0;
+            if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1;
+            if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2;
+            if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3;
+            if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
+
+            if(valNum > maxAllow) {
+                nilaiInput[fokusInput] = '';
+                tampilkanPeringatanLucu('over', maxAllow);
+            }
+        }
+
+        function updateTampilan() {
+            document.getElementById('disp-r1').innerText = nilaiInput.r1;
+            document.getElementById('disp-r2').innerText = nilaiInput.r2;
+            document.getElementById('disp-r3').innerText = nilaiInput.r3;
+            document.getElementById('disp-total').innerText = nilaiInput.total;
+        }
+
         function kalkulasi() {
             if (!activeKelas) return;
 
@@ -1819,6 +1868,7 @@
             }
 
             setNetralState();
+            muatDataOffline();
         });
 
         function tutupUpdateModal() {
