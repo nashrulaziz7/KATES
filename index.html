@@ -32,7 +32,7 @@
             user-select: none;
         }
 
-        /* --- STREAMING_CHUNK: Mengatur Animasi Utama --- */
+        /* --- Animasi Utama --- */
         @keyframes fade-in-down {
             0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -64,15 +64,12 @@
         .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
         .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
 
-        /* --- STREAMING_CHUNK: Animasi Equalizer Musik & Marquee --- */
+        /* --- Animasi Equalizer Musik & Marquee --- */
         .eq-bar {
-            flex: 1;
-            max-width: 4px;
-            margin: 0 1px;
-            background: linear-gradient(to top, #7dd3fc, #818cf8);
+            width: 3px;
+            background: linear-gradient(to top, #3b82f6, #ec4899);
             border-radius: 2px;
             animation: eq-bounce 0.5s ease-in-out infinite alternate;
-            transform-origin: bottom;
         }
         @keyframes eq-bounce {
             0% { transform: scaleY(0.3); }
@@ -170,11 +167,21 @@
             background-color: #eff6ff !important;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
+        
+        /* Custom Select Design */
+        select.custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1em;
+            padding-right: 1.5rem;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
 
-    <!-- --- STREAMING_CHUNK: Bar Navigasi Atas --- -->
+    <!-- --- Bar Navigasi Atas --- -->
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
         <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -187,7 +194,8 @@
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
         </div>
 
-        <button onclick="resetGlobal()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1">
+        <!-- Tombol Reset (Aman: Hanya Hapus Layar) -->
+        <button onclick="bersihkanLayar()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Bersihkan Angka Layar">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
@@ -210,7 +218,7 @@
         </div>
     </div>
 
-    <!-- POPUP PERINGATAN LUCU -->
+    <!-- POPUP PERINGATAN LUCU (Dikembalikan) -->
     <div id="cute-popup" class="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="tutupPeringatanLucu()"></div>
         <div id="cute-popup-box" class="relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-200 flex flex-col items-center">
@@ -224,7 +232,7 @@
         </div>
     </div>
 
-    <!-- --- STREAMING_CHUNK: Modals --- -->
+    <!-- --- Modals Data --- -->
     <!-- MODAL 1: REKAPITULASI & MANAJEMEN SISWA -->
     <div id="rekap-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('rekap-modal', false)"></div>
@@ -257,37 +265,57 @@
         </div>
     </div>
 
-    <!-- MODAL 2: TAMBAH SISWA BARU -->
+    <!-- MODAL 2: MANAJEMEN SISWA (TAMBAH / EDIT / HAPUS) -->
     <div id="tambah-siswa-modal" class="fixed inset-0 z-[60] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('tambah-siswa-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
-            <h3 class="font-black text-slate-800 text-lg mb-1 text-center">Tambah Siswa Baru</h3>
-            <p class="text-[10px] text-slate-400 text-center mb-4" id="tambah-siswa-subtitle">Siswa akan dimasukkan sesuai nomor urut presensi</p>
+            <h3 class="font-black text-slate-800 text-lg mb-2 text-center">Data Siswa</h3>
+            
+            <!-- Toggle Mode Manajemen -->
+            <div class="flex bg-slate-100 rounded-lg p-1 mb-4">
+                <button id="tab-manage-tambah" onclick="setModeManage('tambah')" class="flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all">TAMBAH BARU</button>
+                <button id="tab-manage-edit" onclick="setModeManage('edit')" class="flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all">EDIT / HAPUS</button>
+            </div>
             
             <div class="space-y-3 mb-5 text-left">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">KELAS TARGET</label>
-                    <select id="tambah-siswa-kelas" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white">
-                    </select>
+                    <label class="text-[9px] font-bold text-slate-400 block mb-1">KELAS TARGET</label>
+                    <select id="manage-kelas" onchange="onChangeManageKelas()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NOMOR URUT PRESENSI</label>
-                    <input type="number" id="tambah-siswa-presensi" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500" placeholder="Contoh: 29">
+                
+                <!-- Dropdown Pilih Siswa (Hanya Muncul di Mode Edit) -->
+                <div id="box-manage-select" class="hidden">
+                    <label class="text-[9px] font-bold text-slate-400 block mb-1">PILIH SISWA</label>
+                    <select id="manage-siswa-select" onchange="onChangeManageSiswa()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA LENGKAP SISWA</label>
-                    <input type="text" id="input-nama-baru" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500" placeholder="Nama lengkap...">
+
+                <div class="flex gap-2 w-full">
+                    <div class="w-1/3">
+                        <label class="text-[9px] font-bold text-slate-400 block mb-1">NO. URUT</label>
+                        <input type="number" id="manage-presensi" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 text-center" placeholder="No">
+                    </div>
+                    <div class="w-2/3">
+                        <label class="text-[9px] font-bold text-slate-400 block mb-1">NAMA LENGKAP</label>
+                        <input type="text" id="manage-nama" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500" placeholder="Nama siswa...">
+                    </div>
                 </div>
             </div>
 
-            <div class="flex gap-2">
+            <!-- Tombol Mode Tambah -->
+            <div id="btn-group-tambah" class="flex gap-2">
                 <button onclick="toggleModal('tambah-siswa-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
-                <button onclick="simpanSiswaBaru()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Simpan</button>
+                <button onclick="simpanSiswaBaru()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Tambahkan</button>
+            </div>
+            
+            <!-- Tombol Mode Edit -->
+            <div id="btn-group-edit" class="flex gap-2 hidden">
+                <button onclick="hapusSiswaManage()" class="flex-1 py-2 bg-rose-100 text-rose-600 font-extrabold rounded-xl text-xs">🗑️ Hapus</button>
+                <button onclick="simpanEditSiswa()" class="flex-1 py-2 bg-emerald-500 text-white font-extrabold rounded-xl text-xs">💾 Simpan</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 3: EDIT PENGATURAN KELAS -->
+    <!-- MODAL 3: EDIT PENGATURAN KELAS (LONG PRESS) -->
     <div id="edit-kelas-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('edit-kelas-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
@@ -322,7 +350,7 @@
             <div class="space-y-3 mb-5 text-left">
                 <div>
                     <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA MATA PELAJARAN (MAPEL)</label>
-                    <input type="text" id="export-mapel-name" value="Sumatif Akhir Tahun" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500">
+                    <input type="text" id="export-mapel-name" value="" placeholder="Contoh: Matematika" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500">
                 </div>
             </div>
 
@@ -384,50 +412,39 @@
         <!-- BAGIAN ATAS & TENGAH -->
         <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
             
-            <!-- --- STREAMING_CHUNK: Kapsul VIP Musik Super Tipis --- -->
-            <div class="mx-auto flex items-end justify-center gap-2 mb-1 relative z-30 pointer-events-auto w-full px-2">
+            <!-- --- Kapsul VIP Musik Super Tipis --- -->
+            <div class="mx-auto flex flex-col items-center mb-1 relative z-30 pointer-events-auto w-full px-2">
                 
-                <!-- Kolom Kiri: Equalizer & Kapsul Musik -->
-                <div class="flex flex-col w-max max-w-[85%] shrink">
-                    <!-- Animasi Equalizer Musik Melayang (Dihasilkan Otomatis dari JS agar Acak & Sepanjang Shape) -->
-                    <div id="equalizer" class="flex items-end justify-between w-full h-[14px] px-3 mb-0.5 opacity-0 transition-opacity duration-300">
+                <!-- Animasi Equalizer Musik Melayang -->
+                <div id="equalizer" class="flex items-end justify-center gap-[2px] h-[14px] mb-1 opacity-0 transition-opacity duration-300 w-[80%] max-w-[200px]">
+                    <!-- Equalizer akan digenerate via JS -->
+                </div>
+                
+                <!-- Badan Kapsul Musik (Utama) Tengah -->
+                <div class="bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer" onclick="bukaManagerMusik()">
+                    <span class="text-blue-400 text-[11px] shrink-0 animate-pulse">🎵</span>
+                    
+                    <div class="marquee-wrapper border-r border-slate-600 pr-1 mr-1 flex-1 shrink">
+                        <span id="music-title" class="marquee-text text-[9px] text-white font-black uppercase tracking-widest" style="animation-play-state: paused;">SIAP MEMUTAR...</span>
                     </div>
 
-                    <!-- Badan Kapsul Musik (Utama) Elegan dan Jelas -->
-                    <div class="bg-gradient-to-r from-indigo-600/95 to-blue-700/95 backdrop-blur-md border border-indigo-400 shadow-md rounded-full px-3 py-1 flex items-center justify-between gap-2 w-full overflow-hidden">
-                        <span class="text-white text-[11px] shrink-0 animate-pulse">🎵</span>
-                        
-                        <!-- Area Teks Berjalan (Marquee) -->
-                        <div class="marquee-wrapper border-r border-white/30 pr-1 mr-1 w-[80px] sm:w-[100px] shrink">
-                            <span id="music-title" class="marquee-text text-[9px] text-white font-bold uppercase tracking-wider" style="animation-play-state: paused;">SIAP MEMUTAR...</span>
-                        </div>
-
-                        <!-- Area Kontrol -->
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button onclick="prevMusik()" class="text-white/80 hover:text-white active:scale-90 transition-transform" title="Lagu Sebelumnya">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
-                            </button>
-                            <button onclick="toggleMusik()" id="btn-play-musik" class="text-white hover:text-white active:scale-90 transition-transform" title="Play / Pause">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
-                                <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
-                            </button>
-                            <button onclick="stopMusik()" class="text-white/80 hover:text-rose-300 active:scale-90 transition-transform" title="Stop Lagu">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
-                            </button>
-                            <button onclick="nextMusik()" class="text-white/80 hover:text-white active:scale-90 transition-transform" title="Lagu Selanjutnya">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
-                            </button>
-                        </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="event.stopPropagation(); prevMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
+                        </button>
+                        <button onclick="event.stopPropagation(); toggleMusik()" id="btn-play-musik" class="text-white hover:text-blue-300 active:scale-90 transition-transform">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
+                            <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
+                        </button>
+                        <button onclick="event.stopPropagation(); stopMusik()" class="text-slate-400 hover:text-rose-400 active:scale-90 transition-transform">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
+                        </button>
+                        <button onclick="event.stopPropagation(); nextMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Tombol Playlist (Atur Musik) di Samping -->
-                <div class="shrink-0 bg-gradient-to-br from-teal-500/95 to-emerald-600/95 backdrop-blur-md border border-teal-400 shadow-md rounded-full px-2.5 py-1 mb-1">
-                    <button onclick="bukaManagerMusik()" class="text-white hover:text-white active:scale-90 transition-transform flex items-center gap-1" title="Daftar Putar & Upload">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                    </button>
-                </div>
-                
                 <!-- Input File Tersembunyi -->
                 <input type="file" id="upload-musik" accept="audio/*" multiple class="hidden" onchange="prosesUploadMusik(event)">
             </div>
@@ -453,7 +470,7 @@
                 </div>
             </div>
 
-            <!-- Pilihan Kelas (LONG PRESS READY!) -->
+            <!-- Pilihan Kelas -->
             <div class="anim-classes w-full" id="area-kelas">
                 <div class="grid grid-cols-4 gap-1">
                     <button id="btn-55" data-kelas="55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
@@ -521,15 +538,15 @@
                     <button onclick="bukaRekapNilai()" class="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-black border border-indigo-200 flex items-center gap-1">📊 REKAP & EXCEL</button>
                 </div>
                 <div class="flex gap-1.5 items-center w-full">
-                    <!-- Dropdown Kelas -->
-                    <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500"></select>
+                    <!-- Dropdown Kelas (Custom Design) -->
+                    <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="custom-select w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500"></select>
 
                     <div class="flex flex-1 gap-1 items-center min-w-0">
-                        <!-- Dropdown Siswa -->
-                        <select id="select-siswa" onchange="pilihSiswaManual()" class="flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
+                        <!-- Dropdown Siswa (Custom Design) -->
+                        <select id="select-siswa" onchange="pilihSiswaManual()" class="custom-select flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
                             <option value="">-- SISWA --</option>
                         </select>
-                        <button onclick="tambahSiswaCepat()" class="shrink-0 bg-blue-600 text-white rounded-xl h-8 w-8 flex items-center justify-center font-bold hover:bg-blue-700 active:scale-95 transition-all text-sm" title="Tambah Siswa Baru">+</button>
+                        <button onclick="tambahSiswaCepat()" class="shrink-0 bg-blue-600 text-white rounded-xl h-8 w-8 flex items-center justify-center font-bold hover:bg-blue-700 active:scale-95 transition-all text-sm" title="Manajemen Siswa (Tambah/Edit)">+</button>
                     </div>
                 </div>
             </div>
@@ -541,7 +558,7 @@
 
         </div>
 
-        <!-- Keyboard Angka Bawaan (Simetris Sempurna, Fixed Width, Center) -->
+        <!-- Keyboard Angka Bawaan -->
         <div class="w-[96%] max-w-[360px] mx-auto bg-white rounded-3xl border border-slate-200 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.05)] p-2.5 pb-3 h-[33vh] max-h-[220px] min-h-[150px] relative z-30 anim-numpad flex-shrink-0 mb-1 mt-1">
             <div class="grid grid-cols-3 gap-2 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn bg-slate-50 border border-slate-100 rounded-xl text-lg sm:text-xl font-bold text-slate-700 transition-colors">1</button>
@@ -568,6 +585,7 @@
 
     </div>
 
+    <!-- --- Semua Skrip Javascript Inti --- -->
     <script>
         // --- OFFLINE SERVICE WORKER ---
         if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
@@ -578,7 +596,86 @@
             window.location.href = window.location.pathname + '?v=' + new Date().getTime();
         }
 
-        // --- STREAMING_CHUNK: VIP Music Player System ---
+        function bersihkanLayar() {
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+            updateTampilan();
+            kalkulasi();
+            // Beri animasi visual numpad C
+            const disp = document.getElementById(activeMode === 'romawi' ? `disp-${fokusInput}` : 'disp-total');
+            if(disp) {
+                disp.classList.remove('pop-effect');
+                void disp.offsetWidth;
+                disp.classList.add('pop-effect');
+            }
+        }
+
+        // --- SISTEM PERINGATAN LUCU ---
+        function tampilkanPeringatanLucu(tipe, maxVal = 0) {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            const emojiEl = document.getElementById('popup-emoji');
+            const titleEl = document.getElementById('popup-title');
+            const msgEl = document.getElementById('popup-message');
+            const maxBox = document.getElementById('popup-max-box');
+            
+            if (tipe === 'nokelas') {
+                const variasi = [
+                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kategori kelas dulu ngab!' },
+                    { emoji: '☕', title: 'Cuci Muka Duls!', msg: 'Kelasnya belum dipencet tuh~' },
+                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Main pencet-pencet aja, kelasnya dulu dong!' },
+                    { emoji: '🙈', title: 'Kosong Melompong', msg: 'Klik dulu salah satu kelas di atas!' }
+                ];
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = "text-amber-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg;
+                maxBox.classList.add('hidden');
+                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center";
+                
+            } else if (tipe === 'over') {
+                const variasi = [
+                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
+                    { emoji: '🤣', title: 'Ngantuk lu ya?', msg: 'Waduh, kebanyakan ngetik tuh!' },
+                    { emoji: '🫣', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu? Kelebihan!' },
+                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Lebih dari batas maksimal woy!' }
+                ];
+                const rand = variasi[Math.floor(Math.random() * variasi.length)];
+                emojiEl.innerText = rand.emoji;
+                titleEl.innerText = rand.title;
+                titleEl.className = "text-rose-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg;
+                maxBox.classList.remove('hidden');
+                document.getElementById('popup-max-val').innerText = maxVal;
+                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center";
+            }
+
+            popup.classList.remove('opacity-0', 'pointer-events-none');
+            popup.classList.add('opacity-100');
+            
+            setTimeout(() => {
+                box.classList.remove('scale-50', 'opacity-0');
+                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
+            }, 10);
+
+            clearTimeout(popupTimeout);
+            popupTimeout = setTimeout(() => {
+                tutupPeringatanLucu();
+            }, 3000);
+        }
+
+        function tutupPeringatanLucu() {
+            const popup = document.getElementById('cute-popup');
+            const box = document.getElementById('cute-popup-box');
+            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
+            box.classList.add('scale-50', 'opacity-0');
+            setTimeout(() => {
+                popup.classList.remove('opacity-100');
+                popup.classList.add('opacity-0', 'pointer-events-none');
+            }, 250);
+        }
+
+        // --- VIP MUSIC PLAYER SYSTEM ---
         const musicLibrary = [
             { title: 'Perdamaian', src: 'Perdamaian.mp3' },
             { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' },
@@ -600,6 +697,20 @@
         let isPlaying = false;
         let currentTrackIndex = 0;
 
+        function renderEqualizer() {
+            const eqContainer = document.getElementById('equalizer');
+            eqContainer.innerHTML = '';
+            for (let i = 0; i < 25; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'eq-bar';
+                const height = Math.floor(Math.random() * 10) + 4;
+                const delay = Math.random() * 0.5;
+                bar.style.height = `${height}px`;
+                bar.style.animationDelay = `${delay}s`;
+                eqContainer.appendChild(bar);
+            }
+        }
+
         function triggerUploadMusik() {
             document.getElementById('upload-musik').click();
         }
@@ -620,21 +731,18 @@
             }
 
             if (addedCount > 0) {
-                alert(`Wih mantap! ${addedCount} lagu barumu berhasil ditambahkan ke daftar putar sesi ini. Langsung gaskeun play! 🎶`);
+                alert(`Wih mantap! ${addedCount} lagu barumu berhasil ditambahkan. Langsung gaskeun play! 🎶`);
                 setTrack(musicLibrary.length - addedCount);
                 if (!isPlaying) toggleMusik();
                 
-                // Jika pop-up playlist sedang terbuka, render ulang
                 const modal = document.getElementById('music-manager-modal');
                 if (!modal.classList.contains('pointer-events-none')) {
                     bukaManagerMusik();
                 }
             }
-            
             event.target.value = '';
         }
 
-        // --- SISTEM PLAYLIST MANAGER ---
         function bukaManagerMusik() {
             const container = document.getElementById('playlist-container');
             container.innerHTML = '';
@@ -645,12 +753,24 @@
                 musicLibrary.forEach((track, index) => {
                     const isPlayingRow = (index === currentTrackIndex);
                     const row = document.createElement('div');
-                    row.className = `flex justify-between items-center p-2.5 rounded-xl border ${isPlayingRow ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100'}`;
-                    row.innerHTML = `
-                        <div class="truncate flex-1 pr-2 text-xs font-black ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">
-                            ${index + 1}. ${track.title}
+                    row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isPlayingRow ? 'bg-indigo-50 border-indigo-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
+                    
+                    const eqIndicator = isPlayingRow && isPlaying ? `
+                        <div class="flex items-end gap-[1px] h-[10px] ml-1">
+                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div>
+                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div>
+                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div>
                         </div>
-                        <button onclick="hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu">
+                    ` : '';
+
+                    row.innerHTML = `
+                        <div class="flex-1 pr-2 flex items-center" onclick="playLaguPilihan(${index})">
+                            <span class="text-xs font-black truncate ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">
+                                ${index + 1}. ${track.title}
+                            </span>
+                            ${eqIndicator}
+                        </div>
+                        <button onclick="event.stopPropagation(); hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     `;
@@ -660,11 +780,20 @@
             toggleModal('music-manager-modal', true);
         }
 
+        function playLaguPilihan(index) {
+            setTrack(index);
+            if (!isPlaying) {
+                toggleMusik();
+            } else {
+                currentAudio.play().catch(e => console.log(e));
+            }
+            bukaManagerMusik(); 
+        }
+
         function hapusLaguDariManager(index) {
             const trackTitle = musicLibrary[index].title;
             if(confirm(`Yakin mau menghapus lagu "${trackTitle}" dari daftar putar?`)) {
                 musicLibrary.splice(index, 1);
-                
                 if (musicLibrary.length === 0) {
                     stopMusik();
                     document.getElementById('music-title').innerText = "KOSONG";
@@ -681,7 +810,7 @@
                         if (isPlaying) currentAudio.play().catch(e => console.log(e));
                     }
                 }
-                bukaManagerMusik(); // Render ulang list
+                bukaManagerMusik();
             }
         }
 
@@ -700,35 +829,12 @@
                 titleEl.classList.remove('marquee-text');
                 titleEl.style.animationPlayState = 'paused';
             }
-
-            // Acak tampilan equalizer setiap ganti lagu
-            randomizeEqualizer();
+            renderEqualizer();
         }
-
-        function randomizeEqualizer() {
-            const eqContainer = document.getElementById('equalizer');
-            if(!eqContainer) return;
-            eqContainer.innerHTML = ''; 
-            // 25 batang agar memanjang penuh dan rapat mengikuti kapsul
-            for(let i = 0; i < 25; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'eq-bar';
-                // Tinggi dasar diacak (40% - 100%)
-                const h = Math.floor(Math.random() * 60) + 40; 
-                bar.style.height = `${h}%`;
-                // Kecepatan pantulan & delay diacak agar gerakannya realistis
-                bar.style.animationDelay = `-${Math.random()}s`;
-                bar.style.animationDuration = `${0.3 + Math.random() * 0.4}s`;
-                eqContainer.appendChild(bar);
-            }
-        }
-
-        // Generate batang equalizer saat file HTML di-load pertama kali
-        randomizeEqualizer();
 
         function toggleMusik() {
             if (musicLibrary.length === 0) {
-                alert("Daftar putar kosong! Silakan upload lagu dulu (tombol daftar putar di sebelah kanan).");
+                alert("Daftar putar kosong! Silakan upload lagu dulu.");
                 return;
             }
             if (!currentAudio.src) setTrack(0);
@@ -747,9 +853,7 @@
                 eq.classList.add('opacity-0');
                 if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'paused';
             } else {
-                currentAudio.play().catch(e => {
-                    console.log(e);
-                });
+                currentAudio.play().catch(e => console.log(e));
                 isPlaying = true;
                 iconPlay.classList.add('hidden');
                 iconPause.classList.remove('hidden');
@@ -757,6 +861,9 @@
                 eq.classList.add('opacity-100');
                 if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'running';
             }
+            
+            const modal = document.getElementById('music-manager-modal');
+            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
         function stopMusik() {
@@ -767,16 +874,17 @@
             isPlaying = false;
             document.getElementById('icon-play').classList.remove('hidden');
             document.getElementById('icon-pause').classList.add('hidden');
-            
-            const eq = document.getElementById('equalizer');
-            eq.classList.remove('opacity-100');
-            eq.classList.add('opacity-0');
+            document.getElementById('equalizer').classList.remove('opacity-100');
+            document.getElementById('equalizer').classList.add('opacity-0');
             
             const titleEl = document.getElementById('music-title');
             if(titleEl.classList.contains('marquee-text')) {
                 titleEl.style.animationPlayState = 'paused';
                 titleEl.style.transform = 'translate(0, 0)'; 
             }
+            
+            const modal = document.getElementById('music-manager-modal');
+            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
         function nextMusik() {
@@ -784,6 +892,9 @@
             currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length;
             setTrack(currentTrackIndex);
             if (isPlaying) currentAudio.play().catch(e => console.log(e));
+            
+            const modal = document.getElementById('music-manager-modal');
+            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
         function prevMusik() {
@@ -791,12 +902,12 @@
             currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length;
             setTrack(currentTrackIndex);
             if (isPlaying) currentAudio.play().catch(e => console.log(e));
+            
+            const modal = document.getElementById('music-manager-modal');
+            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
-        currentAudio.addEventListener('ended', () => {
-            nextMusik();
-        });
-
+        currentAudio.addEventListener('ended', () => { nextMusik(); });
 
         // --- ATURAN KATEGORI KELAS ---
         let configKelas = {
@@ -806,790 +917,34 @@
             '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'KODING' } 
         };
 
-        // --- DATABASE SISWA DEFAULT ---
-        const defaultSiswa = {
-            "1 ICP A": [
-                { presensi: 1, nama: "ALTHAF SHAQUILLE ABHIVANDYA" },
-                { presensi: 2, nama: "ANDARU GESIT YANARTA" },
-                { presensi: 3, nama: "Atarazka Syahnan Haziq" },
-                { presensi: 4, nama: "Balqis Akasha Shafiyah" },
-                { presensi: 5, nama: "BOY ATHALLAH BAKHRY" },
-                { presensi: 6, nama: "Elvara Aiza Santosa" },
-                { presensi: 7, nama: "Hamda Batrisya Seika" },
-                { presensi: 8, nama: "Inara Putri Arkadewi" },
-                { presensi: 9, nama: "LUKITA ASKANA SAKHI" },
-                { presensi: 10, nama: "Muhammad Tangguh Asnawi" },
-                { presensi: 11, nama: "Nizar Abdillah Ghazwan" },
-                { presensi: 12, nama: "PESONA HARUM HUMAIRA" },
-                { presensi: 13, nama: "RIFANI REYYA ANNISA" },
-                { presensi: 14, nama: "WAFAZENA JANITRALESHA" }
-            ],
-            "1 ICP B": [
-                { presensi: 1, nama: "CINTA AFIA SYAILENDRA" },
-                { presensi: 2, nama: "DAVIN AL CHALIEF ERABBANI" },
-                { presensi: 3, nama: "Diana Aiza Hudaya" },
-                { presensi: 4, nama: "Illona Nusaibah Azzahra" },
-                { presensi: 5, nama: "Jihan Arsylia Nugroho" },
-                { presensi: 6, nama: "KHALISTA ALIFIA GUNTORO" },
-                { presensi: 7, nama: "KHAWLA ADIBA DHATU" },
-                { presensi: 8, nama: "MALVEN RAFIIANDRA ARLY WIBOWO" },
-                { presensi: 9, nama: "MOZEIN ARKEVIN" },
-                { presensi: 10, nama: "Muhammad Zhafran Abdurrahman" },
-                { presensi: 11, nama: "Ocean Hoki Praditya" },
-                { presensi: 12, nama: "Zharif Almuqaffi Digit" },
-                { presensi: 13, nama: "Herdinar Siti Noorjehan Fidiyanto" }
-            ],
-            "1A": [
-                { presensi: 1, nama: "ABDULLAH AFKAR" },
-                { presensi: 2, nama: "ABIDZAR HASAN ALFARISI" },
-                { presensi: 3, nama: "Adreena Agil Maheswari" },
-                { presensi: 4, nama: "ADZKIYA PINKA FADHEELA" },
-                { presensi: 5, nama: "ALIF MAULANA ADHYASTHA" },
-                { presensi: 6, nama: "ATHARRAZKA SAPUTRA" },
-                { presensi: 7, nama: "AWFA RANIA AZZAHRA" },
-                { presensi: 8, nama: "DANIS ABRISAM" },
-                { presensi: 9, nama: "ELHASIQ KSATRIA IBAD EFENDI" },
-                { presensi: 10, nama: "FREYA SAILA WIDIYANTO" },
-                { presensi: 11, nama: "HAEDAR AL GHANY YAZEED" },
-                { presensi: 12, nama: "HAIDAR KIANO ALRAFAEYZA" },
-                { presensi: 13, nama: "HASNAH KHAIRUNNISA HUMAIROH" },
-                { presensi: 14, nama: "IBRAHIM AHMAD ABDUR ROUUF" },
-                { presensi: 15, nama: "KEINARRA AZKADINA WIJAYA" },
-                { presensi: 16, nama: "KHANSA PARAMITA WIBOWO" },
-                { presensi: 17, nama: "Khayra Mutiara Khalidiya" },
-                { presensi: 18, nama: "MAHANTA LEON ARRASYID" },
-                { presensi: 19, nama: "MUHAMMAD ABBIYA RAZKAJATI" },
-                { presensi: 20, nama: "Muhammad Idris Asy Syafii" },
-                { presensi: 21, nama: "NOURA KHANZANIA MECCA WIRAWAN" },
-                { presensi: 22, nama: "Nusaibah Aqila Choirunnisa" },
-                { presensi: 23, nama: "Omarizz Adrintaka Zayn" },
-                { presensi: 24, nama: "Rania Arsyi Nailazaara" },
-                { presensi: 25, nama: "RM Aldianurrasyid Rajendra Kusumo" },
-                { presensi: 26, nama: "Sakura Reiwa Gunawan" },
-                { presensi: 27, nama: "ZALENZIO MAULANA FACHRIANSYAH" },
-                { presensi: 28, nama: "KINARA TAQIYYA ADLA" }
-            ],
-            "1B": [
-                { presensi: 1, nama: "ADERA KIREINA HUTOMO" },
-                { presensi: 2, nama: "Aerish Qia Adzkadina" },
-                { presensi: 3, nama: "AISYAH NAYLA SALSABILA" },
-                { presensi: 4, nama: "ALESHA HANA ELSHANUM" },
-                { presensi: 5, nama: "ATHAFARIZ DANISH PRATAMA" },
-                { presensi: 6, nama: "AZKADINA FAKHRA FAOZI" },
-                { presensi: 7, nama: "BERYL SALSABELA" },
-                { presensi: 8, nama: "Ceisya Azzahra Hardian" },
-                { presensi: 9, nama: "DZIHANDRA RAFIF SANTOSA" },
-                { presensi: 10, nama: "FATHAN HAIDAR HAMIDI" },
-                { presensi: 11, nama: "Fawwaz Diaurahman Hiroshi Abqori" },
-                { presensi: 12, nama: "FAZIA NURAISHA BIANTARA" },
-                { presensi: 13, nama: "GHAFI ATHAZAKY DIRGANTORO" },
-                { presensi: 14, nama: "IBRAHIM ALFARIZI NUR ALDY" },
-                { presensi: 15, nama: "Ibrahim Arsa Wicaksono" },
-                { presensi: 16, nama: "Kenziano Tyaga Alfarizqi" },
-                { presensi: 17, nama: "KEYNARA ABRINA NADHIFA" },
-                { presensi: 18, nama: "MAHAJANA CARL PASSANDO" },
-                { presensi: 19, nama: "Muhammad Alfatih" },
-                { presensi: 20, nama: "MUHAMMAD AZKA RYUZAKI" },
-                { presensi: 21, nama: "MUHAMMAD RAFFI AL GHIFARI" },
-                { presensi: 22, nama: "Muhammad Rifky" },
-                { presensi: 23, nama: "Nazeera Anum Asy'Ari" },
-                { presensi: 24, nama: "Rafif Athafariz" },
-                { presensi: 25, nama: "Rania Zalfa Ramadhani" },
-                { presensi: 26, nama: "Riga Gilbyan" },
-                { presensi: 27, nama: "Shakeil El Barra Aditia" },
-                { presensi: 28, nama: "SHALOOM BETSY SANTOSO" }
-            ],
-            "1C": [
-                { presensi: 1, nama: "Abizar Zain Alby Devkhan" },
-                { presensi: 2, nama: "ALDRIC FAHREZA PURNOMO" },
-                { presensi: 3, nama: "ALESHA PUTRI KINANTI" },
-                { presensi: 4, nama: "AQMAR NADHIF AL AZIZ" },
-                { presensi: 5, nama: "AQUILA BRAMARA CHOIRUZZEIN" },
-                { presensi: 6, nama: "AYSILA NURA RASHNA" },
-                { presensi: 7, nama: "DAVIANDRA RADEVA ATHARRAZKA" },
-                { presensi: 8, nama: "FATIMAH HASNA ARIFAH" },
-                { presensi: 9, nama: "FILIO FARZANA ZHIODA" },
-                { presensi: 10, nama: "GIBRAN KHIAR WALIUDDIN" },
-                { presensi: 11, nama: "HANA SYARIF BAWAZIR" },
-                { presensi: 12, nama: "IBRAHIM AHMAD ABDUL FATTAAH" },
-                { presensi: 13, nama: "KARIN ALESHA AZZAHRA" },
-                { presensi: 14, nama: "MONERA ALIFIA ASRIKAN" },
-                { presensi: 15, nama: "MUHAMMAD ATTHAR ALHUSAIN" },
-                { presensi: 16, nama: "Muhammad Saka Maladira Alfahreza" },
-                { presensi: 17, nama: "Mutia Nur Afifah" },
-                { presensi: 18, nama: "NAYLA AZZAHRA SAVINA" },
-                { presensi: 19, nama: "Nazhan Azwar Algani" },
-                { presensi: 20, nama: "QANEITA KHAIRUN NISA" },
-                { presensi: 21, nama: "Rafa Alfarizi" },
-                { presensi: 22, nama: "Rasya Mochamad Athaya Bakti" },
-                { presensi: 23, nama: "Shabia Elmedina Farras" },
-                { presensi: 24, nama: "Yumna Latifah Ilmi Saputro" }
-            ],
-            "1D": [
-                { presensi: 1, nama: "AIZA SHANUM MAFAZA" },
-                { presensi: 2, nama: "AL IHYA ULUMUDDIN" },
-                { presensi: 3, nama: "ALEENA HANY SHAFIQAH" },
-                { presensi: 4, nama: "Alesha Qinara Sakhi" },
-                { presensi: 5, nama: "ALMAHYRA YUMNA KHALISA" },
-                { presensi: 6, nama: "ANAM KHAIRUL LUTHFI" },
-                { presensi: 7, nama: "ARKA ALI PRADANA" },
-                { presensi: 8, nama: "Chayra Putri Basyirah" },
-                { presensi: 9, nama: "Cirrillo Kyo Saputro Wiyono" },
-                { presensi: 10, nama: "FELISHA AZMA TSANIA" },
-                { presensi: 11, nama: "Ghazal Ilario Liban" },
-                { presensi: 12, nama: "HANA HAFIZA ANINDYA" },
-                { presensi: 13, nama: "Humaira Embun Putri Ardiansyah" },
-                { presensi: 14, nama: "Juang Ammar Al Syaddad" },
-                { presensi: 15, nama: "KALANDRA RAYYAN ALFARIZI" },
-                { presensi: 16, nama: "KAYYARA YASMENA AHMAD" },
-                { presensi: 17, nama: "KEANU ARSHAKA ZAFEER" },
-                { presensi: 18, nama: "KHADIJAH HAURA WIRDA" },
-                { presensi: 19, nama: "LAVENIA ARISHA MAHARANI SETIAWAN" },
-                { presensi: 20, nama: "MUHAMMAD ABIZAR AL FARIZI" },
-                { presensi: 21, nama: "Mushab Hafizan Abqary" },
-                { presensi: 22, nama: "RAFKA ABIMANYU NUKMAN" },
-                { presensi: 23, nama: "RAJENDRA VENENO ALFARIZKI" },
-                { presensi: 24, nama: "RASYAD ABDURRAHMAN SYAUKANI" },
-                { presensi: 25, nama: "Raysakha Janitra Saskara" },
-                { presensi: 26, nama: "SYAFIRA RAMADHANI" },
-                { presensi: 27, nama: "Tita Faranisa Birdella" },
-                { presensi: 28, nama: "YASMINA ISMAIL MARWAZI" }
-            ],
-            "2 ICP A": [
-                { presensi: 1, nama: "AFZAR HAZIQ MUSYAFFA" },
-                { presensi: 2, nama: "ALISHA SHAKAYLA FAYANI" },
-                { presensi: 3, nama: "ALNILAM ZEA FAIRUZA" },
-                { presensi: 4, nama: "ALTHAF VIRENDRA ARSALAN" },
-                { presensi: 5, nama: "Arshaka Gibran Daniswara" },
-                { presensi: 6, nama: "CORDELIA NADHIFA SAFANI" },
-                { presensi: 7, nama: "Davin Heksa Ardhana" },
-                { presensi: 8, nama: "ELZIO BARRA MAULANA" },
-                { presensi: 9, nama: "FAKHRI ASYRAF SHOFWAN MUSTAQIM" },
-                { presensi: 10, nama: "Gisella Zahira Joice" },
-                { presensi: 11, nama: "KANEZKA SAKHA ALVARENDRA" },
-                { presensi: 12, nama: "KHAIREEN ADIKARAPUTRI ALMAHYRA" },
-                { presensi: 13, nama: "KINARIAN SHAFA KIRANA" },
-                { presensi: 14, nama: "MIKHAYLA ANDREA AZZAHRA" },
-                { presensi: 15, nama: "MUTIARA SYAFIA JAZZYVANIA" },
-                { presensi: 16, nama: "RAMADHAN RAYYAN" },
-                { presensi: 17, nama: "REYHAN DZAKIANDRA WIDJAYA" },
-                { presensi: 18, nama: "RISANG EESHA KUMANDANG" },
-                { presensi: 19, nama: "Sheryl Anindya Elmarisa" },
-                { presensi: 20, nama: "SYAILENDRA SAMODRO JATI WASESO" }
-            ],
-            "2A": [
-                { presensi: 1, nama: "Abibah Maida Nahda Prasanda" },
-                { presensi: 2, nama: "Aksa D Rafael" },
-                { presensi: 3, nama: "Alea Briona Raqqema" },
-                { presensi: 4, nama: "ALESHA SYAFA CARRENISA" },
-                { presensi: 5, nama: "Alifa Adzkiya Putri Arifin" },
-                { presensi: 6, nama: "ALIYA MAHARANI ROOSSETYO" },
-                { presensi: 7, nama: "Althafunnizar Mauza Putra" },
-                { presensi: 8, nama: "Alvisco Ocean Wibowo" },
-                { presensi: 9, nama: "Andara Herfi Maulida" },
-                { presensi: 10, nama: "APRILLA SIHAN PUTRI ATMAJA" },
-                { presensi: 11, nama: "ARKANA PRATAMA DINIYAN" },
-                { presensi: 12, nama: "Ashalina Makayla Almahyra" },
-                { presensi: 13, nama: "Audrey Anggita Putri" },
-                { presensi: 14, nama: "Ayesha Inara Havika Sakti" },
-                { presensi: 15, nama: "AZRIL MAUZA ADHITAMA" },
-                { presensi: 16, nama: "AZZAM AL ARKHAN" },
-                { presensi: 17, nama: "BELVIA JEEHANDYA JAYA" },
-                { presensi: 18, nama: "DEARSYILA VINCA VIOLETTA" },
-                { presensi: 19, nama: "DHANESH RASHAAD ARTANABIL" },
-                { presensi: 20, nama: "Enver Dhafin Shakeel" },
-                { presensi: 21, nama: "FALAH FERDIANSYAH" },
-                { presensi: 22, nama: "Faqih Ariendra Keenan Alfarezel" },
-                { presensi: 23, nama: "Fatur Al-Ghifari Mekka Rahardjo" },
-                { presensi: 24, nama: "HAMIZAN AZFAR" },
-                { presensi: 25, nama: "HUMAIRA AZKA HERYUDI" },
-                { presensi: 26, nama: "SAPHENA ANNASYA SOFYAN" }
-            ],
-            "2B": [
-                { presensi: 1, nama: "ADIVA SHAQUEENA AZZAHRA" },
-                { presensi: 2, nama: "ANNASTASYA ELENA QAMRA" },
-                { presensi: 3, nama: "Aqila Putri ashalina" },
-                { presensi: 4, nama: "ARSENIO BERRYL ABQARI" },
-                { presensi: 5, nama: "ARSYAD ABDURAHMAN" },
-                { presensi: 6, nama: "Arsyfa Syabella Humaira" },
-                { presensi: 7, nama: "ATHAFARIZ ALVARENDRA OSTIN" },
-                { presensi: 8, nama: "Ayyash Tsaqif Alfatih" },
-                { presensi: 9, nama: "Dalane Jo D'angel" },
-                { presensi: 10, nama: "El Wafa Bintang Nawwarulhuda" },
-                { presensi: 11, nama: "GEORGIA SYANUM GIYANTO PRASODJO" },
-                { presensi: 12, nama: "Gibran Evano Pramudita" },
-                { presensi: 13, nama: "ILYAS FATAHILLAH ZAIN" },
-                { presensi: 14, nama: "Inara Oktaviani Putri Kusuma" },
-                { presensi: 15, nama: "ISTIB SYARUNANJALA" },
-                { presensi: 16, nama: "KAHISHA ARTA SAFFIYA" },
-                { presensi: 17, nama: "Kyna Asyakina Zahira Badegesy" },
-                { presensi: 18, nama: "Lionel Alvaro Zanetti" },
-                { presensi: 19, nama: "Muhammad Althof Zahirul Haq" },
-                { presensi: 20, nama: "NAFIRZHA RIZKYLLAH FATHONY" },
-                { presensi: 21, nama: "NATASYA ALMIRA" },
-                { presensi: 22, nama: "RAFANIA AZZAHRA" },
-                { presensi: 23, nama: "Rafif Akhmar Santoso" },
-                { presensi: 24, nama: "SANG ALAMRAZD HAQ" },
-                { presensi: 25, nama: "SHAZFA HANANIA AZAHRA" },
-                { presensi: 26, nama: "TANAYA REKHA OPALINA" },
-                { presensi: 27, nama: "ZIANNISA FAHMIDA AFRA" }
-            ],
-            "2C": [
-                { presensi: 1, nama: "Abidzar Emyr Amrullah" },
-                { presensi: 2, nama: "Abrisam Ahmad Abdillah" },
-                { presensi: 3, nama: "ADLAN AHZA MAKARIM" },
-                { presensi: 4, nama: "AFIZA GHANIA EFENDI" },
-                { presensi: 5, nama: "AHMAD ARSYA SYAWALUL ARIF" },
-                { presensi: 6, nama: "Aisyah Nuha Zahira" },
-                { presensi: 7, nama: "Alesha Azkadina Putri Alfariz" },
-                { presensi: 8, nama: "Alessandro Alano Aprillio" },
-                { presensi: 9, nama: "Arindi Putri Nurdiyanwibowo" },
-                { presensi: 10, nama: "HAFIDZ EL HAZIQ SAPUTRA" },
-                { presensi: 11, nama: "Khairunnisa Salsabila" },
-                { presensi: 12, nama: "Mahreen Adna Almahyra" },
-                { presensi: 13, nama: "MIKHAYLA FITRIYADI" },
-                { presensi: 14, nama: "Muhammad Alfatan Ardana" },
-                { presensi: 15, nama: "MUHAMMAD ARSYA GHIFARI" },
-                { presensi: 16, nama: "Muhammad Daffa Abyan Pamungkas" },
-                { presensi: 17, nama: "MUHAMMAD DZAKI AKBAR" },
-                { presensi: 18, nama: "Muhammad Nizam Alfatih" },
-                { presensi: 19, nama: "NADIA WISMA PURWOKO" },
-                { presensi: 20, nama: "NASYIFA AZALIA PUTRI BERNOWO" },
-                { presensi: 21, nama: "QUINNE ZAHIRA ANINDRA" },
-                { presensi: 22, nama: "Raffasya Ahmad Luthfi" },
-                { presensi: 23, nama: "SABEEYA SYAHRASYID RAYYANADA" },
-                { presensi: 24, nama: "MALIQ ZHIAN HARES" }
-            ],
-            "2D": [
-                { presensi: 1, nama: "AISYAH IZZATUNNISA PUTRI NUGROHO" },
-                { presensi: 2, nama: "ARSHAKA RAMAZHAN ALGIFARI MANTOW" },
-                { presensi: 3, nama: "CARLO ZEESHAN RUMI KURNIAWAN" },
-                { presensi: 4, nama: "Fatih Akhtar Raiffaza" },
-                { presensi: 5, nama: "FAUZAN AYDIN ZULKIFLI" },
-                { presensi: 6, nama: "HANIFA AQILA BAHEERA" },
-                { presensi: 7, nama: "Kamila Noveara Athifa" },
-                { presensi: 8, nama: "Kenes Pratista Vinala Putri" },
-                { presensi: 9, nama: "KHANZA ADELIA PUTRI WIJAYA" },
-                { presensi: 10, nama: "MUHAMMAD UBAY PRASETYO" },
-                { presensi: 11, nama: "MUHAMMAD ADHYAKSA BISMA" },
-                { presensi: 12, nama: "MUHAMMAD FARIZ SETYAWAN" },
-                { presensi: 13, nama: "MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH" },
-                { presensi: 14, nama: "MUHAMMAD RAFFI RAFASYA NUGROHO" },
-                { presensi: 15, nama: "Nathan Haven Akmal Alfaruq" },
-                { presensi: 16, nama: "Quinsha Qiana Zakeysha" },
-                { presensi: 17, nama: "RAFA FEBIAN ALFARIZKY" },
-                { presensi: 18, nama: "RAFISQY YUSUF ALFARIZA" },
-                { presensi: 19, nama: "RHEA ALZEA NUGROHO" },
-                { presensi: 20, nama: "Rifaul Zhafran Ghazani" },
-                { presensi: 21, nama: "Riffat Ahmad Luthfi" },
-                { presensi: 22, nama: "Rumaisha Pragya Raharja" },
-                { presensi: 23, nama: "SADDAM MUHAMMAD AFKARI" },
-                { presensi: 24, nama: "SAILA AYUDIA PUTRI" },
-                { presensi: 25, nama: "VENUS ALMAHYRA HARIYANTO" },
-                { presensi: 26, nama: "ABIYYU DHABITH AL HAMIZ" }
-            ],
-            "3A": [
-                { presensi: 1, nama: "Abdillah Ali Arzan" },
-                { presensi: 2, nama: "Abid Luqman Rajendra" },
-                { presensi: 3, nama: "ADIVA SHAFINA PUTRI" },
-                { presensi: 4, nama: "Adzkiya Nurrizqi Rakhmawati" },
-                { presensi: 5, nama: "Afsheena Hananezka Ar Razzan" },
-                { presensi: 6, nama: "Aisyah Ayudia Inara" },
-                { presensi: 7, nama: "Akifa Naila Asy'ari" },
-                { presensi: 8, nama: "Alfath Ataya Abqary Arzam" },
-                { presensi: 9, nama: "ARSYILA KIKANDRYA SUSANTO" },
-                { presensi: 10, nama: "Arsyillah Nur Sofiani" },
-                { presensi: 11, nama: "Aruna Sachi Philia" },
-                { presensi: 12, nama: "Ashadiyara Haflasea" },
-                { presensi: 13, nama: "Athifa Mahira Khansa" },
-                { presensi: 14, nama: "AZZAHRA ALNAIRA" },
-                { presensi: 15, nama: "DINATA ALLEN DHYO AL LATIF" },
-                { presensi: 16, nama: "FAEYZA SYATHIR KURNIAWAN" },
-                { presensi: 17, nama: "Fakhri Luthfi Hardianto" },
-                { presensi: 18, nama: "Garland Mashka Rafeyfa" },
-                { presensi: 19, nama: "Juang Haidar Athalla" },
-                { presensi: 20, nama: "Kalazahy Nadwa Zayn" },
-                { presensi: 21, nama: "MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI" },
-                { presensi: 22, nama: "MUHAMMAD RAFKA VIRENDRA" },
-                { presensi: 23, nama: "Nadhira Khaerani Hariyadi" },
-                { presensi: 24, nama: "Nayyara Aqila Razanah" },
-                { presensi: 25, nama: "Omar Abdul Aziz" },
-                { presensi: 26, nama: "Raditya Pradipta Ardhani" },
-                { presensi: 27, nama: "Rashya Alrafaeyza Hajam" },
-                { presensi: 28, nama: "Shafira Noreen Choirunnisa" },
-                { presensi: 29, nama: "SHAZFA LASIRA GUNARSO" },
-                { presensi: 30, nama: "Syakira Tsaqif Choirunnisa" }
-            ],
-            "3B": [
-                { presensi: 1, nama: "Abiy Vishaka Budi Nugroho" },
-                { presensi: 2, nama: "Adeeva Meidina Assyifatama" },
-                { presensi: 3, nama: "Adzkiya Naila Arsyila Atmadja" },
-                { presensi: 4, nama: "Aello Mezaluna Arubby" },
-                { presensi: 5, nama: "AERILYN VLA ADZKADINA" },
-                { presensi: 6, nama: "AHMAD ALFARIZQI SHAQUILLE PUTRA" },
-                { presensi: 7, nama: "AHNAF KHALIFAZIL AFRIANSAH" },
-                { presensi: 8, nama: "Aldena Dwisitta Wildani" },
-                { presensi: 9, nama: "Altaz Qianno Al Barra" },
-                { presensi: 10, nama: "Candrika Althafunnisa" },
-                { presensi: 11, nama: "FADLI ABQARY ALHUSNA" },
-                { presensi: 12, nama: "Fahreza Fathan Abdillah" },
-                { presensi: 13, nama: "Gavin Yoga Alvaro" },
-                { presensi: 14, nama: "Ghaida Azkayra Khairani" },
-                { presensi: 15, nama: "HAFIZH KHWARIZMI AL HANI" },
-                { presensi: 16, nama: "Jihan Aisharani Zea Zayyana" },
-                { presensi: 17, nama: "KEENAN KANAKA ALLI ZAFLAN" },
-                { presensi: 18, nama: "Khansa Monaya Rumaysha" },
-                { presensi: 19, nama: "Khanza Athifa Ningrum" },
-                { presensi: 20, nama: "KHAYLILA QUEENA AHMAD" },
-                { presensi: 21, nama: "KIRANA SHAQILA RAMADHANI" },
-                { presensi: 22, nama: "Mikhayla Kinanti Azkadina" },
-                { presensi: 23, nama: "Muhammad Al Ahsan Iqbal Setyo" },
-                { presensi: 24, nama: "Narulita Beryl Ramadhani" },
-                { presensi: 25, nama: "Nashila Zia Fahranie" },
-                { presensi: 26, nama: "RAIHAN ADITYA PRAWIRA" },
-                { presensi: 27, nama: "REYHAN ATHARIZ WIRAWAN" },
-                { presensi: 28, nama: "Romaisha Celina Okvin" },
-                { presensi: 29, nama: "Sarah Ali Hudzaifi" },
-                { presensi: 30, nama: "SYAMIL YAHYA AL HAFIDZI" }
-            ],
-            "3C": [
-                { presensi: 1, nama: "Abizar Fatih Pratama" },
-                { presensi: 2, nama: "ADEEVA AULIASYIFA" },
-                { presensi: 3, nama: "AISYAH AYUDIA INARA" },
-                { presensi: 4, nama: "AISYAH NAMEERA FATHIYYATURAHMA" },
-                { presensi: 5, nama: "AL-GHAZALI AISY ARFA DEANDRA" },
-                { presensi: 6, nama: "Alisha Natania Khumaira Dachlan" },
-                { presensi: 7, nama: "ALMEERA SHABIRA EKATARA" },
-                { presensi: 8, nama: "Almira Shanum Medina Sungkan" },
-                { presensi: 9, nama: "Aqila Salma Kamila" },
-                { presensi: 10, nama: "ARJUNA SYAILENDRA AL KHALIFI" },
-                { presensi: 11, nama: "Arka Leander Raffasya" },
-                { presensi: 12, nama: "ARSHAKA BINTANG ARLINGGA JATI" },
-                { presensi: 13, nama: "ARSYA AQUILA MUSYAFFA" },
-                { presensi: 14, nama: "Azhar Zalfa Faradisa" },
-                { presensi: 15, nama: "BARRAHILAL AMAHU MANGGANA" },
-                { presensi: 16, nama: "Callista Nabila Utomo" },
-                { presensi: 17, nama: "Fathir Alvissyahbana Mudjaed" },
-                { presensi: 18, nama: "FEARGAL V MARSA" },
-                { presensi: 19, nama: "KANZIA NAIRA AQILA" },
-                { presensi: 20, nama: "KHAIRINA FATIMA AL ADHA" },
-                { presensi: 21, nama: "Khayra Zakiyya Ferris" },
-                { presensi: 22, nama: "Kimora Humaira Azzahra" },
-                { presensi: 23, nama: "Laksita Shanumpadma Elhadi" },
-                { presensi: 24, nama: "MUHAMMAD ELRAJA HABIBIE SANTOSO" },
-                { presensi: 25, nama: "Muhammad Saifan Asykar Alfansyah" },
-                { presensi: 26, nama: "Rumaisha Nuha Muhammad" },
-                { presensi: 27, nama: "Shaula Alya Setiawan" },
-                { presensi: 28, nama: "Sybilla Jelita Aditia" },
-                { presensi: 29, nama: "Zavier Elfa'az Zayn Hariyono" },
-                { presensi: 30, nama: "Zulfadhli Fayyad Hidayat" }
-            ],
-            "3D": [
-                { presensi: 1, nama: "Afiza Azkayra Setyawan" },
-                { presensi: 2, nama: "Ahnaf Hashif Wibowo" },
-                { presensi: 3, nama: "Aisyah Ayunda Hamidi" },
-                { presensi: 4, nama: "AQILLA MUFIA LASHIRA RIVAI" },
-                { presensi: 5, nama: "Arshaka Radinka Shakeel" },
-                { presensi: 6, nama: "ARSY FISYAH KHUSNUL" },
-                { presensi: 7, nama: "Arsyila Ashadiya Adzra Faozi" },
-                { presensi: 8, nama: "Deisya Azzahra Pradana" },
-                { presensi: 9, nama: "Deva Aquina Sakhi" },
-                { presensi: 10, nama: "GINDA ARSYIL VINALES" },
-                { presensi: 11, nama: "HASNA NUR HUWA YIDA" },
-                { presensi: 12, nama: "Iqbal Bintang Pramudya" },
-                { presensi: 13, nama: "KEANU DANISH KURNIAWAN" },
-                { presensi: 14, nama: "KEN ARUNA GENDHIS NARESWARI" },
-                { presensi: 15, nama: "Khaila Putri Pradipta" },
-                { presensi: 16, nama: "KHALISA SABRIA RANAA SUGIARTA" },
-                { presensi: 17, nama: "LASHIRA IZZATI SHANUM ZULKARNAIN" },
-                { presensi: 18, nama: "LETYCIA YUPI QURRATU'AIN BUDIARSO" },
-                { presensi: 19, nama: "Muhammad Gibran Al Fath Widhiananto" },
-                { presensi: 20, nama: "NAFISA AQILA PUTRI" },
-                { presensi: 21, nama: "Nafla Aina Rohman" },
-                { presensi: 22, nama: "RAKA ADHYASTHA PARADILLA" },
-                { presensi: 23, nama: "Respati Zayyan Abid" },
-                { presensi: 24, nama: "SYAFIQ ABQORY" },
-                { presensi: 25, nama: "Syahira Naura Herlambang" },
-                { presensi: 26, nama: "VAREL ATHAFARIZ ZHAFRAN SAPUTRA" },
-                { presensi: 27, nama: "Zayn Khalifa Riswardana" },
-                { presensi: 28, nama: "Zeevana Shaqeen Azzahra Santoso" },
-                { presensi: 29, nama: "ZIDAN ATHALLA DHIAULHAQ" },
-                { presensi: 30, nama: "Zidan Faiz Ramadhan" }
-            ],
-            "4A": [
-                { presensi: 1, nama: "Aisha Ziya Shayfa" },
-                { presensi: 2, nama: "Al Syarawi Arfa Gunawan" },
-                { presensi: 3, nama: "Annisa Salsabila Zafarani" },
-                { presensi: 4, nama: "AQILA BELLATRIX HUMAIRAH" },
-                { presensi: 5, nama: "Assyifa Ar Razi" },
-                { presensi: 6, nama: "Athariz Calief Arganta" },
-                { presensi: 7, nama: "AZKA RAQILA AL GHIFARI" },
-                { presensi: 8, nama: "BINTANG PRADHIPTA HERMAWAN" },
-                { presensi: 9, nama: "BYANCA CHIARA SYAFIQA" },
-                { presensi: 10, nama: "DISTYA RACHYANANENDRA ALMAHYRA" },
-                { presensi: 11, nama: "FAAIZ TSAANI KAMILAN EL CHOIRI" },
-                { presensi: 12, nama: "Farrel Arkaan Oktora" },
-                { presensi: 13, nama: "HANINDYA JATI PRAMUDITA" },
-                { presensi: 14, nama: "Hans Aulia Khawari" },
-                { presensi: 15, nama: "Keisha Amandla Shareefa Iskandar" },
-                { presensi: 16, nama: "KEYSHA AZZAHRA ZAHFIRA" },
-                { presensi: 17, nama: "Khanza Naila Santosa" },
-                { presensi: 18, nama: "MUHAMMAD ALTEZZA ZABDAN" },
-                { presensi: 19, nama: "Muhammad Althof Attarizq Wishaka" },
-                { presensi: 20, nama: "Muhammad Irsyad At Tamimi" },
-                { presensi: 21, nama: "MUHAMMAD REVAN PRADITYA" },
-                { presensi: 22, nama: "Muhammad Yusuf Ramadhan Ar-Rasyid" },
-                { presensi: 23, nama: "NADIA APRILIA SYAKILA" },
-                { presensi: 24, nama: "NAUFAL ABQARI ARADHANA" },
-                { presensi: 25, nama: "Nayaka Fajar Sriyanto" },
-                { presensi: 26, nama: "PARADUTA ISNAN SUSILO" },
-                { presensi: 27, nama: "RAISYA RIZKY RAFIFAH PUTRI" },
-                { presensi: 28, nama: "Rumaysha Numa Reis" },
-                { presensi: 29, nama: "Sadryan Bima Ar Rizky" },
-                { presensi: 30, nama: "Syanala Kania Salsabila" }
-            ],
-            "4B": [
-                { presensi: 1, nama: "ADIRA AZZAHRA PUTRI" },
-                { presensi: 2, nama: "AISYAH ZEA ALMAHYRA" },
-                { presensi: 3, nama: "Aleesha Afsheen Amarudin" },
-                { presensi: 4, nama: "ALZAIDAN KHALIQ PERMANA" },
-                { presensi: 5, nama: "Annaas Rokah Athallah" },
-                { presensi: 6, nama: "Citrahayi Abbidah Embun Kirana" },
-                { presensi: 7, nama: "DAFFA CAESAR EFENDI" },
-                { presensi: 8, nama: "Danendra Azzam Pambudi" },
-                { presensi: 9, nama: "Delisha Silmi Afiqa" },
-                { presensi: 10, nama: "Dhia Sabrina Azzalea" },
-                { presensi: 11, nama: "Fahreza Khalifa Rizky Harun" },
-                { presensi: 12, nama: "FATIH ALI TSAQIF" },
-                { presensi: 13, nama: "Hafiza Asyifa Risdana" },
-                { presensi: 14, nama: "Hafizh Athar Suprapto" },
-                { presensi: 15, nama: "HAFSA NADHIRA HISAN" },
-                { presensi: 16, nama: "Irsyad Thohir Putra Irawan" },
-                { presensi: 17, nama: "KANUGRAHAN ADI WICAKSONO" },
-                { presensi: 18, nama: "Keanu Putra Hariyadi" },
-                { presensi: 19, nama: "KEJORA LANGGENG BILITANIA" },
-                { presensi: 20, nama: "Lucky Arvin Qaid" },
-                { presensi: 21, nama: "Mikayla Putri Prasetyo" },
-                { presensi: 22, nama: "Muhamad Adien Taufik" },
-                { presensi: 23, nama: "NAIRA SYABILA AZZAHRA PUTRI" },
-                { presensi: 24, nama: "Prince Muhammadiyah El Azzami Sukoco" },
-                { presensi: 25, nama: "RAJENDRA FADHIL ALFAYI PRAMONO" },
-                { presensi: 26, nama: "SHEZAN INARA NAJMA" },
-                { presensi: 27, nama: "Tristan Adelio Setiawan" },
-                { presensi: 28, nama: "WERKUDARA VINCENT SANTOSO" },
-                { presensi: 29, nama: "ZAHSY QUEENSHA ELNAURA" }
-            ],
-            "4C": [
-                { presensi: 1, nama: "Airlangga Gibran Maulana" },
-                { presensi: 2, nama: "AISYAH DINDA RAMANIA" },
-                { presensi: 3, nama: "Aisyah Putri Ayudia" },
-                { presensi: 4, nama: "ARIFIN ARKANA RAMADHAN" },
-                { presensi: 5, nama: "Arya Fahreza Kurniawan" },
-                { presensi: 6, nama: "Ayyash Jaisha Mohammad" },
-                { presensi: 7, nama: "Davira Alesha Pradana" },
-                { presensi: 8, nama: "FAHLAVI ROMI DEVANKA" },
-                { presensi: 9, nama: "Farah Nabila Azzahra" },
-                { presensi: 10, nama: "Fellicia Adeeva Cahya Lacita" },
-                { presensi: 11, nama: "Gendis Alitha Silmi" },
-                { presensi: 12, nama: "GHAISAN DZAKY ARIFBOWO" },
-                { presensi: 13, nama: "HAFIZH MAHARDIKA" },
-                { presensi: 14, nama: "Henisa Azzahra Silvia" },
-                { presensi: 15, nama: "INARA AYUNINDYA" },
-                { presensi: 16, nama: "JESSICA JASMINE" },
-                { presensi: 17, nama: "KENZI APRILLIO ALFARISQI" },
-                { presensi: 18, nama: "Kevin Arfandio" },
-                { presensi: 19, nama: "Kimi Shakila Ajunta" },
-                { presensi: 20, nama: "MARSYA ALEA ZANINDYA" },
-                { presensi: 21, nama: "Mirza Zaim Arrafif" },
-                { presensi: 22, nama: "Muhammad Arfan Arrazan" },
-                { presensi: 23, nama: "Muhammad Arkan" },
-                { presensi: 24, nama: "Musyaffa Dzakyandra Raffa Setiyawan" },
-                { presensi: 25, nama: "Nabila Zahwa Humaira" },
-                { presensi: 26, nama: "NAUFAL FADHIL RAMADHAN" },
-                { presensi: 27, nama: "NAURA KINANDRA SUJADI" },
-                { presensi: 28, nama: "QUEEN RAVENA AISYAH TOBING" },
-                { presensi: 29, nama: "Radhika Zefa Utomo" },
-                { presensi: 30, nama: "RAFIF ADYTAMA MULYA" },
-                { presensi: 31, nama: "Rifqi Hamidan" },
-                { presensi: 32, nama: "SHIDQIA FATIHAH AL ZENA KURNIAWAN" }
-            ],
-            "4D": [
-                { presensi: 1, nama: "Adeeva Afsheen Abdillah" },
-                { presensi: 2, nama: "ALILA KAIA MAULANA" },
-                { presensi: 3, nama: "Alkhalifi Arkan Sakha Fatardo" },
-                { presensi: 4, nama: "Alva Rizky Andrianto" },
-                { presensi: 5, nama: "Anindya shakila putri" },
-                { presensi: 6, nama: "Anugrah Daviandra Calisto Alfarez" },
-                { presensi: 7, nama: "ARIF FAITH RAHMAN" },
-                { presensi: 8, nama: "ARSAKHA TIMUR PAMUNGKAS" },
-                { presensi: 9, nama: "Azzahra aulia angelina nugraha" },
-                { presensi: 10, nama: "BASTIAN DANISH RAYYAN RABBANI" },
-                { presensi: 11, nama: "Herjuno Ahmad Fidiyanto" },
-                { presensi: 12, nama: "Kaelare Gandewa Murdani" },
-                { presensi: 13, nama: "Kaysa Elkhaira Shanum" },
-                { presensi: 14, nama: "KHAYLA AZZA BATRISYA ZAHRA" },
-                { presensi: 15, nama: "MIKAILA LAQUITTA HENZIE PRASODJO" },
-                { presensi: 16, nama: "Mirza Ahnaf Putra Winaris" },
-                { presensi: 17, nama: "MUHAMMAD ADIPATI BAGASKARA" },
-                { presensi: 18, nama: "MUHAMMAD KHARENDIO DARIS NIBRAS" },
-                { presensi: 19, nama: "NAILA ALESHA SAFIRA" },
-                { presensi: 20, nama: "Nandana Adzaki Naswan" },
-                { presensi: 21, nama: "Oryza Ziggy El Fatta Rosadi" },
-                { presensi: 22, nama: "Rania Saffa Hafisyah" },
-                { presensi: 23, nama: "Ravendra Elano Al Kahfi" },
-                { presensi: 24, nama: "SYAFIYA SALMA KIRANIA CAHYANTO" },
-                { presensi: 25, nama: "Thalita Maiza Eltsania" },
-                { presensi: 26, nama: "Tsaniyah Adhifa Nugroho" },
-                { presensi: 27, nama: "YASNA ISMAIL MARWAZI" },
-                { presensi: 28, nama: "Yuna Luserina Sanjaya" },
-                { presensi: 29, nama: "Yusuf Arsyad Abdulloh" },
-                { presensi: 30, nama: "ZAHIDA RISTYA MAHESWARI" }
-            ],
-            "5A": [
-                { presensi: 1, nama: "Adnan Faeyza Al Farrukh" },
-                { presensi: 2, nama: "Alexi Permana Pribadi" },
-                { presensi: 3, nama: "Alfaraziq Hafy Ar-Razzan" },
-                { presensi: 4, nama: "Alnadeem Akbar Ramadhan" },
-                { presensi: 5, nama: "Apta Janitra Passando" },
-                { presensi: 6, nama: "Aqilasha Porsche Queenarinda" },
-                { presensi: 7, nama: "Athaliana Alfarisa Wibowo" },
-                { presensi: 8, nama: "Aulia Syamil Almumtaza" },
-                { presensi: 9, nama: "Ayudia Inara Alesha Putri" },
-                { presensi: 10, nama: "Azzahra Humaira Fadhillah" },
-                { presensi: 11, nama: "Carissa Annisa Faiha" },
-                { presensi: 12, nama: "Chelsea Oktavia Putri" },
-                { presensi: 13, nama: "Davina Shava Khairiya Putri" },
-                { presensi: 14, nama: "Dhabith Aqilah Munsif" },
-                { presensi: 15, nama: "Fiorent Al Hafizzh Arjuna Dyan Putra" },
-                { presensi: 16, nama: "Firhan dilfanajib" },
-                { presensi: 17, nama: "Freya Ariana Callista Mohammad" },
-                { presensi: 18, nama: "Gio Fadhil Satria Praditya" },
-                { presensi: 19, nama: "Habil Athaya Zaahirulhaq" },
-                { presensi: 20, nama: "Hadaya Sakinah Fajar Yin Yang" },
-                { presensi: 21, nama: "Ikmal Zufar" },
-                { presensi: 22, nama: "Krystal Adeeva Diandra Faradilla" },
-                { presensi: 23, nama: "Melvin Rahmatullah Nizar" },
-                { presensi: 24, nama: "Muhammad Adrian Banu Atiro" },
-                { presensi: 25, nama: "Muhammad Ashraf Ardiansyah" },
-                { presensi: 26, nama: "Nada Arsyifa Fredelina" },
-                { presensi: 27, nama: "Naila Ulfa Caesarra" },
-                { presensi: 28, nama: "Radja Anatan Wijaya" },
-                { presensi: 29, nama: "Ramadhan Sandya Wahyu Jati" }
-            ],
-            "5B": [
-                { presensi: 1, nama: "Abidah Husna Humaniora" },
-                { presensi: 2, nama: "Abiyyu Radyta Fawwas" },
-                { presensi: 3, nama: "Adsila Nur Aisyah" },
-                { presensi: 4, nama: "Airin Palomarinka" },
-                { presensi: 5, nama: "Alifa Nabilah Putri Kusumawati" },
-                { presensi: 6, nama: "Anagata Premieranda" },
-                { presensi: 7, nama: "Azbin Hisyam Linoko" },
-                { presensi: 8, nama: "Basmalah Faisal Al Ghozali" },
-                { presensi: 9, nama: "Callysta Annisa Faiha" },
-                { presensi: 10, nama: "Daud Abdul Majiid" },
-                { presensi: 11, nama: "Dyah Pratista Nareswari" },
-                { presensi: 12, nama: "Edgar zaidan aditya" },
-                { presensi: 13, nama: "Fadlan Athar Sugiarta" },
-                { presensi: 14, nama: "Fathiya Fella Ramadyana" },
-                { presensi: 15, nama: "Hafiza Khaira Lubna" },
-                { presensi: 16, nama: "Hanum Maryam Istafa" },
-                { presensi: 17, nama: "Iqbal Sakha Abiyyu" },
-                { presensi: 18, nama: "Kaynarra Shanum Aufanisa" },
-                { presensi: 19, nama: "Kayyisa Maza Adisti" },
-                { presensi: 20, nama: "Khaizuran Raziq Abbasy" },
-                { presensi: 21, nama: "Khalid Satya Abdillah" },
-                { presensi: 22, nama: "Muhammad Dzikron Almusawa" },
-                { presensi: 23, nama: "Naufal Ahza Fahryan" },
-                { presensi: 24, nama: "Nayla Adiva Putri Arga" },
-                { presensi: 25, nama: "Rislaila Karamina Nareswari" },
-                { presensi: 26, nama: "Sabina Nindya El Yasin" },
-                { presensi: 27, nama: "Shafira Alhusna Denastya" },
-                { presensi: 28, nama: "Zaki Al Fariz" },
-                { presensi: 29, nama: "Ze Abdul Ghany Fahradienn" }
-            ],
-            "5C": [
-                { presensi: 1, nama: "Abdillah Muhafizh" },
-                { presensi: 2, nama: "Ahmad Dzakir El Basil Nelson" },
-                { presensi: 3, nama: "Aisha Salsabil Darmawan" },
-                { presensi: 4, nama: "Alif Aqmal Abqori" },
-                { presensi: 5, nama: "Ariendra Salsabila Ostin" },
-                { presensi: 6, nama: "Belva Caliana Aqila" },
-                { presensi: 7, nama: "Diandra Alrafaeyza Wibowo" },
-                { presensi: 8, nama: "Fadlin Athmar Sugiarta" },
-                { presensi: 9, nama: "Fariq Akhdan Azkiya" },
-                { presensi: 10, nama: "Fayyadh Ubaidillah Narendra" },
-                { presensi: 11, nama: "Fazila Ariinda Lutfunisa" },
-                { presensi: 12, nama: "Humayra lutifa Azizah nur chovie" },
-                { presensi: 13, nama: "Irhad Ghani Ismail" },
-                { presensi: 14, nama: "Jordan Aurio Wibowo" },
-                { presensi: 15, nama: "Keisya Faiha Rifda Putri" },
-                { presensi: 16, nama: "Maritza Farzana Aaliyah" },
-                { presensi: 17, nama: "Mohammad Banu Rezon" },
-                { presensi: 18, nama: "Muhammad Almer Zafrano" },
-                { presensi: 19, nama: "Muhammad Ayyasy Al Fatih" },
-                { presensi: 20, nama: "Muhammad Sabrang Piwulang Kautaman" },
-                { presensi: 21, nama: "Muhammad Yusuf Hanafi" },
-                { presensi: 22, nama: "Raffael Alfarizqi Novalino" },
-                { presensi: 23, nama: "Rara Ayu Mefita Putri Az Zahra" },
-                { presensi: 24, nama: "Rheva Almira Agatha" },
-                { presensi: 25, nama: "Royyan Adikaraputra Syahbana" },
-                { presensi: 26, nama: "Sabrina Aisyifa Haifa" },
-                { presensi: 27, nama: "Safa Nadira Saraswati" },
-                { presensi: 28, nama: "Sheikha Mahra Al Khawarizmi Muzakarisa" },
-                { presensi: 29, nama: "Sybilla Embun Dinar" },
-                { presensi: 30, nama: "Tsania Zeina Khumaira" }
-            ],
-            "5D": [
-                { presensi: 1, nama: "Abidzar Athaya Dzaky Algifary" },
-                { presensi: 2,  nama: "AINA MACHYA ALSHIDDIQ" },
-                { presensi: 3, nama: "Aisyah Dianov El Ghania" },
-                { presensi: 4, nama: "Almira Syakib Rizqiya" },
-                { presensi: 5, nama: "Alvaro Mahadana" },
-                { presensi: 6, nama: "Arka Kelud Nova Widyanto" },
-                { presensi: 7, nama: "Arsyil Hakim Al Fatih" },
-                { presensi: 8, nama: "Calista Revani" },
-                { presensi: 9, nama: "Dafa Arsya Wiyanda" },
-                { presensi: 10, nama: "Fatimah Nurfaeyza Biantara" },
-                { presensi: 11, nama: "Ghaziya Aqila Sutopo" },
-                { presensi: 12, nama: "Ghouzan Zweikho Alghifari" },
-                { presensi: 13, nama: "Hamizan Arfa Basyar" },
-                { presensi: 14, nama: "Ibrahim Koji Kayana" },
-                { presensi: 15, nama: "Javier Isco Setya Kurniawan" },
-                { presensi: 16, nama: "Kannaya Tungga Dewi Rahardjo" },
-                { presensi: 17, nama: "Keanu Putra Rafandra" },
-                { presensi: 18, nama: "Marsya Anindya Pradipta" },
-                { presensi: 19, nama: "Muhammad Zain Alkaf" },
-                { presensi: 20, nama: "Nafisah Azzahra" },
-                { presensi: 21, nama: "Naura Hasna Khumaira Alsaka" },
-                { presensi: 22, nama: "Oktavia Jetri Kurnianada" },
-                { presensi: 23, nama: "Qonita Humairo Latif" },
-                { presensi: 24, nama: "Rafif dzaky ismail" },
-                { presensi: 25, nama: "Raka Raditya Rasyid" },
-                { presensi: 26, nama: "Reinhart Izzul Haq Muhammad" },
-                { presensi: 27, nama: "RM Asyrafurahman Wiryawan Kusumo" },
-                { presensi: 28, nama: "Shelby Azzahra Dzakira" },
-                { presensi: 29, nama: "Syafira Khanza Fakhrudin" },
-                { presensi: 30, nama: "Zhafir Mahendra Putra" }
-            ],
-            "6A": [
-                { presensi: 1, nama: "Abdullah Naafi' Haitami" },
-                { presensi: 2, nama: "Adinda Kharisma Putri Kencono" },
-                { presensi: 3, nama: "Ahmad Fadillah Ramdhani" },
-                { presensi: 4, nama: "Almira Savaira Ayla Arwina Putri" },
-                { presensi: 5, nama: "Ashilla Nafisha Salsabila" },
-                { presensi: 6, nama: "Azzah Fatin Dinah" },
-                { presensi: 7, nama: "Bintang Pramudita Dewani" },
-                { presensi: 8, nama: "Clevara Ziven Arsy Erlandy" },
-                { presensi: 9, nama: "Elina Farah Aulia" },
-                { presensi: 10, nama: "Gadis Avisa Amalia" },
-                { presensi: 11, nama: "Haisha Hanum Hanania" },
-                { presensi: 12, nama: "Hanifan Faishal Akbar" },
-                { presensi: 13, nama: "Keanu Aufaa Putra Kuncara" },
-                { presensi: 14, nama: "Khalifa Alya Khairunnisa" },
-                { presensi: 15, nama: "Lanika Alleia Nugroho" },
-                { presensi: 16, nama: "Maekha Tria Al Ghazali" },
-                { presensi: 17, nama: "Maheswara Sutodigdoyo Purbo Wiseso" },
-                { presensi: 18, nama: "Mikhayla Zafirazka Sunu" },
-                { presensi: 19, nama: "Muhammad Atha Rasyafa" },
-                { presensi: 20, nama: "Nadya Asyifa Khairani" },
-                { presensi: 21, nama: "Najwa Mufida Adaffi" },
-                { presensi: 22, nama: "Narendra Faid Algibran" },
-                { presensi: 23, nama: "Nediva Faranisa Arifa Putri" },
-                { presensi: 24, nama: "Noni Lexa Amaretha Setyawan" },
-                { presensi: 25, nama: "Pradipta Rasya Alfarizky" },
-                { presensi: 26, nama: "Sakura Hana Humaira" },
-                { presensi: 27, nama: "Zavier Fico El Rafif" }
-            ],
-            "6B": [
-                { presensi: 1, nama: "Abdurrahman Aziz Khairi" },
-                { presensi: 2, nama: "Abdurrahman Yudha Iskandarsyah" },
-                { presensi: 3, nama: "Allyssa Assyifatul Zahra" },
-                { presensi: 4, nama: "Alvaro Aidan Santosa" },
-                { presensi: 5, nama: "Andrina Larasati Roossetyo" },
-                { presensi: 6, nama: "Annisa Adzkia Jasmine" },
-                { presensi: 7, nama: "Azka Al Latif" },
-                { presensi: 8, nama: "Elang Fachriza Wibowo" },
-                { presensi: 9, nama: "Fadhil Al Maisan Sakha Setiyawan" },
-                { presensi: 10, nama: "Fajria Shabihah Azzahra" },
-                { presensi: 11, nama: "Falilah Ransi Kayana" },
-                { presensi: 12, nama: "Faqih Alfarizi Utama" },
-                { presensi: 13, nama: "Farah Atania Dumaj" },
-                { presensi: 14, nama: "Fidelia Carlise Tasanee" },
-                { presensi: 15, nama: "Hayden Aerozensa Sutrisno" },
-                { presensi: 16, nama: "Ibni Amiir Al Farraas" },
-                { presensi: 17, nama: "Muhammad Ahsan Haidar" },
-                { presensi: 18, nama: "Muhammad Lutfie Sakhi Zaidan" },
-                { presensi: 19, nama: "Mutiara Putri Santoso" },
-                { presensi: 20, nama: "Nadzira Qurbah Shalihah" },
-                { presensi: 21, nama: "Qudsia Khaira Arzami" },
-                { presensi: 22, nama: "Raihana Salsabila Nadhifa" },
-                { presensi: 23, nama: "Shakila Athaleta Defrina" },
-                { presensi: 24, nama: "Shelcye Alya Bilbina" },
-                { presensi: 25, nama: "Tsania Elrahma Setyawan" },
-                { presensi: 26, nama: "Wira Adhyasta Wardhana" },
-                { presensi: 27, nama: "Yaqdhan Rafa Atalla" },
-                { presensi: 28, nama: "Yusuf Zian Arkana" }
-            ],
-            "6C": [
-                { presensi: 1, nama: "Adelia Shazia Azzahra" },
-                { presensi: 2, nama: "Aidan Syam Rachmad" },
-                { presensi: 3, nama: "Akbar Nurta Alim" },
-                { presensi: 4, nama: "Athalla Zafran Al Rafisqi" },
-                { presensi: 5, nama: "Auliya Putri Rhamadani" },
-                { presensi: 6, nama: "Daanya Ulima Saputro" },
-                { presensi: 7, nama: "Diandra Nasya Azzahra" },
-                { presensi: 8, nama: "Dzakira Fauzia Aftani" },
-                { presensi: 9, nama: "Fatih Rahman" },
-                { presensi: 10, nama: "Gilang Ramadhan" },
-                { presensi: 11, nama: "Hafida Husna Akmalia" },
-                { presensi: 12, nama: "Kalena Shafiyya Nailatul Izzah" },
-                { presensi: 13, nama: "Kania Khanza Farzana Callysta" },
-                { presensi: 14, nama: "Kayra Dzikri Kasyifa Aghna" },
-                { presensi: 15, nama: "Kayyisa Zaida Windriya" },
-                { presensi: 16, nama: "Ken Cordoba Hayam Wuruk Dhofir" },
-                { presensi: 17, nama: "Keysha Calista Ramadhani" },
-                { presensi: 18, nama: "Muhammad Afandi" },
-                { presensi: 19, nama: "Muhammad Firman Abdillah" },
-                { presensi: 20, nama: "Muhammad Keenan Wicaksono" },
-                { presensi: 21, nama: "Nuria Azzahra Hartanto" },
-                { presensi: 22, nama: "Oryza Sativa Khairunnisa'" },
-                { presensi: 23, nama: "Qatrunada Shadrina Auni" },
-                { presensi: 24, nama: "Sabiq Maulana Fakhrudin" },
-                { presensi: 25, nama: "Sulthan Hanif Muhamad Taufik" },
-                { presensi: 26, nama: "Tiara Khairun Nisa" },
-                { presensi: 27, nama: "Urzuqnie Fahman" },
-                { presensi: 28, nama: "Zhafran Axel Alfarizi" }
-            ],
-            "6D": [
-                { presensi: 1, nama: "Adinda Aurelia" },
-                { presensi: 2, nama: "Afifah Bilqis Azzahra" },
-                { presensi: 3, nama: "Akma Safaraz Ajunta" },
-                { presensi: 4, nama: "Alaina Arufa Nisa'" },
-                { presensi: 5, nama: "Alisha Shafia Sugianto" },
-                { presensi: 6, nama: "Anarta Rizki Pratama" },
-                { presensi: 7, nama: "Annorafatech Aqilahamdah" },
-                { presensi: 8, nama: "Aprilio Wifa Albyansyah" },
-                { presensi: 9, nama: "Ceisya Hazkia Rizky Subagyo" },
-                { presensi: 10, nama: "Devandra Alvaro El Zahran" },
-                { presensi: 11, nama: "Dzakiyya Talita Sakhi Wicaksono" },
-                { presensi: 12, nama: "Dzaky Almair Jamil Wibowo" },
-                { presensi: 13, nama: "Fathiya Halwa Nisa" },
-                { presensi: 14, nama: "Faza Hanifa Nugroho" },
-                { presensi: 15, nama: "Hafuza Gentza Gunarso" },
-                { presensi: 16, nama: "Helios Cakrabirawa Samsudin" },
-                { presensi: 17, nama: "Justitia Kafila" },
-                { presensi: 18, nama: "Kaureen Fazeela Syakira" },
-                { presensi: 19, nama: "Khafi Aqlan Raiz" },
-                { presensi: 20, nama: "Kinasih Helga Hares" },
-                { presensi: 21, nama: "Lionel Castila" },
-                { presensi: 22, nama: "Mosanda Maarif" },
-                { presensi: 23, nama: "Muhammad Yahya Asy'ari" },
-                { presensi: 24, nama: "Nadifa Nur Medina" },
-                { presensi: 25, nama: "Nailah Hafiza Izzatunnisa" },
-                { presensi: 26, nama: "Novandra Arjuna Pratama" },
-                { presensi: 27, nama: "Radinwangi Avatara Azura Kertabhauma Cakraningrat" },
-                { presensi: 28, nama: "Umar Al-Faruq" }
-            ]
+        const defaultSiswaLengkap = {
+            "1 ICP A": [{"presensi":1,"nama":"ALTHAF SHAQUILLE ABHIVANDYA"},{"presensi":2,"nama":"ANDARU GESIT YANARTA"},{"presensi":3,"nama":"Atarazka Syahnan Haziq"},{"presensi":4,"nama":"Balqis Akasha Shafiyah"},{"presensi":5,"nama":"BOY ATHALLAH BAKHRY"},{"presensi":6,"nama":"Elvara Aiza Santosa"},{"presensi":7,"nama":"Hamda Batrisya Seika"},{"presensi":8,"nama":"Inara Putri Arkadewi"},{"presensi":9,"nama":"LUKITA ASKANA SAKHI"},{"presensi":10,"nama":"Muhammad Tangguh Asnawi"},{"presensi":11,"nama":"Nizar Abdillah Ghazwan"},{"presensi":12,"nama":"PESONA HARUM HUMAIRA"},{"presensi":13,"nama":"RIFANI REYYA ANNISA"},{"presensi":14,"nama":"WAFAZENA JANITRALESHA"}],
+            "1 ICP B": [{"presensi":1,"nama":"CINTA AFIA SYAILENDRA"},{"presensi":2,"nama":"DAVIN AL CHALIEF ERABBANI"},{"presensi":3,"nama":"Diana Aiza Hudaya"},{"presensi":4,"nama":"Illona Nusaibah Azzahra"},{"presensi":5,"nama":"Jihan Arsylia Nugroho"},{"presensi":6,"nama":"KHALISTA ALIFIA GUNTORO"},{"presensi":7,"nama":"KHAWLA ADIBA DHATU"},{"presensi":8,"nama":"MALVEN RAFIIANDRA ARLY WIBOWO"},{"presensi":9,"nama":"MOZEIN ARKEVIN"},{"presensi":10,"nama":"Muhammad Zhafran Abdurrahman"},{"presensi":11,"nama":"Ocean Hoki Praditya"},{"presensi":12,"nama":"Zharif Almuqaffi Digit"},{"presensi":13,"nama":"Herdinar Siti Noorjehan Fidiyanto"}],
+            "1A": [{"presensi":1,"nama":"ABDULLAH AFKAR"},{"presensi":2,"nama":"ABIDZAR HASAN ALFARISI"},{"presensi":3,"nama":"Adreena Agil Maheswari"},{"presensi":4,"nama":"ADZKIYA PINKA FADHEELA"},{"presensi":5,"nama":"ALIF MAULANA ADHYASTHA"},{"presensi":6,"nama":"ATHARRAZKA SAPUTRA"},{"presensi":7,"nama":"AWFA RANIA AZZAHRA"},{"presensi":8,"nama":"DANIS ABRISAM"},{"presensi":9,"nama":"ELHASIQ KSATRIA IBAD EFENDI"},{"presensi":10,"nama":"FREYA SAILA WIDIYANTO"},{"presensi":11,"nama":"HAEDAR AL GHANY YAZEED"},{"presensi":12,"nama":"HAIDAR KIANO ALRAFAEYZA"},{"presensi":13,"nama":"HASNAH KHAIRUNNISA HUMAIROH"},{"presensi":14,"nama":"IBRAHIM AHMAD ABDUR ROUUF"},{"presensi":15,"nama":"KEINARRA AZKADINA WIJAYA"},{"presensi":16,"nama":"KHANSA PARAMITA WIBOWO"},{"presensi":17,"nama":"Khayra Mutiara Khalidiya"},{"presensi":18,"nama":"MAHANTA LEON ARRASYID"},{"presensi":19,"nama":"MUHAMMAD ABBIYA RAZKAJATI"},{"presensi":20,"nama":"Muhammad Idris Asy Syafii"},{"presensi":21,"nama":"NOURA KHANZANIA MECCA WIRAWAN"},{"presensi":22,"nama":"Nusaibah Aqila Choirunnisa"},{"presensi":23,"nama":"Omarizz Adrintaka Zayn"},{"presensi":24,"nama":"Rania Arsyi Nailazaara"},{"presensi":25,"nama":"RM Aldianurrasyid Rajendra Kusumo"},{"presensi":26,"nama":"Sakura Reiwa Gunawan"},{"presensi":27,"nama":"ZALENZIO MAULANA FACHRIANSYAH"},{"presensi":28,"nama":"KINARA TAQIYYA ADLA"}],
+            "1B": [{"presensi":1,"nama":"ADERA KIREINA HUTOMO"},{"presensi":2,"nama":"Aerish Qia Adzkadina"},{"presensi":3,"nama":"AISYAH NAYLA SALSABILA"},{"presensi":4,"nama":"ALESHA HANA ELSHANUM"},{"presensi":5,"nama":"ATHAFARIZ DANISH PRATAMA"},{"presensi":6,"nama":"AZKADINA FAKHRA FAOZI"},{"presensi":7,"nama":"BERYL SALSABELA"},{"presensi":8,"nama":"Ceisya Azzahra Hardian"},{"presensi":9,"nama":"DZIHANDRA RAFIF SANTOSA"},{"presensi":10,"nama":"FATHAN HAIDAR HAMIDI"},{"presensi":11,"nama":"Fawwaz Diaurahman Hiroshi Abqori"},{"presensi":12,"nama":"FAZIA NURAISHA BIANTARA"},{"presensi":13,"nama":"GHAFI ATHAZAKY DIRGANTORO"},{"presensi":14,"nama":"IBRAHIM ALFARIZI NUR ALDY"},{"presensi":15,"nama":"Ibrahim Arsa Wicaksono"},{"presensi":16,"nama":"Kenziano Tyaga Alfarizqi"},{"presensi":17,"nama":"KEYNARA ABRINA NADHIFA"},{"presensi":18,"nama":"MAHAJANA CARL PASSANDO"},{"presensi":19,"nama":"Muhammad Alfatih"},{"presensi":20,"nama":"MUHAMMAD AZKA RYUZAKI"},{"presensi":21,"nama":"MUHAMMAD RAFFI AL GHIFARI"},{"presensi":22,"nama":"Muhammad Rifky"},{"presensi":23,"nama":"Nazeera Anum Asy'Ari"},{"presensi":24,"nama":"Rafif Athafariz"},{"presensi":25,"nama":"Rania Zalfa Ramadhani"},{"presensi":26,"nama":"Riga Gilbyan"},{"presensi":27,"nama":"Shakeil El Barra Aditia"},{"presensi":28,"nama":"SHALOOM BETSY SANTOSO"}],
+            "1C": [{"presensi":1,"nama":"Abizar Zain Alby Devkhan"},{"presensi":2,"nama":"ALDRIC FAHREZA PURNOMO"},{"presensi":3,"nama":"ALESHA PUTRI KINANTI"},{"presensi":4,"nama":"AQMAR NADHIF AL AZIZ"},{"presensi":5,"nama":"AQUILA BRAMARA CHOIRUZZEIN"},{"presensi":6,"nama":"AYSILA NURA RASHNA"},{"presensi":7,"nama":"DAVIANDRA RADEVA ATHARRAZKA"},{"presensi":8,"nama":"FATIMAH HASNA ARIFAH"},{"presensi":9,"nama":"FILIO FARZANA ZHIODA"},{"presensi":10,"nama":"GIBRAN KHIAR WALIUDDIN"},{"presensi":11,"nama":"HANA SYARIF BAWAZIR"},{"presensi":12,"nama":"IBRAHIM AHMAD ABDUL FATTAAH"},{"presensi":13,"nama":"KARIN ALESHA AZZAHRA"},{"presensi":14,"nama":"MONERA ALIFIA ASRIKAN"},{"presensi":15,"nama":"MUHAMMAD ATTHAR ALHUSAIN"},{"presensi":16,"nama":"Muhammad Saka Maladira Alfahreza"},{"presensi":17,"nama":"Mutia Nur Afifah"},{"presensi":18,"nama":"NAYLA AZZAHRA SAVINA"},{"presensi":19,"nama":"Nazhan Azwar Algani"},{"presensi":20,"nama":"QANEITA KHAIRUN NISA"},{"presensi":21,"nama":"Rafa Alfarizi"},{"presensi":22,"nama":"Rasya Mochamad Athaya Bakti"},{"presensi":23,"nama":"Shabia Elmedina Farras"},{"presensi":24,"nama":"Yumna Latifah Ilmi Saputro"}],
+            "1D": [{"presensi":1,"nama":"AIZA SHANUM MAFAZA"},{"presensi":2,"nama":"AL IHYA ULUMUDDIN"},{"presensi":3,"nama":"ALEENA HANY SHAFIQAH"},{"presensi":4,"nama":"Alesha Qinara Sakhi"},{"presensi":5,"nama":"ALMAHYRA YUMNA KHALISA"},{"presensi":6,"nama":"ANAM KHAIRUL LUTHFI"},{"presensi":7,"nama":"ARKA ALI PRADANA"},{"presensi":8,"nama":"Chayra Putri Basyirah"},{"presensi":9,"nama":"Cirrillo Kyo Saputro Wiyono"},{"presensi":10,"nama":"FELISHA AZMA TSANIA"},{"presensi":11,"nama":"Ghazal Ilario Liban"},{"presensi":12,"nama":"HANA HAFIZA ANINDYA"},{"presensi":13,"nama":"Humaira Embun Putri Ardiansyah"},{"presensi":14,"nama":"Juang Ammar Al Syaddad"},{"presensi":15,"nama":"KALANDRA RAYYAN ALFARIZI"},{"presensi":16,"nama":"KAYYARA YASMENA AHMAD"},{"presensi":17,"nama":"KEANU ARSHAKA ZAFEER"},{"presensi":18,"nama":"KHADIJAH HAURA WIRDA"},{"presensi":19,"nama":"LAVENIA ARISHA MAHARANI SETIAWAN"},{"presensi":20,"nama":"MUHAMMAD ABIZAR AL FARIZI"},{"presensi":21,"nama":"Mushab Hafizan Abqary"},{"presensi":22,"nama":"RAFKA ABIMANYU NUKMAN"},{"presensi":23,"nama":"RAJENDRA VENENO ALFARIZKI"},{"presensi":24,"nama":"RASYAD ABDURRAHMAN SYAUKANI"},{"presensi":25,"nama":"Raysakha Janitra Saskara"},{"presensi":26,"nama":"SYAFIRA RAMADHANI"},{"presensi":27,"nama":"Tita Faranisa Birdella"},{"presensi":28,"nama":"YASMINA ISMAIL MARWAZI"}],
+            "2 ICP A": [{"presensi":1,"nama":"AFZAR HAZIQ MUSYAFFA"},{"presensi":2,"nama":"ALISHA SHAKAYLA FAYANI"},{"presensi":3,"nama":"ALNILAM ZEA FAIRUZA"},{"presensi":4,"nama":"ALTHAF VIRENDRA ARSALAN"},{"presensi":5,"nama":"Arshaka Gibran Daniswara"},{"presensi":6,"nama":"CORDELIA NADHIFA SAFANI"},{"presensi":7,"nama":"Davin Heksa Ardhana"},{"presensi":8,"nama":"ELZIO BARRA MAULANA"},{"presensi":9,"nama":"FAKHRI ASYRAF SHOFWAN MUSTAQIM"},{"presensi":10,"nama":"Gisella Zahira Joice"},{"presensi":11,"nama":"KANEZKA SAKHA ALVARENDRA"},{"presensi":12,"nama":"KHAIREEN ADIKARAPUTRI ALMAHYRA"},{"presensi":13,"nama":"KINARIAN SHAFA KIRANA"},{"presensi":14,"nama":"MIKHAYLA ANDREA AZZAHRA"},{"presensi":15,"nama":"MUTIARA SYAFIA JAZZYVANIA"},{"presensi":16,"nama":"RAMADHAN RAYYAN"},{"presensi":17,"nama":"REYHAN DZAKIANDRA WIDJAYA"},{"presensi":18,"nama":"RISANG EESHA KUMANDANG"},{"presensi":19,"nama":"Sheryl Anindya Elmarisa"},{"presensi":20,"nama":"SYAILENDRA SAMODRO JATI WASESO"}],
+            "2A": [{"presensi":1,"nama":"Abibah Maida Nahda Prasanda"},{"presensi":2,"nama":"Aksa D Rafael"},{"presensi":3,"nama":"Alea Briona Raqqema"},{"presensi":4,"nama":"ALESHA SYAFA CARRENISA"},{"presensi":5,"nama":"Alifa Adzkiya Putri Arifin"},{"presensi":6,"nama":"ALIYA MAHARANI ROOSSETYO"},{"presensi":7,"nama":"Althafunnizar Mauza Putra"},{"presensi":8,"nama":"Alvisco Ocean Wibowo"},{"presensi":9,"nama":"Andara Herfi Maulida"},{"presensi":10,"nama":"APRILLA SIHAN PUTRI ATMAJA"},{"presensi":11,"nama":"ARKANA PRATAMA DINIYAN"},{"presensi":12,"nama":"Ashalina Makayla Almahyra"},{"presensi":13,"nama":"Audrey Anggita Putri"},{"presensi":14,"nama":"Ayesha Inara Havika Sakti"},{"presensi":15,"nama":"AZRIL MAUZA ADHITAMA"},{"presensi":16,"nama":"AZZAM AL ARKHAN"},{"presensi":17,"nama":"BELVIA JEEHANDYA JAYA"},{"presensi":18,"nama":"DEARSYILA VINCA VIOLETTA"},{"presensi":19,"nama":"DHANESH RASHAAD ARTANABIL"},{"presensi":20,"nama":"Enver Dhafin Shakeel"},{"presensi":21,"nama":"FALAH FERDIANSYAH"},{"presensi":22,"nama":"Faqih Ariendra Keenan Alfarezel"},{"presensi":23,"nama":"Fatur Al-Ghifari Mekka Rahardjo"},{"presensi":24,"nama":"HAMIZAN AZFAR"},{"presensi":25,"nama":"HUMAIRA AZKA HERYUDI"},{"presensi":26,"nama":"SAPHENA ANNASYA SOFYAN"}],
+            "2B": [{"presensi":1,"nama":"ADIVA SHAQUEENA AZZAHRA"},{"presensi":2,"nama":"ANNASTASYA ELENA QAMRA"},{"presensi":3,"nama":"Aqila Putri ashalina"},{"presensi":4,"nama":"ARSENIO BERRYL ABQARI"},{"presensi":5,"nama":"ARSYAD ABDURAHMAN"},{"presensi":6,"nama":"Arsyfa Syabella Humaira"},{"presensi":7,"nama":"ATHAFARIZ ALVARENDRA OSTIN"},{"presensi":8,"nama":"Ayyash Tsaqif Alfatih"},{"presensi":9,"nama":"Dalane Jo D'angel"},{"presensi":10,"nama":"El Wafa Bintang Nawwarulhuda"},{"presensi":11,"nama":"GEORGIA SYANUM GIYANTO PRASODJO"},{"presensi":12,"nama":"Gibran Evano Pramudita"},{"presensi":13,"nama":"ILYAS FATAHILLAH ZAIN"},{"presensi":14,"nama":"Inara Oktaviani Putri Kusuma"},{"presensi":15,"nama":"ISTIB SYARUNANJALA"},{"presensi":16,"nama":"KAHISHA ARTA SAFFIYA"},{"presensi":17,"nama":"Kyna Asyakina Zahira Badegesy"},{"presensi":18,"nama":"Lionel Alvaro Zanetti"},{"presensi":19,"nama":"Muhammad Althof Zahirul Haq"},{"presensi":20,"nama":"NAFIRZHA RIZKYLLAH FATHONY"},{"presensi":21,"nama":"NATASYA ALMIRA"},{"presensi":22,"nama":"RAFANIA AZZAHRA"},{"presensi":23,"nama":"Rafif Akhmar Santoso"},{"presensi":24,"nama":"SANG ALAMRAZD HAQ"},{"presensi":25,"nama":"SHAZFA HANANIA AZAHRA"},{"presensi":26,"nama":"TANAYA REKHA OPALINA"},{"presensi":27,"nama":"ZIANNISA FAHMIDA AFRA"}],
+            "2C": [{"presensi":1,"nama":"Abidzar Emyr Amrullah"},{"presensi":2,"nama":"Abrisam Ahmad Abdillah"},{"presensi":3,"nama":"ADLAN AHZA MAKARIM"},{"presensi":4,"nama":"AFIZA GHANIA EFENDI"},{"presensi":5,"nama":"AHMAD ARSYA SYAWALUL ARIF"},{"presensi":6,"nama":"Aisyah Nuha Zahira"},{"presensi":7,"nama":"Alesha Azkadina Putri Alfariz"},{"presensi":8,"nama":"Alessandro Alano Aprillio"},{"presensi":9,"nama":"Arindi Putri Nurdiyanwibowo"},{"presensi":10,"nama":"HAFIDZ EL HAZIQ SAPUTRA"},{"presensi":11,"nama":"Khairunnisa Salsabila"},{"presensi":12,"nama":"Mahreen Adna Almahyra"},{"presensi":13,"nama":"MIKHAYLA FITRIYADI"},{"presensi":14,"nama":"Muhammad Alfatan Ardana"},{"presensi":15,"nama":"MUHAMMAD ARSYA GHIFARI"},{"presensi":16,"nama":"Muhammad Daffa Abyan Pamungkas"},{"presensi":17,"nama":"MUHAMMAD DZAKI AKBAR"},{"presensi":18,"nama":"Muhammad Nizam Alfatih"},{"presensi":19,"nama":"NADIA WISMA PURWOKO"},{"presensi":20,"nama":"NASYIFA AZALIA PUTRI BERNOWO"},{"presensi":21,"nama":"QUINNE ZAHIRA ANINDRA"},{"presensi":22,"nama":"Raffasya Ahmad Luthfi"},{"presensi":23,"nama":"SABEEYA SYAHRASYID RAYYANADA"},{"presensi":24,"nama":"MALIQ ZHIAN HARES"}],
+            "2D": [{"presensi":1,"nama":"AISYAH IZZATUNNISA PUTRI NUGROHO"},{"presensi":2,"nama":"ARSHAKA RAMAZHAN ALGIFARI MANTOW"},{"presensi":3,"nama":"CARLO ZEESHAN RUMI KURNIAWAN"},{"presensi":4,"nama":"Fatih Akhtar Raiffaza"},{"presensi":5,"nama":"FAUZAN AYDIN ZULKIFLI"},{"presensi":6,"nama":"HANIFA AQILA BAHEERA"},{"presensi":7,"nama":"Kamila Noveara Athifa"},{"presensi":8,"nama":"Kenes Pratista Vinala Putri"},{"presensi":9,"nama":"KHANZA ADELIA PUTRI WIJAYA"},{"presensi":10,"nama":"MUHAMMAD UBAY PRASETYO"},{"presensi":11,"nama":"MUHAMMAD ADHYAKSA BISMA"},{"presensi":12,"nama":"MUHAMMAD FARIZ SETYAWAN"},{"presensi":13,"nama":"MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH"},{"presensi":14,"nama":"MUHAMMAD RAFFI RAFASYA NUGROHO"},{"presensi":15,"nama":"Nathan Haven Akmal Alfaruq"},{"presensi":16,"nama":"Quinsha Qiana Zakeysha"},{"presensi":17,"nama":"RAFA FEBIAN ALFARIZKY"},{"presensi":18,"nama":"RAFISQY YUSUF ALFARIZA"},{"presensi":19,"nama":"RHEA ALZEA NUGROHO"},{"presensi":20,"nama":"Rifaul Zhafran Ghazani"},{"presensi":21,"nama":"Riffat Ahmad Luthfi"},{"presensi":22,"nama":"Rumaisha Pragya Raharja"},{"presensi":23,"nama":"SADDAM MUHAMMAD AFKARI"},{"presensi":24,"nama":"SAILA AYUDIA PUTRI"},{"presensi":25,"nama":"VENUS ALMAHYRA HARIYANTO"},{"presensi":26,"nama":"ABIYYU DHABITH AL HAMIZ"}],
+            "3A": [{"presensi":1,"nama":"Abdillah Ali Arzan"},{"presensi":2,"nama":"Abid Luqman Rajendra"},{"presensi":3,"nama":"ADIVA SHAFINA PUTRI"},{"presensi":4,"nama":"Adzkiya Nurrizqi Rakhmawati"},{"presensi":5,"nama":"Afsheena Hananezka Ar Razzan"},{"presensi":6,"nama":"Aisyah Ayudia Inara"},{"presensi":7,"nama":"Akifa Naila Asy'ari"},{"presensi":8,"nama":"Alfath Ataya Abqary Arzam"},{"presensi":9,"nama":"ARSYILA KIKANDRYA SUSANTO"},{"presensi":10,"nama":"Arsyillah Nur Sofiani"},{"presensi":11,"nama":"Aruna Sachi Philia"},{"presensi":12,"nama":"Ashadiyara Haflasea"},{"presensi":13,"nama":"Athifa Mahira Khansa"},{"presensi":14,"nama":"AZZAHRA ALNAIRA"},{"presensi":15,"nama":"DINATA ALLEN DHYO AL LATIF"},{"presensi":16,"nama":"FAEYZA SYATHIR KURNIAWAN"},{"presensi":17,"nama":"Fakhri Luthfi Hardianto"},{"presensi":18,"nama":"Garland Mashka Rafeyfa"},{"presensi":19,"nama":"Juang Haidar Athalla"},{"presensi":20,"nama":"Kalazahy Nadwa Zayn"},{"presensi":21,"nama":"MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI"},{"presensi":22,"nama":"MUHAMMAD RAFKA VIRENDRA"},{"presensi":23,"nama":"Nadhira Khaerani Hariyadi"},{"presensi":24,"nama":"Nayyara Aqila Razanah"},{"presensi":25,"nama":"Omar Abdul Aziz"},{"presensi":26,"nama":"Raditya Pradipta Ardhani"},{"presensi":27,"nama":"Rashya Alrafaeyza Hajam"},{"presensi":28,"nama":"Shafira Noreen Choirunnisa"},{"presensi":29,"nama":"SHAZFA LASIRA GUNARSO"},{"presensi":30,"nama":"Syakira Tsaqif Choirunnisa"}],
+            "3B": [{"presensi":1,"nama":"Abiy Vishaka Budi Nugroho"},{"presensi":2,"nama":"Adeeva Meidina Assyifatama"},{"presensi":3,"nama":"Adzkiya Naila Arsyila Atmadja"},{"presensi":4,"nama":"Aello Mezaluna Arubby"},{"presensi":5,"nama":"AERILYN VLA ADZKADINA"},{"presensi":6,"nama":"AHMAD ALFARIZQI SHAQUILLE PUTRA"},{"presensi":7,"nama":"AHNAF KHALIFAZIL AFRIANSAH"},{"presensi":8,"nama":"Aldena Dwisitta Wildani"},{"presensi":9,"nama":"Altaz Qianno Al Barra"},{"presensi":10,"nama":"Candrika Althafunnisa"},{"presensi":11,"nama":"FADLI ABQARY ALHUSNA"},{"presensi":12,"nama":"Fahreza Fathan Abdillah"},{"presensi":13,"nama":"Gavin Yoga Alvaro"},{"presensi":14,"nama":"Ghaida Azkayra Khairani"},{"presensi":15,"nama":"HAFIZH KHWARIZMI AL HANI"},{"presensi":16,"nama":"Jihan Aisharani Zea Zayyana"},{"presensi":17,"nama":"KEENAN KANAKA ALLI ZAFLAN"},{"presensi":18,"nama":"Khansa Monaya Rumaysha"},{"presensi":19,"nama":"Khanza Athifa Ningrum"},{"presensi":20,"nama":"KHAYLILA QUEENA AHMAD"},{"presensi":21,"nama":"KIRANA SHAQILA RAMADHANI"},{"presensi":22,"nama":"Mikhayla Kinanti Azkadina"},{"presensi":23,"nama":"Muhammad Al Ahsan Iqbal Setyo"},{"presensi":24,"nama":"Narulita Beryl Ramadhani"},{"presensi":25,"nama":"Nashila Zia Fahranie"},{"presensi":26,"nama":"RAIHAN ADITYA PRAWIRA"},{"presensi":27,"nama":"REYHAN ATHARIZ WIRAWAN"},{"presensi":28,"nama":"Romaisha Celina Okvin"},{"presensi":29,"nama":"Sarah Ali Hudzaifi"},{"presensi":30,"nama":"SYAMIL YAHYA AL HAFIDZI"}],
+            "3C": [{"presensi":1,"nama":"Abizar Fatih Pratama"},{"presensi":2,"nama":"ADEEVA AULIASYIFA"},{"presensi":3,"nama":"AISYAH AYUDIA INARA"},{"presensi":4,"nama":"AISYAH NAMEERA FATHIYYATURAHMA"},{"presensi":5,"nama":"AL-GHAZALI AISY ARFA DEANDRA"},{"presensi":6,"nama":"Alisha Natania Khumaira Dachlan"},{"presensi":7,"nama":"ALMEERA SHABIRA EKATARA"},{"presensi":8,"nama":"Almira Shanum Medina Sungkan"},{"presensi":9,"nama":"Aqila Salma Kamila"},{"presensi":10,"nama":"ARJUNA SYAILENDRA AL KHALIFI"},{"presensi":11,"nama":"Arka Leander Raffasya"},{"presensi":12,"nama":"ARSHAKA BINTANG ARLINGGA JATI"},{"presensi":13,"nama":"ARSYA AQUILA MUSYAFFA"},{"presensi":14,"nama":"Azhar Zalfa Faradisa"},{"presensi":15,"nama":"BARRAHILAL AMAHU MANGGANA"},{"presensi":16,"nama":"Callista Nabila Utomo"},{"presensi":17,"nama":"Fathir Alvissyahbana Mudjaed"},{"presensi":18,"nama":"FEARGAL V MARSA"},{"presensi":19,"nama":"KANZIA NAIRA AQILA"},{"presensi":20,"nama":"KHAIRINA FATIMA AL ADHA"},{"presensi":21,"nama":"Khayra Zakiyya Ferris"},{"presensi":22,"nama":"Kimora Humaira Azzahra"},{"presensi":23,"nama":"Laksita Shanumpadma Elhadi"},{"presensi":24,"nama":"MUHAMMAD ELRAJA HABIBIE SANTOSO"},{"presensi":25,"nama":"Muhammad Saifan Asykar Alfansyah"},{"presensi":26,"nama":"Rumaisha Nuha Muhammad"},{"presensi":27,"nama":"Shaula Alya Setiawan"},{"presensi":28,"nama":"Sybilla Jelita Aditia"},{"presensi":29,"nama":"Zavier Elfa'az Zayn Hariyono"},{"presensi":30,"nama":"Zulfadhli Fayyad Hidayat"}],
+            "3D": [{"presensi":1,"nama":"Afiza Azkayra Setyawan"},{"presensi":2,"nama":"Ahnaf Hashif Wibowo"},{"presensi":3,"nama":"Aisyah Ayunda Hamidi"},{"presensi":4,"nama":"AQILLA MUFIA LASHIRA RIVAI"},{"presensi":5,"nama":"Arshaka Radinka Shakeel"},{"presensi":6,"nama":"ARSY FISYAH KHUSNUL"},{"presensi":7,"nama":"Arsyila Ashadiya Adzra Faozi"},{"presensi":8,"nama":"Deisya Azzahra Pradana"},{"presensi":9,"nama":"Deva Aquina Sakhi"},{"presensi":10,"nama":"GINDA ARSYIL VINALES"},{"presensi":11,"nama":"HASNA NUR HUWA YIDA"},{"presensi":12,"nama":"Iqbal Bintang Pramudya"},{"presensi":13,"nama":"KEANU DANISH KURNIAWAN"},{"presensi":14,"nama":"KEN ARUNA GENDHIS NARESWARI"},{"presensi":15,"nama":"Khaila Putri Pradipta"},{"presensi":16,"nama":"KHALISA SABRIA RANAA SUGIARTA"},{"presensi":17,"nama":"LASHIRA IZZATI SHANUM ZULKARNAIN"},{"presensi":18,"nama":"LETYCIA YUPI QURRATU'AIN BUDIARSO"},{"presensi":19,"nama":"Muhammad Gibran Al Fath Widhiananto"},{"presensi":20,"nama":"NAFISA AQILA PUTRI"},{"presensi":21,"nama":"Nafla Aina Rohman"},{"presensi":22,"nama":"RAKA ADHYASTHA PARADILLA"},{"presensi":23,"nama":"Respati Zayyan Abid"},{"presensi":24,"nama":"SYAFIQ ABQORY"},{"presensi":25,"nama":"Syahira Naura Herlambang"},{"presensi":26,"nama":"VAREL ATHAFARIZ ZHAFRAN SAPUTRA"},{"presensi":27,"nama":"Zayn Khalifa Riswardana"},{"presensi":28,"nama":"Zeevana Shaqeen Azzahra Santoso"},{"presensi":29,"nama":"ZIDAN ATHALLA DHIAULHAQ"},{"presensi":30,"nama":"Zidan Faiz Ramadhan"}],
+            "4A": [{"presensi":1,"nama":"Aisha Ziya Shayfa"},{"presensi":2,"nama":"Al Syarawi Arfa Gunawan"},{"presensi":3,"nama":"Annisa Salsabila Zafarani"},{"presensi":4,"nama":"AQILA BELLATRIX HUMAIRAH"},{"presensi":5,"nama":"Assyifa Ar Razi"},{"presensi":6,"nama":"Athariz Calief Arganta"},{"presensi":7,"nama":"AZKA RAQILA AL GHIFARI"},{"presensi":8,"nama":"BINTANG PRADHIPTA HERMAWAN"},{"presensi":9,"nama":"BYANCA CHIARA SYAFIQA"},{"presensi":10,"nama":"DISTYA RACHYANANENDRA ALMAHYRA"},{"presensi":11,"nama":"FAAIZ TSAANI KAMILAN EL CHOIRI"},{"presensi":12,"nama":"Farrel Arkaan Oktora"},{"presensi":13,"nama":"HANINDYA JATI PRAMUDITA"},{"presensi":14,"nama":"Hans Aulia Khawari"},{"presensi":15,"nama":"Keisha Amandla Shareefa Iskandar"},{"presensi":16,"nama":"KEYSHA AZZAHRA ZAHFIRA"},{"presensi":17,"nama":"Khanza Naila Santosa"},{"presensi":18,"nama":"MUHAMMAD ALTEZZA ZABDAN"},{"presensi":19,"nama":"Muhammad Althof Attarizq Wishaka"},{"presensi":20,"nama":"Muhammad Irsyad At Tamimi"},{"presensi":21,"nama":"MUHAMMAD REVAN PRADITYA"},{"presensi":22,"nama":"Muhammad Yusuf Ramadhan Ar-Rasyid"},{"presensi":23,"nama":"NADIA APRILIA SYAKILA"},{"presensi":24,"nama":"NAUFAL ABQARI ARADHANA"},{"presensi":25,"nama":"Nayaka Fajar Sriyanto"},{"presensi":26,"nama":"PARADUTA ISNAN SUSILO"},{"presensi":27,"nama":"RAISYA RIZKY RAFIFAH PUTRI"},{"presensi":28,"nama":"Rumaysha Numa Reis"},{"presensi":29,"nama":"Sadryan Bima Ar Rizky"},{"presensi":30,"nama":"Syanala Kania Salsabila"}],
+            "4B": [{"presensi":1,"nama":"ADIRA AZZAHRA PUTRI"},{"presensi":2,"nama":"AISYAH ZEA ALMAHYRA"},{"presensi":3,"nama":"Aleesha Afsheen Amarudin"},{"presensi":4,"nama":"ALZAIDAN KHALIQ PERMANA"},{"presensi":5,"nama":"Annaas Rokah Athallah"},{"presensi":6,"nama":"Citrahayi Abbidah Embun Kirana"},{"presensi":7,"nama":"DAFFA CAESAR EFENDI"},{"presensi":8,"nama":"Danendra Azzam Pambudi"},{"presensi":9,"nama":"Delisha Silmi Afiqa"},{"presensi":10,"nama":"Dhia Sabrina Azzalea"},{"presensi":11,"nama":"Fahreza Khalifa Rizky Harun"},{"presensi":12,"nama":"FATIH ALI TSAQIF"},{"presensi":13,"nama":"Hafiza Asyifa Risdana"},{"presensi":14,"nama":"Hafizh Athar Suprapto"},{"presensi":15,"nama":"HAFSA NADHIRA HISAN"},{"presensi":16,"nama":"Irsyad Thohir Putra Irawan"},{"presensi":17,"nama":"KANUGRAHAN ADI WICAKSONO"},{"presensi":18,"nama":"Keanu Putra Hariyadi"},{"presensi":19,"nama":"KEJORA LANGGENG BILITANIA"},{"presensi":20,"nama":"Lucky Arvin Qaid"},{"presensi":21,"nama":"Mikayla Putri Prasetyo"},{"presensi":22,"nama":"Muhamad Adien Taufik"},{"presensi":23,"nama":"NAIRA SYABILA AZZAHRA PUTRI"},{"presensi":24,"nama":"Prince Muhammadiyah El Azzami Sukoco"},{"presensi":25,"nama":"RAJENDRA FADHIL ALFAYI PRAMONO"},{"presensi":26,"nama":"SHEZAN INARA NAJMA"},{"presensi":27,"nama":"Tristan Adelio Setiawan"},{"presensi":28,"nama":"WERKUDARA VINCENT SANTOSO"},{"presensi":29,"nama":"ZAHSY QUEENSHA ELNAURA"}],
+            "4C": [{"presensi":1,"nama":"Airlangga Gibran Maulana"},{"presensi":2,"nama":"AISYAH DINDA RAMANIA"},{"presensi":3,"nama":"Aisyah Putri Ayudia"},{"presensi":4,"nama":"ARIFIN ARKANA RAMADHAN"},{"presensi":5,"nama":"Arya Fahreza Kurniawan"},{"presensi":6,"nama":"Ayyash Jaisha Mohammad"},{"presensi":7,"nama":"Davira Alesha Pradana"},{"presensi":8,"nama":"FAHLAVI ROMI DEVANKA"},{"presensi":9,"nama":"Farah Nabila Azzahra"},{"presensi":10,"nama":"Fellicia Adeeva Cahya Lacita"},{"presensi":11,"nama":"Gendis Alitha Silmi"},{"presensi":12,"nama":"GHAISAN DZAKY ARIFBOWO"},{"presensi":13,"nama":"HAFIZH MAHARDIKA"},{"presensi":14,"nama":"Henisa Azzahra Silvia"},{"presensi":15,"nama":"INARA AYUNINDYA"},{"presensi":16,"nama":"JESSICA JASMINE"},{"presensi":17,"nama":"KENZI APRILLIO ALFARISQI"},{"presensi":18,"nama":"Kevin Arfandio"},{"presensi":19,"nama":"Kimi Shakila Ajunta"},{"presensi":20,"nama":"MARSYA ALEA ZANINDYA"},{"presensi":21,"nama":"Mirza Zaim Arrafif"},{"presensi":22,"nama":"Muhammad Arfan Arrazan"},{"presensi":23,"nama":"Muhammad Arkan"},{"presensi":24,"nama":"Musyaffa Dzakyandra Raffa Setiyawan"},{"presensi":25,"nama":"Nabila Zahwa Humaira"},{"presensi":26,"nama":"NAUFAL FADHIL RAMADHAN"},{"presensi":27,"nama":"NAURA KINANDRA SUJADI"},{"presensi":28,"nama":"QUEEN RAVENA AISYAH TOBING"},{"presensi":29,"nama":"Radhika Zefa Utomo"},{"presensi":30,"nama":"RAFIF ADYTAMA MULYA"},{"presensi":31,"nama":"Rifqi Hamidan"},{"presensi":32,"nama":"SHIDQIA FATIHAH AL ZENA KURNIAWAN"}],
+            "4D": [{"presensi":1,"nama":"Adeeva Afsheen Abdillah"},{"presensi":2,"nama":"ALILA KAIA MAULANA"},{"presensi":3,"nama":"Alkhalifi Arkan Sakha Fatardo"},{"presensi":4,"nama":"Alva Rizky Andrianto"},{"presensi":5,"nama":"Anindya shakila putri"},{"presensi":6,"nama":"Anugrah Daviandra Calisto Alfarez"},{"presensi":7,"nama":"ARIF FAITH RAHMAN"},{"presensi":8,"nama":"ARSAKHA TIMUR PAMUNGKAS"},{"presensi":9,"nama":"Azzahra aulia angelina nugraha"},{"presensi":10,"nama":"BASTIAN DANISH RAYYAN RABBANI"},{"presensi":11,"nama":"Herjuno Ahmad Fidiyanto"},{"presensi":12,"nama":"Kaelare Gandewa Murdani"},{"presensi":13,"nama":"Kaysa Elkhaira Shanum"},{"presensi":14,"nama":"KHAYLA AZZA BATRISYA ZAHRA"},{"presensi":15,"nama":"MIKAILA LAQUITTA HENZIE PRASODJO"},{"presensi":16,"nama":"Mirza Ahnaf Putra Winaris"},{"presensi":17,"nama":"MUHAMMAD ADIPATI BAGASKARA"},{"presensi":18,"nama":"MUHAMMAD KHARENDIO DARIS NIBRAS"},{"presensi":19,"nama":"NAILA ALESHA SAFIRA"},{"presensi":20,"nama":"Nandana Adzaki Naswan"},{"presensi":21,"nama":"Oryza Ziggy El Fatta Rosadi"},{"presensi":22,"nama":"Rania Saffa Hafisyah"},{"presensi":23,"nama":"Ravendra Elano Al Kahfi"},{"presensi":24,"nama":"SYAFIYA SALMA KIRANIA CAHYANTO"},{"presensi":25,"nama":"Thalita Maiza Eltsania"},{"presensi":26,"nama":"Tsaniyah Adhifa Nugroho"},{"presensi":27,"nama":"YASNA ISMAIL MARWAZI"},{"presensi":28,"nama":"Yuna Luserina Sanjaya"},{"presensi":29,"nama":"Yusuf Arsyad Abdulloh"},{"presensi":30,"nama":"ZAHIDA RISTYA MAHESWARI"}],
+            "5A": [{"presensi":1,"nama":"Adnan Faeyza Al Farrukh"},{"presensi":2,"nama":"Alexi Permana Pribadi"},{"presensi":3,"nama":"Alfaraziq Hafy Ar-Razzan"},{"presensi":4,"nama":"Alnadeem Akbar Ramadhan"},{"presensi":5,"nama":"Apta Janitra Passando"},{"presensi":6,"nama":"Aqilasha Porsche Queenarinda"},{"presensi":7,"nama":"Athaliana Alfarisa Wibowo"},{"presensi":8,"nama":"Aulia Syamil Almumtaza"},{"presensi":9,"nama":"Ayudia Inara Alesha Putri"},{"presensi":10,"nama":"Azzahra Humaira Fadhillah"},{"presensi":11,"nama":"Carissa Annisa Faiha"},{"presensi":12,"nama":"Chelsea Oktavia Putri"},{"presensi":13,"nama":"Davina Shava Khairiya Putri"},{"presensi":14,"nama":"Dhabith Aqilah Munsif"},{"presensi":15,"nama":"Fiorent Al Hafizzh Arjuna Dyan Putra"},{"presensi":16,"nama":"Firhan dilfanajib"},{"presensi":17,"nama":"Freya Ariana Callista Mohammad"},{"presensi":18,"nama":"Gio Fadhil Satria Praditya"},{"presensi":19,"nama":"Habil Athaya Zaahirulhaq"},{"presensi":20,"nama":"Hadaya Sakinah Fajar Yin Yang"},{"presensi":21,"nama":"Ikmal Zufar"},{"presensi":22,"nama":"Krystal Adeeva Diandra Faradilla"},{"presensi":23,"nama":"Melvin Rahmatullah Nizar"},{"presensi":24,"nama":"Muhammad Adrian Banu Atiro"},{"presensi":25,"nama":"Muhammad Ashraf Ardiansyah"},{"presensi":26,"nama":"Nada Arsyifa Fredelina"},{"presensi":27,"nama":"Naila Ulfa Caesarra"},{"presensi":28,"nama":"Radja Anatan Wijaya"},{"presensi":29,"nama":"Ramadhan Sandya Wahyu Jati"}],
+            "5B": [{"presensi":1,"nama":"Abidah Husna Humaniora"},{"presensi":2,"nama":"Abiyyu Radyta Fawwas"},{"presensi":3,"nama":"Adsila Nur Aisyah"},{"presensi":4,"nama":"Airin Palomarinka"},{"presensi":5,"nama":"Alifa Nabilah Putri Kusumawati"},{"presensi":6,"nama":"Anagata Premieranda"},{"presensi":7,"nama":"Azbin Hisyam Linoko"},{"presensi":8,"nama":"Basmalah Faisal Al Ghozali"},{"presensi":9,"nama":"Callysta Annisa Faiha"},{"presensi":10,"nama":"Daud Abdul Majiid"},{"presensi":11,"nama":"Dyah Pratista Nareswari"},{"presensi":12,"nama":"Edgar zaidan aditya"},{"presensi":13,"nama":"Fadlan Athar Sugiarta"},{"presensi":14,"nama":"Fathiya Fella Ramadyana"},{"presensi":15,"nama":"Hafiza Khaira Lubna"},{"presensi":16,"nama":"Hanum Maryam Istafa"},{"presensi":17,"nama":"Iqbal Sakha Abiyyu"},{"presensi":18,"nama":"Kaynarra Shanum Aufanisa"},{"presensi":19,"nama":"Kayyisa Maza Adisti"},{"presensi":20,"nama":"Khaizuran Raziq Abbasy"},{"presensi":21,"nama":"Khalid Satya Abdillah"},{"presensi":22,"nama":"Muhammad Dzikron Almusawa"},{"presensi":23,"nama":"Naufal Ahza Fahryan"},{"presensi":24,"nama":"Nayla Adiva Putri Arga"},{"presensi":25,"nama":"Rislaila Karamina Nareswari"},{"presensi":26,"nama":"Sabina Nindya El Yasin"},{"presensi":27,"nama":"Shafira Alhusna Denastya"},{"presensi":28,"nama":"Zaki Al Fariz"},{"presensi":29,"nama":"Ze Abdul Ghany Fahradienn"}],
+            "5C": [{"presensi":1,"nama":"Abdillah Muhafizh"},{"presensi":2,"nama":"Ahmad Dzakir El Basil Nelson"},{"presensi":3,"nama":"Aisha Salsabil Darmawan"},{"presensi":4,"nama":"Alif Aqmal Abqori"},{"presensi":5,"nama":"Ariendra Salsabila Ostin"},{"presensi":6,"nama":"Belva Caliana Aqila"},{"presensi":7,"nama":"Diandra Alrafaeyza Wibowo"},{"presensi":8,"nama":"Fadlin Athmar Sugiarta"},{"presensi":9,"nama":"Fariq Akhdan Azkiya"},{"presensi":10,"nama":"Fayyadh Ubaidillah Narendra"},{"presensi":11,"nama":"Fazila Ariinda Lutfunisa"},{"presensi":12,"nama":"Humayra lutifa Azizah nur chovie"},{"presensi":13,"nama":"Irhad Ghani Ismail"},{"presensi":14,"nama":"Jordan Aurio Wibowo"},{"presensi":15,"nama":"Keisya Faiha Rifda Putri"},{"presensi":16,"nama":"Maritza Farzana Aaliyah"},{"presensi":17,"nama":"Mohammad Banu Rezon"},{"presensi":18,"nama":"Muhammad Almer Zafrano"},{"presensi":19,"nama":"Muhammad Ayyasy Al Fatih"},{"presensi":20,"nama":"Muhammad Sabrang Piwulang Kautaman"},{"presensi":21,"nama":"Muhammad Yusuf Hanafi"},{"presensi":22,"nama":"Raffael Alfarizqi Novalino"},{"presensi":23,"nama":"Rara Ayu Mefita Putri Az Zahra"},{"presensi":24,"nama":"Rheva Almira Agatha"},{"presensi":25,"nama":"Royyan Adikaraputra Syahbana"},{"presensi":26,"nama":"Sabrina Aisyifa Haifa"},{"presensi":27,"nama":"Safa Nadira Saraswati"},{"presensi":28,"nama":"Sheikha Mahra Al Khawarizmi Muzakarisa"},{"presensi":29,"nama":"Sybilla Embun Dinar"},{"presensi":30,"nama":"Tsania Zeina Khumaira"}],
+            "5D": [{"presensi":1,"nama":"Abidzar Athaya Dzaky Algifary"},{"presensi":2,"nama":"AINA MACHYA ALSHIDDIQ"},{"presensi":3,"nama":"Aisyah Dianov El Ghania"},{"presensi":4,"nama":"Almira Syakib Rizqiya"},{"presensi":5,"nama":"Alvaro Mahadana"},{"presensi":6,"nama":"Arka Kelud Nova Widyanto"},{"presensi":7,"nama":"Arsyil Hakim Al Fatih"},{"presensi":8,"nama":"Calista Revani"},{"presensi":9,"nama":"Dafa Arsya Wiyanda"},{"presensi":10,"nama":"Fatimah Nurfaeyza Biantara"},{"presensi":11,"nama":"Ghaziya Aqila Sutopo"},{"presensi":12,"nama":"Ghouzan Zweikho Alghifari"},{"presensi":13,"nama":"Hamizan Arfa Basyar"},{"presensi":14,"nama":"Ibrahim Koji Kayana"},{"presensi":15,"nama":"Javier Isco Setya Kurniawan"},{"presensi":16,"nama":"Kannaya Tungga Dewi Rahardjo"},{"presensi":17,"nama":"Keanu Putra Rafandra"},{"presensi":18,"nama":"Marsya Anindya Pradipta"},{"presensi":19,"nama":"Muhammad Zain Alkaf"},{"presensi":20,"nama":"Nafisah Azzahra"},{"presensi":21,"nama":"Naura Hasna Khumaira Alsaka"},{"presensi":22,"nama":"Oktavia Jetri Kurnianada"},{"presensi":23,"nama":"Qonita Humairo Latif"},{"presensi":24,"nama":"Rafif dzaky ismail"},{"presensi":25,"nama":"Raka Raditya Rasyid"},{"presensi":26,"nama":"Reinhart Izzul Haq Muhammad"},{"presensi":27,"nama":"RM Asyrafurahman Wiryawan Kusumo"},{"presensi":28,"nama":"Shelby Azzahra Dzakira"},{"presensi":29,"nama":"Syafira Khanza Fakhrudin"},{"presensi":30,"nama":"Zhafir Mahendra Putra"}],
+            "6A": [{"presensi":1,"nama":"Abdullah Naafi' Haitami"},{"presensi":2,"nama":"Adinda Kharisma Putri Kencono"},{"presensi":3,"nama":"Ahmad Fadillah Ramdhani"},{"presensi":4,"nama":"Almira Savaira Ayla Arwina Putri"},{"presensi":5,"nama":"Ashilla Nafisha Salsabila"},{"presensi":6,"nama":"Azzah Fatin Dinah"},{"presensi":7,"nama":"Bintang Pramudita Dewani"},{"presensi":8,"nama":"Clevara Ziven Arsy Erlandy"},{"presensi":9,"nama":"Elina Farah Aulia"},{"presensi":10,"nama":"Gadis Avisa Amalia"},{"presensi":11,"nama":"Haisha Hanum Hanania"},{"presensi":12,"nama":"Hanifan Faishal Akbar"},{"presensi":13,"nama":"Keanu Aufaa Putra Kuncara"},{"presensi":14,"nama":"Khalifa Alya Khairunnisa"},{"presensi":15,"nama":"Lanika Alleia Nugroho"},{"presensi":16,"nama":"Maekha Tria Al Ghazali"},{"presensi":17,"nama":"Maheswara Sutodigdoyo Purbo Wiseso"},{"presensi":18,"nama":"Mikhayla Zafirazka Sunu"},{"presensi":19,"nama":"Muhammad Atha Rasyafa"},{"presensi":20,"nama":"Nadya Asyifa Khairani"},{"presensi":21,"nama":"Najwa Mufida Adaffi"},{"presensi":22,"nama":"Narendra Faid Algibran"},{"presensi":23,"nama":"Nediva Faranisa Arifa Putri"},{"presensi":24,"nama":"Noni Lexa Amaretha Setyawan"},{"presensi":25,"nama":"Pradipta Rasya Alfarizky"},{"presensi":26,"nama":"Sakura Hana Humaira"},{"presensi":27,"nama":"Zavier Fico El Rafif"}],
+            "6B": [{"presensi":1,"nama":"Abdurrahman Aziz Khairi"},{"presensi":2,"nama":"Abdurrahman Yudha Iskandarsyah"},{"presensi":3,"nama":"Allyssa Assyifatul Zahra"},{"presensi":4,"nama":"Alvaro Aidan Santosa"},{"presensi":5,"nama":"Andrina Larasati Roossetyo"},{"presensi":6,"nama":"Annisa Adzkia Jasmine"},{"presensi":7,"nama":"Azka Al Latif"},{"presensi":8,"nama":"Elang Fachriza Wibowo"},{"presensi":9,"nama":"Fadhil Al Maisan Sakha Setiyawan"},{"presensi":10,"nama":"Fajria Shabihah Azzahra"},{"presensi":11,"nama":"Falilah Ransi Kayana"},{"presensi":12,"nama":"Faqih Alfarizi Utama"},{"presensi":13,"nama":"Farah Atania Dumaj"},{"presensi":14,"nama":"Fidelia Carlise Tasanee"},{"presensi":15,"nama":"Hayden Aerozensa Sutrisno"},{"presensi":16,"nama":"Ibni Amiir Al Farraas"},{"presensi":17,"nama":"Muhammad Ahsan Haidar"},{"presensi":18,"nama":"Muhammad Lutfie Sakhi Zaidan"},{"presensi":19,"nama":"Mutiara Putri Santoso"},{"presensi":20,"nama":"Nadzira Qurbah Shalihah"},{"presensi":21,"nama":"Qudsia Khaira Arzami"},{"presensi":22,"nama":"Raihana Salsabila Nadhifa"},{"presensi":23,"nama":"Shakila Athaleta Defrina"},{"presensi":24,"nama":"Shelcye Alya Bilbina"},{"presensi":25,"nama":"Tsania Elrahma Setyawan"},{"presensi":26,"nama":"Wira Adhyasta Wardhana"},{"presensi":27,"nama":"Yaqdhan Rafa Atalla"},{"presensi":28,"nama":"Yusuf Zian Arkana"}],
+            "6C": [{"presensi":1,"nama":"Adelia Shazia Azzahra"},{"presensi":2,"nama":"Aidan Syam Rachmad"},{"presensi":3,"nama":"Akbar Nurta Alim"},{"presensi":4,"nama":"Athalla Zafran Al Rafisqi"},{"presensi":5,"nama":"Auliya Putri Rhamadani"},{"presensi":6,"nama":"Daanya Ulima Saputro"},{"presensi":7,"nama":"Diandra Nasya Azzahra"},{"presensi":8,"nama":"Dzakira Fauzia Aftani"},{"presensi":9,"nama":"Fatih Rahman"},{"presensi":10,"nama":"Gilang Ramadhan"},{"presensi":11,"nama":"Hafida Husna Akmalia"},{"presensi":12,"nama":"Kalena Shafiyya Nailatul Izzah"},{"presensi":13,"nama":"Kania Khanza Farzana Callysta"},{"presensi":14,"nama":"Kayra Dzikri Kasyifa Aghna"},{"presensi":15,"nama":"Kayyisa Zaida Windriya"},{"presensi":16,"nama":"Ken Cordoba Hayam Wuruk Dhofir"},{"presensi":17,"nama":"Keysha Calista Ramadhani"},{"presensi":18,"nama":"Muhammad Afandi"},{"presensi":19,"nama":"Muhammad Firman Abdillah"},{"presensi":20,"nama":"Muhammad Keenan Wicaksono"},{"presensi":21,"nama":"Nuria Azzahra Hartanto"},{"presensi":22,"nama":"Oryza Sativa Khairunnisa'"},{"presensi":23,"nama":"Qatrunada Shadrina Auni"},{"presensi":24,"nama":"Sabiq Maulana Fakhrudin"},{"presensi":25,"nama":"Sulthan Hanif Muhamad Taufik"},{"presensi":26,"nama":"Tiara Khairun Nisa"},{"presensi":27,"nama":"Urzuqnie Fahman"},{"presensi":28,"nama":"Zhafran Axel Alfarizi"}],
+            "6D": [{"presensi":1,"nama":"Adinda Aurelia"},{"presensi":2,"nama":"Afifah Bilqis Azzahra"},{"presensi":3,"nama":"Akma Safaraz Ajunta"},{"presensi":4,"nama":"Alaina Arufa Nisa'"},{"presensi":5,"nama":"Alisha Shafia Sugianto"},{"presensi":6,"nama":"Anarta Rizki Pratama"},{"presensi":7,"nama":"Annorafatech Aqilahamdah"},{"presensi":8,"nama":"Aprilio Wifa Albyansyah"},{"presensi":9,"nama":"Ceisya Hazkia Rizky Subagyo"},{"presensi":10,"nama":"Devandra Alvaro El Zahran"},{"presensi":11,"nama":"Dzakiyya Talita Sakhi Wicaksono"},{"presensi":12,"nama":"Dzaky Almair Jamil Wibowo"},{"presensi":13,"nama":"Fathiya Halwa Nisa"},{"presensi":14,"nama":"Faza Hanifa Nugroho"},{"presensi":15,"nama":"Hafuza Gentza Gunarso"},{"presensi":16,"nama":"Helios Cakrabirawa Samsudin"},{"presensi":17,"nama":"Justitia Kafila"},{"presensi":18,"nama":"Kaureen Fazeela Syakira"},{"presensi":19,"nama":"Khafi Aqlan Raiz"},{"presensi":20,"nama":"Kinasih Helga Hares"},{"presensi":21,"nama":"Lionel Castila"},{"presensi":22,"nama":"Mosanda Maarif"},{"presensi":23,"nama":"Muhammad Yahya Asy'ari"},{"presensi":24,"nama":"Nadifa Nur Medina"},{"presensi":25,"nama":"Nailah Hafiza Izzatunnisa"},{"presensi":26,"nama":"Novandra Arjuna Pratama"},{"presensi":27,"nama":"Radinwangi Avatara Azura Kertabhauma Cakraningrat"},{"presensi":28,"nama":"Umar Al-Faruq"}]
         };
 
         let databaseSiswa = {};
@@ -1602,8 +957,9 @@
         let activeSiswaId = "";
         let popupTimeout;
         let selectedEditClassKey = null;
+        let modeManageSiswa = 'tambah';
 
-        // --- DATABASE LOCAL STORAGE PERSISTENCE (100% OFFLINE) ---
+        // --- DATABASE LOCAL STORAGE PERSISTENCE ---
         function simpanAturanKeLocal() {
             localStorage.setItem('kates_config_kelas', JSON.stringify(configKelas));
         }
@@ -1630,7 +986,7 @@
             if(saved) {
                 databaseSiswa = JSON.parse(saved);
             } else {
-                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
+                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswaLengkap));
                 simpanSiswaKeLocal();
             }
         }
@@ -1687,7 +1043,7 @@
                     isLongPress = false;
                     touchTimer = setTimeout(() => {
                         isLongPress = true;
-                        vibrateHP();
+                        if (navigator.vibrate) navigator.vibrate(50);
                         bukaEditKelas(key);
                     }, 800);
                 };
@@ -1709,11 +1065,23 @@
             });
         }
 
-        function vibrateHP() {
-            if (navigator.vibrate) navigator.vibrate(50);
+        // --- MODAL CONTROLS ---
+        function toggleModal(id, show) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if(show) {
+                el.classList.remove('pointer-events-none', 'opacity-0');
+                el.classList.add('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-95');
+                el.querySelector('.relative').classList.add('scale-100');
+            } else {
+                el.classList.add('pointer-events-none', 'opacity-0');
+                el.classList.remove('opacity-100');
+                el.querySelector('.relative').classList.remove('scale-100');
+                el.querySelector('.relative').classList.add('scale-95');
+            }
         }
 
-        // --- MODAL CONTROLS ---
         function bukaEditKelas(key) {
             selectedEditClassKey = key;
             document.getElementById('edit-kelas-title').innerText = "Edit " + configKelas[key].name;
@@ -1749,29 +1117,13 @@
             location.reload();
         }
 
-        function toggleModal(id, show) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if(show) {
-                el.classList.remove('pointer-events-none');
-                el.classList.add('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-95');
-                el.querySelector('.relative').classList.add('scale-100');
-            } else {
-                el.classList.add('pointer-events-none');
-                el.classList.remove('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-100');
-                el.querySelector('.relative').classList.add('scale-95');
-            }
-        }
-
         // --- SINKRONISASI DROPDOWN ---
         function updateKelasDropdownOptions() {
             const selectKelas = document.getElementById('select-kelas-grading');
-            const selectSiswaKelas = document.getElementById('tambah-siswa-kelas');
+            const selectManageKelas = document.getElementById('manage-kelas');
             
             selectKelas.innerHTML = '<option value="">-- KELAS --</option>';
-            selectSiswaKelas.innerHTML = '';
+            selectManageKelas.innerHTML = '';
 
             const keys = Object.keys(databaseSiswa).sort();
             keys.forEach(key => {
@@ -1780,10 +1132,10 @@
                 optGrading.innerText = key;
                 selectKelas.appendChild(optGrading);
 
-                const optTambah = document.createElement('option');
-                optTambah.value = key;
-                optTambah.innerText = key;
-                selectSiswaKelas.appendChild(optTambah);
+                const optManage = document.createElement('option');
+                optManage.value = key;
+                optManage.innerText = key;
+                selectManageKelas.appendChild(optManage);
             });
         }
 
@@ -1877,7 +1229,34 @@
             kalkulasi();
         }
 
-        // --- TAMBAH SISWA ---
+        // --- SISTEM MANAJEMEN SISWA (TAMBAH / EDIT / HAPUS) ---
+        function setModeManage(mode) {
+            modeManageSiswa = mode;
+            const tabTambah = document.getElementById('tab-manage-tambah');
+            const tabEdit = document.getElementById('tab-manage-edit');
+            const boxSelect = document.getElementById('box-manage-select');
+            const btnTambah = document.getElementById('btn-group-tambah');
+            const btnEdit = document.getElementById('btn-group-edit');
+
+            if(mode === 'tambah') {
+                tabTambah.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all";
+                tabEdit.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
+                boxSelect.classList.add('hidden');
+                btnTambah.classList.remove('hidden');
+                btnEdit.classList.add('hidden');
+                
+                onChangeManageKelas(); 
+            } else {
+                tabEdit.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all";
+                tabTambah.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
+                boxSelect.classList.remove('hidden');
+                btnTambah.classList.add('hidden');
+                btnEdit.classList.remove('hidden');
+                
+                onChangeManageKelas();
+            }
+        }
+
         function tambahSiswaCepat() {
             const dropdownKelas = document.getElementById('select-kelas-grading');
             const currentClassName = dropdownKelas.value;
@@ -1886,20 +1265,54 @@
                 return;
             }
             
-            document.getElementById('tambah-siswa-kelas').value = currentClassName;
-            document.getElementById('tambah-siswa-presensi').value = (getSiswaList(currentClassName).length + 1);
-            document.getElementById('input-nama-baru').value = "";
+            document.getElementById('manage-kelas').value = currentClassName;
+            setModeManage('tambah'); 
             toggleModal('tambah-siswa-modal', true);
         }
 
-        function simpanSiswaBaru() {
-            const targetClass = document.getElementById('tambah-siswa-kelas').value;
-            const presensiNum = parseInt(document.getElementById('tambah-siswa-presensi').value) || 1;
-            const rawNama = document.getElementById('input-nama-baru').value.trim();
+        function onChangeManageKelas() {
+            const kelas = document.getElementById('manage-kelas').value;
+            if(!kelas) return;
             
+            if (modeManageSiswa === 'tambah') {
+                const list = getSiswaList(kelas);
+                document.getElementById('manage-presensi').value = list.length + 1;
+                document.getElementById('manage-nama').value = "";
+            } else {
+                const selectSiswa = document.getElementById('manage-siswa-select');
+                selectSiswa.innerHTML = '<option value="">-- Pilih Siswa --</option>';
+                const list = getSiswaList(kelas);
+                list.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.nama;
+                    opt.innerText = `${s.presensi}. ${s.nama}`;
+                    selectSiswa.appendChild(opt);
+                });
+                onChangeManageSiswa();
+            }
+        }
+
+        function onChangeManageSiswa() {
+            const kelas = document.getElementById('manage-kelas').value;
+            const namaSiswa = document.getElementById('manage-siswa-select').value;
+            const list = getSiswaList(kelas);
+            const s = list.find(x => x.nama === namaSiswa);
+            
+            if(s) {
+                document.getElementById('manage-presensi').value = s.presensi;
+                document.getElementById('manage-nama').value = s.nama;
+            } else {
+                document.getElementById('manage-presensi').value = "";
+                document.getElementById('manage-nama').value = "";
+            }
+        }
+
+        function simpanSiswaBaru() {
+            const targetClass = document.getElementById('manage-kelas').value;
+            const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1;
+            const rawNama = document.getElementById('manage-nama').value.trim();
             if(!targetClass || !rawNama) return;
 
-            // Fitur Proper Case
             const nama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
             if(!databaseSiswa[targetClass]) databaseSiswa[targetClass] = [];
@@ -1915,6 +1328,73 @@
             document.getElementById('select-siswa').value = nama;
             activeSiswaId = nama;
             muatNilaiSiswaAktif();
+        }
+
+        function simpanEditSiswa() {
+            const targetClass = document.getElementById('manage-kelas').value;
+            const oldNamaSiswa = document.getElementById('manage-siswa-select').value;
+            const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1;
+            const rawNama = document.getElementById('manage-nama').value.trim();
+            
+            if(!targetClass || !oldNamaSiswa || !rawNama) {
+                alert("Pilih siswa yang mau diedit!");
+                return;
+            }
+
+            const newNama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            const list = databaseSiswa[targetClass];
+            const studentIndex = list.findIndex(s => s.nama === oldNamaSiswa);
+            
+            if(studentIndex > -1) {
+                list[studentIndex].presensi = presensiNum;
+                list[studentIndex].nama = newNama;
+                
+                list.sort((a, b) => a.presensi - b.presensi);
+                
+                const oldStorageId = activeKelas === '45' ? oldNamaSiswa + '_koding' : oldNamaSiswa + '_' + targetClass;
+                const newStorageId = activeKelas === '45' ? newNama + '_koding' : newNama + '_' + targetClass;
+                
+                if (oldStorageId !== newStorageId && dataNilaiSiswa[oldStorageId]) {
+                    dataNilaiSiswa[newStorageId] = dataNilaiSiswa[oldStorageId];
+                    delete dataNilaiSiswa[oldStorageId];
+                    simpanNilaiKeLocal();
+                }
+                
+                simpanSiswaKeLocal();
+                toggleModal('tambah-siswa-modal', false);
+                
+                updateSiswaDropdown();
+                if(activeSiswaId === oldNamaSiswa) {
+                    document.getElementById('select-siswa').value = newNama;
+                    activeSiswaId = newNama;
+                    muatNilaiSiswaAktif();
+                }
+            }
+        }
+
+        function hapusSiswaManage() {
+            const targetClass = document.getElementById('manage-kelas').value;
+            const namaSiswa = document.getElementById('manage-siswa-select').value;
+            if(!namaSiswa) return;
+            
+            if(confirm(`Yakin ingin menghapus permanen "${namaSiswa}"? Data nilainya juga akan lenyap.`)) {
+                const list = databaseSiswa[targetClass];
+                const index = list.findIndex(s => s.nama === namaSiswa);
+                if(index > -1) {
+                    list.splice(index, 1);
+                    
+                    const storageIdKoding = namaSiswa + '_koding';
+                    const storageIdRegular = namaSiswa + '_' + targetClass;
+                    delete dataNilaiSiswa[storageIdKoding];
+                    delete dataNilaiSiswa[storageIdRegular];
+                    
+                    simpanSiswaKeLocal();
+                    simpanNilaiKeLocal();
+                    
+                    toggleModal('tambah-siswa-modal', false);
+                    updateSiswaDropdown();
+                }
+            }
         }
 
         // --- SIMPAN NILAI ---
@@ -1948,7 +1428,7 @@
             };
 
             simpanNilaiKeLocal();
-            vibrateHP();
+            if (navigator.vibrate) navigator.vibrate(50);
 
             const saveBtn = document.getElementById('btn-simpan-nilai');
             saveBtn.innerText = "✅ BERHASIL DISIMPAN!";
@@ -2068,7 +1548,8 @@
             const currentClassName = dropdownKelas.value;
             if(!currentClassName) return;
 
-            const mapel = document.getElementById('export-mapel-name').value.trim() || "Sumatif Akhir Tahun";
+            const mapelInput = document.getElementById('export-mapel-name').value.trim();
+            const mapel = mapelInput || "-";
             const siswaList = getSiswaList(currentClassName);
 
             const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -2123,14 +1604,14 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Daftar_Nilai_Kelas_${currentClassName.replace(" ", "_")}_${mapel.replace(" ", "_")}.xls`;
+            a.download = mapelInput ? `Nilai Mapel ${mapelInput}.xls` : `Nilai Mapel.xls`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             toggleModal('export-excel-modal', false);
         }
 
-        // --- MANAJEMEN PILIHAN KELAS ---
+        // --- MANAJEMEN PILIHAN KELAS AKTIF ---
         function pilihKelasAktif(kelas, forceSubClass = null) {
             activeKelas = kelas;
             document.getElementById('area-kelas').classList.remove('needs-class');
@@ -2241,158 +1722,6 @@
             kalkulasi();
         }
 
-        // --- STREAMING_CHUNK: LOGIKA PERINGATAN, NUMPAD & KALKULASI ---
-        function tampilkanPeringatanLucu(tipe, maxVal = 0) {
-            const popup = document.getElementById('cute-popup');
-            const box = document.getElementById('cute-popup-box');
-            const emojiEl = document.getElementById('popup-emoji');
-            const titleEl = document.getElementById('popup-title');
-            const msgEl = document.getElementById('popup-message');
-            const maxBox = document.getElementById('popup-max-box');
-            
-            if (tipe === 'nokelas') {
-                const variasi = [
-                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kategori kelas dulu ngab!' },
-                    { emoji: '☕', title: 'Cuci Muka Duls!', msg: 'Kelasnya belum dipencet tuh~' },
-                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Main pencet-pencet aja, kelasnya dulu dong!' },
-                    { emoji: '🙈', title: 'Kosong Melompong', msg: 'Klik dulu salah satu kelas di atas!' }
-                ];
-                const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = "text-amber-500 font-black text-2xl mb-1";
-                msgEl.innerText = rand.msg;
-                maxBox.classList.add('hidden');
-                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center";
-                
-            } else if (tipe === 'over') {
-                const variasi = [
-                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
-                    { emoji: '🤣', title: 'Ngantuk lu ya?', msg: 'Waduh, kebanyakan ngetik tuh!' },
-                    { emoji: '🫣', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu? Kelebihan!' },
-                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Lebih dari batas maksimal woy!' }
-                ];
-                const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = "text-rose-500 font-black text-2xl mb-1";
-                msgEl.innerText = rand.msg;
-                maxBox.classList.remove('hidden');
-                document.getElementById('popup-max-val').innerText = maxVal;
-                box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center";
-            }
-
-            popup.classList.remove('opacity-0', 'pointer-events-none');
-            popup.classList.add('opacity-100');
-            
-            setTimeout(() => {
-                box.classList.remove('scale-50', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
-            }, 10);
-
-            clearTimeout(popupTimeout);
-            popupTimeout = setTimeout(() => {
-                tutupPeringatanLucu();
-            }, 3000);
-        }
-
-        function tutupPeringatanLucu() {
-            const popup = document.getElementById('cute-popup');
-            const box = document.getElementById('cute-popup-box');
-            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
-            box.classList.add('scale-50', 'opacity-0');
-            setTimeout(() => {
-                popup.classList.remove('opacity-100');
-                popup.classList.add('opacity-0', 'pointer-events-none');
-            }, 250);
-        }
-
-        function setMode(mode) {
-            activeMode = mode;
-            const tRomawi = document.getElementById('tab-romawi');
-            const tJumlah = document.getElementById('tab-jumlah');
-            
-            if(mode === 'romawi') {
-                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md";
-                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-romawi').classList.remove('hidden');
-                document.getElementById('view-romawi').classList.add('grid');
-                document.getElementById('view-jumlah').classList.add('hidden');
-                document.getElementById('view-jumlah').classList.remove('flex');
-                setFokus('r1'); 
-            } else {
-                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
-                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-jumlah').classList.remove('hidden');
-                document.getElementById('view-jumlah').classList.add('flex');
-                document.getElementById('view-romawi').classList.add('hidden');
-                document.getElementById('view-romawi').classList.remove('grid');
-                setFokus('total'); 
-            }
-            kalkulasi();
-            simpanDataOffline();
-        }
-
-        function setFokus(idBox) {
-            fokusInput = idBox;
-            ['r1', 'r2', 'r3', 'total'].forEach(id => {
-                const el = document.getElementById('box-' + id);
-                if(el) el.classList.remove('input-active');
-            });
-            const target = document.getElementById('box-' + idBox);
-            if(target) target.classList.add('input-active');
-        }
-
-        function tekanTombol(kunci) {
-            if (!activeKelas) {
-                const areaKelas = document.getElementById('area-kelas');
-                areaKelas.classList.add('needs-class');
-                tampilkanPeringatanLucu('nokelas');
-                return;
-            }
-
-            let strCurrent = nilaiInput[fokusInput];
-
-            if (kunci === 'C') {
-                strCurrent = '';
-            } else if (kunci === 'DEL') {
-                strCurrent = strCurrent.slice(0, -1);
-            } else {
-                if(strCurrent === '0' && kunci === '0') return;
-                strCurrent += kunci;
-            }
-
-            nilaiInput[fokusInput] = strCurrent;
-            validasiNilai();
-            updateTampilan();
-            kalkulasi();
-            simpanDataOffline();
-        }
-
-        function validasiNilai() {
-            if(!activeKelas) return;
-            const valNum = parseInt(nilaiInput[fokusInput]);
-            if(isNaN(valNum)) return;
-
-            let maxAllow = 0;
-            if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1;
-            if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2;
-            if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3;
-            if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
-
-            if(valNum > maxAllow) {
-                nilaiInput[fokusInput] = '';
-                tampilkanPeringatanLucu('over', maxAllow);
-            }
-        }
-
-        function updateTampilan() {
-            document.getElementById('disp-r1').innerText = nilaiInput.r1;
-            document.getElementById('disp-r2').innerText = nilaiInput.r2;
-            document.getElementById('disp-r3').innerText = nilaiInput.r3;
-            document.getElementById('disp-total').innerText = nilaiInput.total;
-        }
-
         function kalkulasi() {
             if (!activeKelas) return;
 
@@ -2472,14 +1801,6 @@
             }
         }
         initMathBg();
-
-        // --- RESET GLOBAL ---
-        function resetGlobal() {
-            if(confirm("Apakah Anda yakin ingin me-reset seluruh setelan, daftar siswa, dan nilai kembali ke setelan pabrik?")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
 
         // --- SETUP DAN LOAD AWAL ---
         window.addEventListener('load', () => {
