@@ -32,6 +32,7 @@
             user-select: none;
         }
 
+        /* --- STREAMING_CHUNK: Mengatur Animasi Utama --- */
         @keyframes fade-in-down {
             0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -62,6 +63,39 @@
         .anim-input   { animation: fade-in-up 0.5s ease-out 0.6s both; }
         .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
         .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
+
+        /* --- STREAMING_CHUNK: Animasi Equalizer Musik & Marquee --- */
+        .eq-bar {
+            flex: 1;
+            max-width: 4px;
+            margin: 0 1px;
+            background: linear-gradient(to top, #7dd3fc, #818cf8);
+            border-radius: 2px;
+            animation: eq-bounce 0.5s ease-in-out infinite alternate;
+            transform-origin: bottom;
+        }
+        @keyframes eq-bounce {
+            0% { transform: scaleY(0.3); }
+            100% { transform: scaleY(1); }
+        }
+        
+        .marquee-wrapper {
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 8s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
 
         #install-banner {
             transform: translateY(-100%);
@@ -140,6 +174,7 @@
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
 
+    <!-- --- STREAMING_CHUNK: Bar Navigasi Atas --- -->
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
         <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -189,7 +224,8 @@
         </div>
     </div>
 
-    <!-- MODAL 1: REKAPITULASI & MANAJEMEN SISWA (DAFTAR NILAI) -->
+    <!-- --- STREAMING_CHUNK: Modals --- -->
+    <!-- MODAL 1: REKAPITULASI & MANAJEMEN SISWA -->
     <div id="rekap-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('rekap-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-sm w-11/12 h-[80vh] flex flex-col border border-slate-100 transform scale-95 transition-transform duration-300">
@@ -251,7 +287,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDIT PENGATURAN KELAS (LONG PRESS) -->
+    <!-- MODAL 3: EDIT PENGATURAN KELAS -->
     <div id="edit-kelas-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('edit-kelas-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
@@ -276,7 +312,7 @@
         </div>
     </div>
 
-    <!-- MODAL 4: INPUT NAMA MAPEL SEBELUM DOWNLOAD EXCEL -->
+    <!-- MODAL 4: INPUT NAMA MAPEL -->
     <div id="export-excel-modal" class="fixed inset-0 z-[70] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('export-excel-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col text-center">
@@ -297,7 +333,7 @@
         </div>
     </div>
 
-    <!-- MODAL 5: UPDATE NOTIFIKASI KATES PRO (LUCU & INFORMATIF) -->
+    <!-- MODAL 5: UPDATE NOTIFIKASI -->
     <div id="update-modal" class="fixed inset-0 z-[80] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="tutupUpdateModal()"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-11/12 border-4 border-blue-400 flex flex-col text-center transform scale-95 transition-transform duration-300 max-h-[85vh]">
@@ -307,52 +343,34 @@
             
             <div class="my-4 overflow-y-auto text-left space-y-3 pr-1 text-xs text-slate-600 max-h-[40vh] border-y border-slate-100 py-3">
                 <p class="font-extrabold text-slate-700 text-center italic mb-2">"Wassup Ustadz & Ustadzah! Ada update gokil nih!"</p>
-                <div class="flex gap-2">
-                    <span class="text-base">🔥</span>
-                    <div>
-                        <p class="font-black text-slate-800">Database 28 Kelas Lengkap</p>
-                        <p class="text-[11px] text-slate-500">Seluruh nama siswa se-sekolahan (Kls 1-6) udah masuk sesuai nomor presensi!</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-base">🎯</span>
-                    <div>
-                        <p class="font-black text-slate-800">Target Grading Ergonomis</p>
-                        <p class="text-[11px] text-slate-500">Posisinya sekarang di bawah, deket tombol simpan. Gak bikin jempol pegel!</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-base">🟢</span>
-                    <div>
-                        <p class="font-black text-slate-800">Saringan Kelas Otomatis</p>
-                        <p class="text-[11px] text-slate-500">Klik kelas di atas, dropdown otomatis nyaring kelas yang bener (Anti-salah!).</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-base">⚙️</span>
-                    <div>
-                        <p class="font-black text-slate-800">Edit Kelas Rahasia</p>
-                        <p class="text-[11px] text-slate-500">Tahan tombol kelas selama 1 detik buat ubah pembagi & batas skor sesukamu!</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-base">📈</span>
-                    <div>
-                        <p class="font-black text-slate-800">Excel Ramping & Berwarna</p>
-                        <p class="text-[11px] text-slate-500">Bisa input nama Mapel + cetak waktu download detil sampe ke detiknya!</p>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <span class="text-base">🤪</span>
-                    <div>
-                        <p class="font-black text-slate-800">Pop-up Gen-Z Super Lucu</p>
-                        <p class="text-[11px] text-slate-500">Peringatan salah ketik yang gokil, acak, dan gak ngebosenin!</p>
-                    </div>
-                </div>
+                <div class="flex gap-2"><span class="text-base">🎵</span><div><p class="font-black text-slate-800">VIP Music Player</p><p class="text-[11px] text-slate-500">Ada lagu instrumen penenang jiwa pas ngoreksi.</p></div></div>
+                <div class="flex gap-2"><span class="text-base">🔥</span><div><p class="font-black text-slate-800">Database Lengkap</p><p class="text-[11px] text-slate-500">Semua nama siswa udah masuk urut presensi!</p></div></div>
+                <div class="flex gap-2"><span class="text-base">🎯</span><div><p class="font-black text-slate-800">Target Grading</p><p class="text-[11px] text-slate-500">Gak usah nyari-nyari kelas lagi, dropdown otomatis nyaring.</p></div></div>
+                <div class="flex gap-2"><span class="text-base">📈</span><div><p class="font-black text-slate-800">Excel Ramping</p><p class="text-[11px] text-slate-500">Bisa diunduh full warna tanpa error di HP.</p></div></div>
             </div>
 
             <button onclick="tutupUpdateModal()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black rounded-2xl shadow-lg shadow-blue-100 text-xs active:scale-95 transition-all uppercase tracking-widest">
                 Gaskeun Pakai! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 6: MANAGER MUSIK (PLAYLIST & UPLOAD) -->
+    <div id="music-manager-modal" class="fixed inset-0 z-[75] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal('music-manager-modal', false)"></div>
+        <div class="relative bg-white rounded-3xl p-4 shadow-2xl max-w-xs w-[90%] border border-slate-100 flex flex-col text-center transform scale-95 transition-transform duration-300 max-h-[75vh]">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-black text-slate-800 text-lg flex items-center gap-2"><span class="text-xl">🎵</span> Playlist Lagu</h3>
+                <button onclick="toggleModal('music-manager-modal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+            
+            <div id="playlist-container" class="overflow-y-auto mb-4 border border-slate-100 rounded-xl bg-slate-50 flex-1 max-h-[45vh] text-left p-1 space-y-1">
+                <!-- List lagu dirender dari JS -->
+            </div>
+
+            <button onclick="triggerUploadMusik()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black rounded-xl shadow-lg shadow-emerald-100 text-[11px] active:scale-95 transition-all flex items-center justify-center gap-2 tracking-widest uppercase">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                Tambah Lagu Baru
             </button>
         </div>
     </div>
@@ -366,34 +384,52 @@
         <!-- BAGIAN ATAS & TENGAH -->
         <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
             
-            <!-- VIP MUSIC CAPSULE (Melayang di atas logo, super tipis, desain glassmorphism) -->
-            <div class="mx-auto w-max bg-white/70 backdrop-blur-md border border-slate-200 shadow-sm rounded-full px-2.5 py-1 mb-1 flex items-center justify-between gap-2 relative z-30 pointer-events-auto">
-                <span class="text-blue-500 text-[10px] animate-pulse">🎵</span>
-                <select id="music-category" onchange="gantiKategoriMusik()" class="bg-transparent text-[8px] font-black text-slate-700 outline-none w-[85px] cursor-pointer uppercase tracking-wider appearance-none text-center">
-                    <option value="instrumen">INSTRUMEN TENANG</option>
-                    <option value="pop">POP INDONESIA</option>
-                    <option value="viral">VIRAL TIKTOK</option>
-                </select>
-                <div class="flex items-center gap-2 border-l border-slate-300 pl-2">
-                    <!-- Tombol Prev -->
-                    <button onclick="prevMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform" title="Lagu Sebelumnya">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
-                    </button>
-                    <!-- Tombol Play/Pause -->
-                    <button onclick="toggleMusik()" id="btn-play-musik" class="text-slate-700 hover:text-blue-600 active:scale-90 transition-transform" title="Play / Pause">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
-                        <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
-                    </button>
-                    <!-- Tombol Stop -->
-                    <button onclick="stopMusik()" class="text-slate-500 hover:text-red-500 active:scale-90 transition-transform" title="Stop Lagu">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
-                    </button>
-                    <!-- Tombol Next -->
-                    <button onclick="nextMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform" title="Lagu Selanjutnya">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
+            <!-- --- STREAMING_CHUNK: Kapsul VIP Musik Super Tipis --- -->
+            <div class="mx-auto flex items-end justify-center gap-2 mb-1 relative z-30 pointer-events-auto w-full px-2">
+                
+                <!-- Kolom Kiri: Equalizer & Kapsul Musik -->
+                <div class="flex flex-col w-max max-w-[85%] shrink">
+                    <!-- Animasi Equalizer Musik Melayang (Dihasilkan Otomatis dari JS agar Acak & Sepanjang Shape) -->
+                    <div id="equalizer" class="flex items-end justify-between w-full h-[14px] px-3 mb-0.5 opacity-0 transition-opacity duration-300">
+                    </div>
+
+                    <!-- Badan Kapsul Musik (Utama) Elegan dan Jelas -->
+                    <div class="bg-gradient-to-r from-indigo-600/95 to-blue-700/95 backdrop-blur-md border border-indigo-400 shadow-md rounded-full px-3 py-1 flex items-center justify-between gap-2 w-full overflow-hidden">
+                        <span class="text-white text-[11px] shrink-0 animate-pulse">🎵</span>
+                        
+                        <!-- Area Teks Berjalan (Marquee) -->
+                        <div class="marquee-wrapper border-r border-white/30 pr-1 mr-1 w-[80px] sm:w-[100px] shrink">
+                            <span id="music-title" class="marquee-text text-[9px] text-white font-bold uppercase tracking-wider" style="animation-play-state: paused;">SIAP MEMUTAR...</span>
+                        </div>
+
+                        <!-- Area Kontrol -->
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="prevMusik()" class="text-white/80 hover:text-white active:scale-90 transition-transform" title="Lagu Sebelumnya">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
+                            </button>
+                            <button onclick="toggleMusik()" id="btn-play-musik" class="text-white hover:text-white active:scale-90 transition-transform" title="Play / Pause">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
+                                <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
+                            </button>
+                            <button onclick="stopMusik()" class="text-white/80 hover:text-rose-300 active:scale-90 transition-transform" title="Stop Lagu">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
+                            </button>
+                            <button onclick="nextMusik()" class="text-white/80 hover:text-white active:scale-90 transition-transform" title="Lagu Selanjutnya">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Playlist (Atur Musik) di Samping -->
+                <div class="shrink-0 bg-gradient-to-br from-teal-500/95 to-emerald-600/95 backdrop-blur-md border border-teal-400 shadow-md rounded-full px-2.5 py-1 mb-1">
+                    <button onclick="bukaManagerMusik()" class="text-white hover:text-white active:scale-90 transition-transform flex items-center gap-1" title="Daftar Putar & Upload">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h7"></path></svg>
                     </button>
                 </div>
-                <div id="music-title" class="text-[7px] text-slate-400 w-[55px] truncate font-bold text-right ml-1">Siap...</div>
+                
+                <!-- Input File Tersembunyi -->
+                <input type="file" id="upload-musik" accept="audio/*" multiple class="hidden" onchange="prosesUploadMusik(event)">
             </div>
 
             <!-- Header: Judul KATES -->
@@ -542,88 +578,221 @@
             window.location.href = window.location.pathname + '?v=' + new Date().getTime();
         }
 
-        // --- VIP MUSIC PLAYER SYSTEM ---
-        const musicLibrary = {
-            'instrumen': [
-                { title: 'Tenang 1', src: 'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3' }, 
-                { title: 'Damai 2', src: 'https://cdn.pixabay.com/audio/2022/04/27/audio_67bcf729ee.mp3' }
-            ],
-            'pop': [
-                { title: 'Pop Indo 1', src: 'https://cdn.pixabay.com/audio/2022/10/25/audio_145d55b0a1.mp3' },
-                { title: 'Pop Indo 2', src: 'https://cdn.pixabay.com/audio/2021/08/09/audio_6b29388df6.mp3' }
-            ],
-            'viral': [
-                { title: 'MBG (Viral)', src: 'https://cdn.pixabay.com/audio/2021/08/04/audio_bb630cc098.mp3' },
-                { title: 'Tiktok DJ', src: 'https://cdn.pixabay.com/audio/2022/03/15/audio_03d987d6e5.mp3' }
-            ]
-        };
+        // --- STREAMING_CHUNK: VIP Music Player System ---
+        const musicLibrary = [
+            { title: 'Perdamaian', src: 'Perdamaian.mp3' },
+            { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' },
+            { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' },
+            { title: 'SurgaMu', src: 'SurgaMu.mp3' },
+            { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' },
+            { title: 'Para PencariMu', src: 'Para PencariMu.mp3' },
+            { title: 'Maha Besar', src: 'Maha Besar.mp3' },
+            { title: 'Ijinkan Aku', src: 'Ijinkan Aku.mp3' },
+            { title: 'Hidup Hanya Sementara', src: 'Hidup Hanya Sementar.mp3' },
+            { title: 'Doa Untuk Ibu', src: 'Doa Untuk Ibu.mp3' },
+            { title: 'Dia Maha Sempurna', src: 'Dia Maha Sempurna.mp3' },
+            { title: 'Dengan NafasMu', src: 'Dengan NafasMu.mp3' },
+            { title: 'Asmara Terindah', src: 'Asmara Terindah.mp3' },
+            { title: 'Andai Ku Tahu', src: 'Andai Ku Tahu.mp3' }
+        ];
 
         let currentAudio = new Audio();
         let isPlaying = false;
-        let currentKategoriMusik = 'instrumen';
-        let currentTrackObj = null;
+        let currentTrackIndex = 0;
 
-        function setTrack(kategori) {
-            const trackList = musicLibrary[kategori];
-            const randomIndex = Math.floor(Math.random() * trackList.length);
-            currentTrackObj = trackList[randomIndex];
-            currentAudio.src = currentTrackObj.src;
-            document.getElementById('music-title').innerText = currentTrackObj.title;
+        function triggerUploadMusik() {
+            document.getElementById('upload-musik').click();
         }
 
-        function gantiKategoriMusik() {
-            currentKategoriMusik = document.getElementById('music-category').value;
-            setTrack(currentKategoriMusik);
-            if (isPlaying) {
-                currentAudio.play().catch(e => console.log(e));
+        function prosesUploadMusik(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            let addedCount = 0;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('audio/')) {
+                    const fileUrl = URL.createObjectURL(file);
+                    const title = file.name.replace(/\.[^/.]+$/, "");
+                    musicLibrary.push({ title: title, src: fileUrl });
+                    addedCount++;
+                }
+            }
+
+            if (addedCount > 0) {
+                alert(`Wih mantap! ${addedCount} lagu barumu berhasil ditambahkan ke daftar putar sesi ini. Langsung gaskeun play! 🎶`);
+                setTrack(musicLibrary.length - addedCount);
+                if (!isPlaying) toggleMusik();
+                
+                // Jika pop-up playlist sedang terbuka, render ulang
+                const modal = document.getElementById('music-manager-modal');
+                if (!modal.classList.contains('pointer-events-none')) {
+                    bukaManagerMusik();
+                }
+            }
+            
+            event.target.value = '';
+        }
+
+        // --- SISTEM PLAYLIST MANAGER ---
+        function bukaManagerMusik() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = '';
+            
+            if (musicLibrary.length === 0) {
+                container.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Daftar putar kosong melompong.</p>';
+            } else {
+                musicLibrary.forEach((track, index) => {
+                    const isPlayingRow = (index === currentTrackIndex);
+                    const row = document.createElement('div');
+                    row.className = `flex justify-between items-center p-2.5 rounded-xl border ${isPlayingRow ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100'}`;
+                    row.innerHTML = `
+                        <div class="truncate flex-1 pr-2 text-xs font-black ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">
+                            ${index + 1}. ${track.title}
+                        </div>
+                        <button onclick="hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+            toggleModal('music-manager-modal', true);
+        }
+
+        function hapusLaguDariManager(index) {
+            const trackTitle = musicLibrary[index].title;
+            if(confirm(`Yakin mau menghapus lagu "${trackTitle}" dari daftar putar?`)) {
+                musicLibrary.splice(index, 1);
+                
+                if (musicLibrary.length === 0) {
+                    stopMusik();
+                    document.getElementById('music-title').innerText = "KOSONG";
+                    document.getElementById('music-title').classList.remove('marquee-text');
+                    currentTrackIndex = 0;
+                } else {
+                    if (index < currentTrackIndex) {
+                        currentTrackIndex--;
+                    } else if (index === currentTrackIndex) {
+                        if (currentTrackIndex >= musicLibrary.length) {
+                            currentTrackIndex = 0;
+                        }
+                        setTrack(currentTrackIndex);
+                        if (isPlaying) currentAudio.play().catch(e => console.log(e));
+                    }
+                }
+                bukaManagerMusik(); // Render ulang list
             }
         }
 
+        function setTrack(index) {
+            currentTrackIndex = index;
+            const currentTrackObj = musicLibrary[currentTrackIndex];
+            currentAudio.src = currentTrackObj.src;
+            
+            const titleEl = document.getElementById('music-title');
+            titleEl.innerText = currentTrackObj.title;
+            
+            if (currentTrackObj.title.length > 18) {
+                titleEl.classList.add('marquee-text');
+                titleEl.style.animationPlayState = isPlaying ? 'running' : 'paused';
+            } else {
+                titleEl.classList.remove('marquee-text');
+                titleEl.style.animationPlayState = 'paused';
+            }
+
+            // Acak tampilan equalizer setiap ganti lagu
+            randomizeEqualizer();
+        }
+
+        function randomizeEqualizer() {
+            const eqContainer = document.getElementById('equalizer');
+            if(!eqContainer) return;
+            eqContainer.innerHTML = ''; 
+            // 25 batang agar memanjang penuh dan rapat mengikuti kapsul
+            for(let i = 0; i < 25; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'eq-bar';
+                // Tinggi dasar diacak (40% - 100%)
+                const h = Math.floor(Math.random() * 60) + 40; 
+                bar.style.height = `${h}%`;
+                // Kecepatan pantulan & delay diacak agar gerakannya realistis
+                bar.style.animationDelay = `-${Math.random()}s`;
+                bar.style.animationDuration = `${0.3 + Math.random() * 0.4}s`;
+                eqContainer.appendChild(bar);
+            }
+        }
+
+        // Generate batang equalizer saat file HTML di-load pertama kali
+        randomizeEqualizer();
+
         function toggleMusik() {
-            if (!currentAudio.src) setTrack(currentKategoriMusik);
+            if (musicLibrary.length === 0) {
+                alert("Daftar putar kosong! Silakan upload lagu dulu (tombol daftar putar di sebelah kanan).");
+                return;
+            }
+            if (!currentAudio.src) setTrack(0);
 
             const iconPlay = document.getElementById('icon-play');
             const iconPause = document.getElementById('icon-pause');
+            const eq = document.getElementById('equalizer');
+            const titleEl = document.getElementById('music-title');
 
             if (isPlaying) {
                 currentAudio.pause();
                 isPlaying = false;
                 iconPlay.classList.remove('hidden');
                 iconPause.classList.add('hidden');
-                document.getElementById('music-title').innerText = 'Jeda...';
+                eq.classList.remove('opacity-100');
+                eq.classList.add('opacity-0');
+                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'paused';
             } else {
                 currentAudio.play().catch(e => {
-                    alert("Akses Audio Diblokir Browser, Mohon Ganti URL di Source Code.");
+                    console.log(e);
                 });
                 isPlaying = true;
                 iconPlay.classList.add('hidden');
                 iconPause.classList.remove('hidden');
-                document.getElementById('music-title').innerText = currentTrackObj.title;
+                eq.classList.remove('opacity-0');
+                eq.classList.add('opacity-100');
+                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'running';
             }
         }
 
         function stopMusik() {
             if (currentAudio) {
                 currentAudio.pause();
-                currentAudio.currentTime = 0; // Kembalikan ke awal
+                currentAudio.currentTime = 0;
             }
             isPlaying = false;
             document.getElementById('icon-play').classList.remove('hidden');
             document.getElementById('icon-pause').classList.add('hidden');
-            document.getElementById('music-title').innerText = 'Stop';
+            
+            const eq = document.getElementById('equalizer');
+            eq.classList.remove('opacity-100');
+            eq.classList.add('opacity-0');
+            
+            const titleEl = document.getElementById('music-title');
+            if(titleEl.classList.contains('marquee-text')) {
+                titleEl.style.animationPlayState = 'paused';
+                titleEl.style.transform = 'translate(0, 0)'; 
+            }
         }
 
         function nextMusik() {
-            setTrack(currentKategoriMusik);
+            if (musicLibrary.length === 0) return;
+            currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length;
+            setTrack(currentTrackIndex);
             if (isPlaying) currentAudio.play().catch(e => console.log(e));
         }
 
         function prevMusik() {
-            setTrack(currentKategoriMusik);
+            if (musicLibrary.length === 0) return;
+            currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length;
+            setTrack(currentTrackIndex);
             if (isPlaying) currentAudio.play().catch(e => console.log(e));
         }
 
-        // Auto Next saat lagu selesai
         currentAudio.addEventListener('ended', () => {
             nextMusik();
         });
@@ -637,7 +806,7 @@
             '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'KODING' } 
         };
 
-        // --- DATABASE SISWA DEFAULT (JIKA LOKAL KOSONG) ---
+        // --- DATABASE SISWA DEFAULT ---
         const defaultSiswa = {
             "1 ICP A": [
                 { presensi: 1, nama: "ALTHAF SHAQUILLE ABHIVANDYA" },
@@ -1477,7 +1646,7 @@
             }
         }
 
-        // --- SISTEM OFFLINE REKORD (SIMPAN DATA SEBELUM PENUTUPAN / UNTUK SINKRON) ---
+        // --- SISTEM OFFLINE REKORD ---
         function simpanDataOffline() {
             const state = { activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId };
             localStorage.setItem('kates_offline_state', JSON.stringify(state));
@@ -1504,7 +1673,7 @@
             return false;
         }
 
-        // --- EVENT LISENERS (MENGHILANGKAN BENTROKAN KLIK/LONG-PRESS) ---
+        // --- EVENT LISENERS LONG PRESS ---
         function initLongPressEvents() {
             ['55', '60', '65', '45'].forEach(key => {
                 const btn = document.getElementById('btn-' + key);
@@ -1544,6 +1713,7 @@
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
+        // --- MODAL CONTROLS ---
         function bukaEditKelas(key) {
             selectedEditClassKey = key;
             document.getElementById('edit-kelas-title').innerText = "Edit " + configKelas[key].name;
@@ -1579,7 +1749,6 @@
             location.reload();
         }
 
-        // --- KONTROL MODAL ---
         function toggleModal(id, show) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -1596,7 +1765,7 @@
             }
         }
 
-        // --- SINKRONISASI DROPDOWN & KELAS ---
+        // --- SINKRONISASI DROPDOWN ---
         function updateKelasDropdownOptions() {
             const selectKelas = document.getElementById('select-kelas-grading');
             const selectSiswaKelas = document.getElementById('tambah-siswa-kelas');
@@ -1638,7 +1807,6 @@
             pilihKelasAktif(targetCategory, selectedClass);
         }
 
-        // Ambil list siswa murni, jika koding, gabungkan siswa kls 4, 5, 6
         function getSiswaList(namaKelas) {
             if (activeKelas === '45' && namaKelas) {
                 return databaseSiswa[namaKelas] || [];
@@ -1709,6 +1877,7 @@
             kalkulasi();
         }
 
+        // --- TAMBAH SISWA ---
         function tambahSiswaCepat() {
             const dropdownKelas = document.getElementById('select-kelas-grading');
             const currentClassName = dropdownKelas.value;
@@ -1730,13 +1899,12 @@
             
             if(!targetClass || !rawNama) return;
 
-            // Fitur Proper Case (Agung Nugroho)
+            // Fitur Proper Case
             const nama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 
             if(!databaseSiswa[targetClass]) databaseSiswa[targetClass] = [];
             
             databaseSiswa[targetClass].push({ presensi: presensiNum, nama: nama });
-            // Urutkan siswa berdasarkan nomor presensi secara otomatis
             databaseSiswa[targetClass].sort((a, b) => a.presensi - b.presensi);
             
             simpanSiswaKeLocal();
@@ -1749,7 +1917,7 @@
             muatNilaiSiswaAktif();
         }
 
-        // --- STREAMING_CHUNK: Mengatur penyimpanan nilai siswa dan auto next ---
+        // --- SIMPAN NILAI ---
         function simpanNilaiKeSiswa() {
             if(!activeKelas) {
                 tampilkanPeringatanLucu('nokelas');
@@ -1793,7 +1961,6 @@
                 saveBtn.classList.replace('to-emerald-600', 'to-indigo-600');
             }, 1000);
 
-            // AUTO-NEXT
             const select = document.getElementById('select-siswa');
             const currentIndex = select.selectedIndex;
             updateSiswaDropdown();
@@ -1809,7 +1976,7 @@
             }
         }
 
-        // --- STREAMING_CHUNK: Mengelola rekapitulasi nilai dan pengunduhan Excel ---
+        // --- REKAP & EXPORT EXCEL ---
         function bukaRekapNilai() {
             const dropdownKelas = document.getElementById('select-kelas-grading');
             const currentClassName = dropdownKelas.value;
@@ -1963,7 +2130,7 @@
             toggleModal('export-excel-modal', false);
         }
 
-        // --- STREAMING_CHUNK: Menyusun logika pilihan kelas aktif ---
+        // --- MANAJEMEN PILIHAN KELAS ---
         function pilihKelasAktif(kelas, forceSubClass = null) {
             activeKelas = kelas;
             document.getElementById('area-kelas').classList.remove('needs-class');
@@ -1982,7 +2149,6 @@
                 activeBtn.classList.add(configKelas[kelas].color, 'class-active');
             }
 
-            // FILTER DROPDOWN KELAS OTOMATIS
             const selectKelas = document.getElementById('select-kelas-grading');
             selectKelas.innerHTML = '';
 
@@ -2036,7 +2202,6 @@
             }
             document.getElementById('max-total').innerText = 'Maks: ' + kelas;
             
-            // Set text kontras khusus untuk koding
             const labelKoding = document.getElementById('label-name-45');
             if (kelas === '45') {
                 labelKoding.className = "text-[9px] font-black tracking-widest text-amber-300";
@@ -2051,7 +2216,6 @@
             simpanDataOffline();
         }
 
-        // --- SINKRONISASI MANUAL DENGAN NILAI DEFAULT KOSONG ---
         function setNetralState() {
             activeKelas = null;
             document.getElementById('area-kelas').classList.remove('needs-class');
@@ -2077,11 +2241,10 @@
             kalkulasi();
         }
 
-        // --- POPUP PERINGATAN LUCU ---
+        // --- STREAMING_CHUNK: LOGIKA PERINGATAN, NUMPAD & KALKULASI ---
         function tampilkanPeringatanLucu(tipe, maxVal = 0) {
             const popup = document.getElementById('cute-popup');
             const box = document.getElementById('cute-popup-box');
-            
             const emojiEl = document.getElementById('popup-emoji');
             const titleEl = document.getElementById('popup-title');
             const msgEl = document.getElementById('popup-message');
@@ -2144,7 +2307,6 @@
             }, 250);
         }
 
-        // --- SISTEM MODE INPUT DAN NUMPAD ---
         function setMode(mode) {
             activeMode = mode;
             const tRomawi = document.getElementById('tab-romawi');
@@ -2311,7 +2473,7 @@
         }
         initMathBg();
 
-        // --- RESET GLOBAL KE DEFAULT ---
+        // --- RESET GLOBAL ---
         function resetGlobal() {
             if(confirm("Apakah Anda yakin ingin me-reset seluruh setelan, daftar siswa, dan nilai kembali ke setelan pabrik?")) {
                 localStorage.clear();
@@ -2327,7 +2489,6 @@
             initLongPressEvents();
             updateKelasDropdownOptions();
             
-            // Cek Versi Baru untuk memunculkan Pop-up Update Lucu
             const currentVersion = '2.0';
             const savedVersion = localStorage.getItem('kates_pro_version');
             if (savedVersion !== currentVersion) {
@@ -2344,7 +2505,6 @@
             localStorage.setItem('kates_pro_version', '2.0');
         }
 
-        // Keyboard Fisik Laptop/PC
         document.addEventListener('keydown', function(e) {
             const key = e.key;
             if (/^[0-9]$/.test(key)) {
