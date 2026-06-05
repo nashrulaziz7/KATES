@@ -375,14 +375,21 @@
                     <option value="viral">VIRAL TIKTOK</option>
                 </select>
                 <div class="flex items-center gap-2 border-l border-slate-300 pl-2">
-                    <button onclick="prevMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform">
+                    <!-- Tombol Prev -->
+                    <button onclick="prevMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform" title="Lagu Sebelumnya">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
                     </button>
-                    <button onclick="toggleMusik()" id="btn-play-musik" class="text-slate-700 hover:text-blue-600 active:scale-90 transition-transform">
-                        <svg class="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
-                        <svg class="w-4.5 h-4.5 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
+                    <!-- Tombol Play/Pause -->
+                    <button onclick="toggleMusik()" id="btn-play-musik" class="text-slate-700 hover:text-blue-600 active:scale-90 transition-transform" title="Play / Pause">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
+                        <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
                     </button>
-                    <button onclick="nextMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform">
+                    <!-- Tombol Stop -->
+                    <button onclick="stopMusik()" class="text-slate-500 hover:text-red-500 active:scale-90 transition-transform" title="Stop Lagu">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
+                    </button>
+                    <!-- Tombol Next -->
+                    <button onclick="nextMusik()" class="text-slate-500 hover:text-blue-600 active:scale-90 transition-transform" title="Lagu Selanjutnya">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
                     </button>
                 </div>
@@ -593,6 +600,17 @@
                 iconPause.classList.remove('hidden');
                 document.getElementById('music-title').innerText = currentTrackObj.title;
             }
+        }
+
+        function stopMusik() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0; // Kembalikan ke awal
+            }
+            isPlaying = false;
+            document.getElementById('icon-play').classList.remove('hidden');
+            document.getElementById('icon-pause').classList.add('hidden');
+            document.getElementById('music-title').innerText = 'Stop';
         }
 
         function nextMusik() {
@@ -1254,7 +1272,7 @@
             ],
             "5D": [
                 { presensi: 1, nama: "Abidzar Athaya Dzaky Algifary" },
-                { presensi: 2, nama: "AINA MACHYA ALSHIDDIQ" },
+                { presensi: 2,  nama: "AINA MACHYA ALSHIDDIQ" },
                 { presensi: 3, nama: "Aisyah Dianov El Ghania" },
                 { presensi: 4, nama: "Almira Syakib Rizqiya" },
                 { presensi: 5, nama: "Alvaro Mahadana" },
