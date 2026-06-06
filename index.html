@@ -61,13 +61,13 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* YouTube Hidden Player */
-        #ytplayer-wrapper { position: absolute; width: 0; height: 0; overflow: hidden; top: -9999px; left: -9999px; }
+        /* YouTube Hidden Player - Diperbarui agar support Background Play (Jangan disembunyikan keluar layar) */
+        #ytplayer-wrapper { position: fixed; width: 5px; height: 5px; bottom: 10px; right: 10px; opacity: 0.001; pointer-events: none; z-index: 10; overflow: hidden; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
 
-    <!-- Area Untuk YouTube Player (Disembunyikan) -->
+    <!-- Area Untuk YouTube Player (Tetap di viewport untuk Background Play) -->
     <div id="ytplayer-wrapper"><div id="ytplayer"></div></div>
 
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
@@ -103,16 +103,12 @@
             </div>
             <div class="overflow-y-auto flex-1 min-h-0 text-left space-y-3 pr-1">
                 <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-3 rounded-xl border border-orange-100">
-                    <h4 class="font-black text-orange-600 text-sm mb-1">🎧 Background Audio & Search Kilat</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sekarang musik tetap jalan walau aplikasi diminimize (Lock Screen Info). Plus pencarian YouTube 10x lebih cepat dengan fitur Server Racing!</p>
-                </div>
-                <div class="bg-gradient-to-r from-red-50 to-rose-50 p-3 rounded-xl border border-red-100">
-                    <h4 class="font-black text-red-600 text-sm mb-1">🎵 YouTube Music Explorer Dewa</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Cari lagu Pop, Lofi, Akustik, Viral, sampai Murottal langsung ketik dari YouTube! Auto main di background super hemat kuota & baterai.</p>
+                    <h4 class="font-black text-orange-600 text-sm mb-1">🔍 Smart Search Engine Scraping</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Gak pakai server API yang sering down! Kates VIP sekarang pakai metode "Smart Scraping" langsung dari Search Engine. Hasil secepat kilat & anti-gagal!</p>
                 </div>
                 <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100">
-                    <h4 class="font-black text-emerald-600 text-sm mb-1">⚡ Anti Error Multi-CORS</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sistem bypass API mutakhir. Koneksi terganggu atau diblokir? Tenang bos, langsung auto-switch ke rekomendasi VIP Offline!</p>
+                    <h4 class="font-black text-emerald-600 text-sm mb-1">🔋 Background Play Fix (Anti-Mati)</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Masalah musik mati saat diminimize? UDAH FIX BOS! Sekarang lu bisa kunci layar HP sambil tetep dengerin YouTube di latar belakang.</p>
                 </div>
                 <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-3 rounded-xl border border-indigo-100">
                     <h4 class="font-black text-indigo-600 text-sm mb-1">💎 Mode Kalkulasi 7 Kelas</h4>
@@ -625,7 +621,7 @@
 
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('ytplayer', {
-                height: '0', width: '0', videoId: '', 
+                height: '100%', width: '100%', videoId: '', 
                 playerVars: { 'playsinline': 1, 'autoplay': 0 },
                 events: { 'onReady': () => { isYtReady = true; }, 'onStateChange': onPlayerStateChange }
             });
@@ -693,62 +689,65 @@
             executeYTSearch();
         }
 
-        // FUNGSI PENCARIAN TINGKAT DEWA (PROMISE RACING ANTI LEMOT)
+        // FUNGSI PENCARIAN SMART ENGINE (DUCKDUCKGO HTML SCRAPING) - ANTI LEMOT, ANTI API DOWN!
         async function executeYTSearch() {
             const query = document.getElementById('yt-search-input').value.trim();
             if(!query) return;
             
             showYtSearchView();
             const resultBox = document.getElementById('yt-search-results');
-            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-2"></div><p class="text-[10px] font-bold text-slate-500">Mencari kilat di server VIP...</p></div>';
+            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-3"></div><p class="text-[10px] font-bold text-slate-500 text-center leading-tight">Mencari via Smart Engine...<br><span class="text-[8px] opacity-70">Anti Lemot & Anti Gagal</span></p></div>';
 
-            // Menembak beberapa API VIP sekaligus, yang tercepat menang (Race)
-            const apis = [
-                `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=music_songs`,
-                `https://pipedapi.tokhmi.xyz/search?q=${encodeURIComponent(query)}&filter=music_songs`,
-                `https://inv.nadeko.net/api/v1/search?q=${encodeURIComponent(query)}`,
-                `https://invidious.jing.rocks/api/v1/search?q=${encodeURIComponent(query)}`
-            ];
-            
             try {
-                // Promise.any mengembalikan respon PERTAMA yang berhasil dengan kecepatan maksimal
-                const fetchPromises = apis.map(api => fetch(api, { signal: AbortSignal.timeout(6000) }).then(async r => {
-                    if (!r.ok) throw new Error('Bad response');
-                    const json = await r.json();
-                    if ((json.items && json.items.length === 0) || (Array.isArray(json) && json.length === 0)) throw new Error('Empty');
-                    return json;
-                }));
+                // Metode 1: DuckDuckGo HTML Lite (Sangat Ringan, Cepat & Bebas Blokir)
+                const targetUrl = encodeURIComponent(`https://html.duckduckgo.com/html/?q=site:youtube.com+${encodeURIComponent(query)}`);
+                const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
 
-                const data = await Promise.any(fetchPromises);
+                const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+                if (!res.ok) throw new Error('Proxy down');
                 
+                const data = await res.json();
+                const htmlText = data.contents;
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const results = doc.querySelectorAll('.result');
+
                 let streams = [];
-                if (data.items) { // Handle format Piped
-                    streams = data.items.filter(i => i.type === 'stream').slice(0, 15).map(i => ({
-                        id: i.url.split('?v=')[1] || i.url.split('/watch?v=')[1], 
-                        title: i.title, 
-                        channel: i.uploaderName, 
-                        thumb: i.thumbnail
-                    }));
-                } else if (Array.isArray(data)) { // Handle format Invidious
-                    streams = data.slice(0, 15).map(i => ({
-                        id: i.videoId, 
-                        title: i.title, 
-                        channel: i.author, 
-                        thumb: i.videoThumbnails?.[1]?.url || i.videoThumbnails?.[0]?.url || `https://img.youtube.com/vi/${i.videoId}/mqdefault.jpg`
-                    }));
-                }
+                results.forEach(res => {
+                    if(streams.length >= 15) return;
+                    const a = res.querySelector('.result__url');
+                    const titleEl = res.querySelector('.result__title');
+                    if(a && titleEl) {
+                        const href = a.getAttribute('href') || '';
+                        const unescaped = decodeURIComponent(href);
+                        const idMatch = unescaped.match(/v=([a-zA-Z0-9_-]{11})/);
+                        if(idMatch) {
+                            let title = titleEl.textContent.trim().replace(/ - YouTube$/, '').replace(/\|.*/, '');
+                            // Hindari duplikat
+                            if(!streams.find(s => s.id === idMatch[1])) {
+                                streams.push({
+                                    id: idMatch[1],
+                                    title: title,
+                                    channel: "YouTube Music",
+                                    thumb: `https://img.youtube.com/vi/${idMatch[1]}/mqdefault.jpg`
+                                });
+                            }
+                        }
+                    }
+                });
 
                 if(streams.length > 0) {
                     resultBox.innerHTML = '';
                     streams.forEach(item => {
-                        if(item.id) renderYTResultItem(item.id, item.title, item.channel, item.thumb);
+                        renderYTResultItem(item.id, item.title, item.channel, item.thumb);
                     });
-                } else {
-                    throw new Error("Kosong");
+                    return;
                 }
+                throw new Error("Kosong");
             } catch(e) {
-                // Fallback UI yang instan jika semua API terblokir/offline
-                resultBox.innerHTML = '<div class="bg-rose-50 text-rose-500 text-[9px] text-center p-2 rounded-lg font-bold mb-2 border border-rose-100">Koneksi terganggu. 🚀<br>Memuat Rekomendasi Offline:</div>';
+                // Fallback Mode Darurat
+                resultBox.innerHTML = '<div class="bg-rose-50 text-rose-500 text-[9px] text-center p-2 rounded-lg font-bold mb-2 border border-rose-100">Koneksi jaringan melemah. 🚀<br>Memuat Rekomendasi Offline VIP:</div>';
                 const filtered = ytFallbackData.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
                 const toShow = filtered.length > 0 ? filtered : ytFallbackData;
                 toShow.forEach(item => {
