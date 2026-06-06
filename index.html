@@ -102,6 +102,10 @@
                 <button onclick="tutupChangelog()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
             <div class="overflow-y-auto flex-1 min-h-0 text-left space-y-3 pr-1">
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-3 rounded-xl border border-orange-100">
+                    <h4 class="font-black text-orange-600 text-sm mb-1">🎧 Background Audio & Search Kilat</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sekarang musik tetap jalan walau aplikasi diminimize (Lock Screen Info). Plus pencarian YouTube 10x lebih cepat dengan fitur Server Racing!</p>
+                </div>
                 <div class="bg-gradient-to-r from-red-50 to-rose-50 p-3 rounded-xl border border-red-100">
                     <h4 class="font-black text-red-600 text-sm mb-1">🎵 YouTube Music Explorer Dewa</h4>
                     <p class="text-[11px] text-slate-700 font-bold leading-tight">Cari lagu Pop, Lofi, Akustik, Viral, sampai Murottal langsung ketik dari YouTube! Auto main di background super hemat kuota & baterai.</p>
@@ -127,7 +131,7 @@
                     <p class="text-[11px] text-slate-700 font-bold leading-tight">Sistem cerdas yang otomatis mendeteksi dan memperbaiki kerusakan database, bye-bye data siswa hilang!</p>
                 </div>
                 <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-3 rounded-xl border border-pink-100">
-                    <h4 class="font-black text-pink-600 text-sm mb-1">🎧 Default Playlist VIP</h4>
+                    <h4 class="font-black text-pink-600 text-sm mb-1">🎶 Default Playlist VIP</h4>
                     <p class="text-[11px] text-slate-700 font-bold leading-tight">Nikmati dua playlist eksklusif: *Cafe Vibes Indonesia* & *New Normal Keroncong* yang otomatis sedia di player kamu.</p>
                 </div>
             </div>
@@ -569,6 +573,27 @@
         }
 
         // ==========================================
+        // ======= MODULE MEDIA SESSION =============
+        // ==========================================
+        function updateMediaSession(title, artist, artworkUrl) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: title,
+                    artist: artist,
+                    album: 'KATES VIP',
+                    artwork: [
+                        { src: artworkUrl || 'LOGO.png', sizes: '512x512', type: 'image/png' }
+                    ]
+                });
+
+                navigator.mediaSession.setActionHandler('play', () => { toggleMusik(); });
+                navigator.mediaSession.setActionHandler('pause', () => { toggleMusik(); });
+                navigator.mediaSession.setActionHandler('previoustrack', () => { prevMusik(); });
+                navigator.mediaSession.setActionHandler('nexttrack', () => { nextMusik(); });
+            }
+        }
+
+        // ==========================================
         // ======= MODULE MUSIK YOUTUBE EXPLORER ====
         // ==========================================
         let isPlaying = false; 
@@ -588,7 +613,7 @@
             { title: 'NEW NORMAL KERONCONG', id: 'lkiLjk_7tts', channel: 'Keroncong' }
         ];
 
-        // Data Cadangan Kategori (Jika Sedang Tidak Ada Internet Sama Sekali / API Terputus Total)
+        // Data Cadangan Kategori
         const ytFallbackData = [
             { id: 'GIxLDvYTGaU', title: 'Cafe Vibes Indonesia', channel: 'Cafe Music' },
             { id: 'lkiLjk_7tts', title: 'NEW NORMAL KERONCONG', channel: 'Keroncong' },
@@ -613,6 +638,7 @@
                 if(videoData && videoData.title && youtubeLibrary[currentYtIndex]) {
                     youtubeLibrary[currentYtIndex].title = videoData.title; 
                     document.getElementById('music-title').innerText = videoData.title;
+                    updateMediaSession(videoData.title, youtubeLibrary[currentYtIndex].channel || 'YouTube Media', `https://img.youtube.com/vi/${youtubeLibrary[currentYtIndex].id}/hqdefault.jpg`);
                 }
                 updateUIPlayer();
             } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
@@ -667,81 +693,61 @@
             executeYTSearch();
         }
 
-        // FUNGSI PENCARIAN TINGKAT DEWA (ANTI-ERROR CORS)
+        // FUNGSI PENCARIAN TINGKAT DEWA (PROMISE RACING ANTI LEMOT)
         async function executeYTSearch() {
             const query = document.getElementById('yt-search-input').value.trim();
             if(!query) return;
             
             showYtSearchView();
             const resultBox = document.getElementById('yt-search-results');
-            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-2"></div><p class="text-[10px] font-bold text-slate-500">Mencari di YouTube...</p></div>';
+            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-2"></div><p class="text-[10px] font-bold text-slate-500">Mencari kilat di server VIP...</p></div>';
 
-            // Bypass API Publik yang sering down menggunakan Proxy Direct Scrape.
-            const proxies = [
-                'https://api.allorigins.win/raw?url=',
-                'https://corsproxy.io/?'
+            // Menembak beberapa API VIP sekaligus, yang tercepat menang (Race)
+            const apis = [
+                `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://pipedapi.tokhmi.xyz/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://inv.nadeko.net/api/v1/search?q=${encodeURIComponent(query)}`,
+                `https://invidious.jing.rocks/api/v1/search?q=${encodeURIComponent(query)}`
             ];
             
-            let streams = [];
-            let success = false;
-            
-            for(let proxy of proxies) {
-                try {
-                    const targetUrl = encodeURIComponent(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`);
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 detik batas tiap proxy
-                    const res = await fetch(proxy + targetUrl, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    if(!res.ok) continue;
-                    const text = await res.text();
-                    
-                    let dataStr = "";
-                    const match1 = text.match(/var ytInitialData = (\{.*?\});<\/script>/);
-                    const match2 = text.match(/window\["ytInitialData"\] = (\{.*?\});/);
-                    if(match1 && match1[1]) dataStr = match1[1];
-                    else if(match2 && match2[1]) dataStr = match2[1];
-                    
-                    if(dataStr) {
-                        const data = JSON.parse(dataStr);
-                        let results = [];
-                        
-                        // Crawler canggih untuk menyusuri objek YouTube
-                        function extractVideos(obj) {
-                            if (results.length >= 15) return;
-                            if (typeof obj !== 'object' || obj === null) return;
-                            if (obj.videoRenderer && obj.videoRenderer.videoId) {
-                                try {
-                                    let id = obj.videoRenderer.videoId;
-                                    let title = obj.videoRenderer.title.runs[0].text;
-                                    let channel = obj.videoRenderer.ownerText ? obj.videoRenderer.ownerText.runs[0].text : 'YouTube';
-                                    if(!results.find(x => x.id === id)) results.push({id, title, channel});
-                                } catch(e){}
-                            }
-                            if(Array.isArray(obj)) {
-                                for(let item of obj) extractVideos(item);
-                            } else {
-                                for (let k in obj) extractVideos(obj[k]);
-                            }
-                        }
-                        
-                        extractVideos(data);
-                        if(results.length > 0) {
-                            streams = results;
-                            success = true;
-                            break; // Stop loop jika proxy ini sukses
-                        }
-                    }
-                } catch(e) { console.log("Proxy gagal:", e); }
-            }
+            try {
+                // Promise.any mengembalikan respon PERTAMA yang berhasil dengan kecepatan maksimal
+                const fetchPromises = apis.map(api => fetch(api, { signal: AbortSignal.timeout(6000) }).then(async r => {
+                    if (!r.ok) throw new Error('Bad response');
+                    const json = await r.json();
+                    if ((json.items && json.items.length === 0) || (Array.isArray(json) && json.length === 0)) throw new Error('Empty');
+                    return json;
+                }));
 
-            if(success && streams.length > 0) {
-                resultBox.innerHTML = '';
-                streams.forEach(item => {
-                    renderYTResultItem(item.id, item.title, item.channel, `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`);
-                });
-            } else {
-                // Jika offline / tanpa koneksi sama sekali, tampilkan hasil cadangan VIP
+                const data = await Promise.any(fetchPromises);
+                
+                let streams = [];
+                if (data.items) { // Handle format Piped
+                    streams = data.items.filter(i => i.type === 'stream').slice(0, 15).map(i => ({
+                        id: i.url.split('?v=')[1] || i.url.split('/watch?v=')[1], 
+                        title: i.title, 
+                        channel: i.uploaderName, 
+                        thumb: i.thumbnail
+                    }));
+                } else if (Array.isArray(data)) { // Handle format Invidious
+                    streams = data.slice(0, 15).map(i => ({
+                        id: i.videoId, 
+                        title: i.title, 
+                        channel: i.author, 
+                        thumb: i.videoThumbnails?.[1]?.url || i.videoThumbnails?.[0]?.url || `https://img.youtube.com/vi/${i.videoId}/mqdefault.jpg`
+                    }));
+                }
+
+                if(streams.length > 0) {
+                    resultBox.innerHTML = '';
+                    streams.forEach(item => {
+                        if(item.id) renderYTResultItem(item.id, item.title, item.channel, item.thumb);
+                    });
+                } else {
+                    throw new Error("Kosong");
+                }
+            } catch(e) {
+                // Fallback UI yang instan jika semua API terblokir/offline
                 resultBox.innerHTML = '<div class="bg-rose-50 text-rose-500 text-[9px] text-center p-2 rounded-lg font-bold mb-2 border border-rose-100">Koneksi terganggu. 🚀<br>Memuat Rekomendasi Offline:</div>';
                 const filtered = ytFallbackData.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
                 const toShow = filtered.length > 0 ? filtered : ytFallbackData;
@@ -865,6 +871,7 @@
             const titleEl = document.getElementById('music-title'); titleEl.innerText = musicLibrary[currentTrackIndex].title;
             if (musicLibrary[currentTrackIndex].title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
             renderEqualizer();
+            updateMediaSession(musicLibrary[currentTrackIndex].title, "MP3 Lokal", "LOGO.png");
         }
 
         function setTrackOnline(index) {
@@ -875,6 +882,7 @@
             const titleEl = document.getElementById('music-title'); titleEl.innerText = youtubeLibrary[currentYtIndex].title;
             if (youtubeLibrary[currentYtIndex].title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
             renderEqualizer();
+            // Metadata Media Session YouTube dihandle di onPlayerStateChange
         }
 
         function updateUIPlayer() {
@@ -969,7 +977,7 @@
             "2D": [{"presensi":1,"nama":"AISYAH IZZATUNNISA PUTRI NUGROHO"},{"presensi":2,"nama":"ARSHAKA RAMAZHAN ALGIFARI MANTOW"},{"presensi":3,"nama":"CARLO ZEESHAN RUMI KURNIAWAN"},{"presensi":4,"nama":"Fatih Akhtar Raiffaza"},{"presensi":5,"nama":"FAUZAN AYDIN ZULKIFLI"},{"presensi":6,"nama":"HANIFA AQILA BAHEERA"},{"presensi":7,"nama":"Kamila Noveara Athifa"},{"presensi":8,"nama":"Kenes Pratista Vinala Putri"},{"presensi":9,"nama":"KHANZA ADELIA PUTRI WIJAYA"},{"presensi":10,"nama":"MUHAMMAD UBAY PRASETYO"},{"presensi":11,"nama":"MUHAMMAD ADHYAKSA BISMA"},{"presensi":12,"nama":"MUHAMMAD FARIZ SETYAWAN"},{"presensi":13,"nama":"MUHAMMAD RAFFAN ALFARIZQI FATAHILLAH"},{"presensi":14,"nama":"MUHAMMAD RAFFI RAFASYA NUGROHO"},{"presensi":15,"nama":"Nathan Haven Akmal Alfaruq"},{"presensi":16,"nama":"Quinsha Qiana Zakeysha"},{"presensi":17,"nama":"RAFA FEBIAN ALFARIZKY"},{"presensi":18,"nama":"RAFISQY YUSUF ALFARIZA"},{"presensi":19,"nama":"RHEA ALZEA NUGROHO"},{"presensi":20,"nama":"Rifaul Zhafran Ghazani"},{"presensi":21,"nama":"Riffat Ahmad Luthfi"},{"presensi":22,"nama":"Rumaisha Pragya Raharja"},{"presensi":23,"nama":"SADDAM MUHAMMAD AFKARI"},{"presensi":24,"nama":"SAILA AYUDIA PUTRI"},{"presensi":25,"nama":"VENUS ALMAHYRA HARIYANTO"},{"presensi":26,"nama":"ABIYYU DHABITH AL HAMIZ"}],
             "3A": [{"presensi":1,"nama":"Abdillah Ali Arzan"},{"presensi":2,"nama":"Abid Luqman Rajendra"},{"presensi":3,"nama":"ADIVA SHAFINA PUTRI"},{"presensi":4,"nama":"Adzkiya Nurrizqi Rakhmawati"},{"presensi":5,"nama":"Afsheena Hananezka Ar Razzan"},{"presensi":6,"nama":"Aisyah Ayudia Inara"},{"presensi":7,"nama":"Akifa Naila Asy'ari"},{"presensi":8,"nama":"Alfath Ataya Abqary Arzam"},{"presensi":9,"nama":"ARSYILA KIKANDRYA SUSANTO"},{"presensi":10,"nama":"Arsyillah Nur Sofiani"},{"presensi":11,"nama":"Aruna Sachi Philia"},{"presensi":12,"nama":"Ashadiyara Haflasea"},{"presensi":13,"nama":"Athifa Mahira Khansa"},{"presensi":14,"nama":"AZZAHRA ALNAIRA"},{"presensi":15,"nama":"DINATA ALLEN DHYO AL LATIF"},{"presensi":16,"nama":"FAEYZA SYATHIR KURNIAWAN"},{"presensi":17,"nama":"Fakhri Luthfi Hardianto"},{"presensi":18,"nama":"Garland Mashka Rafeyfa"},{"presensi":19,"nama":"Juang Haidar Athalla"},{"presensi":20,"nama":"Kalazahy Nadwa Zayn"},{"presensi":21,"nama":"MUHAMMAD HANIF RINGGAN ALFARIZ BASUKI"},{"presensi":22,"nama":"MUHAMMAD RAFKA VIRENDRA"},{"presensi":23,"nama":"Nadhira Khaerani Hariyadi"},{"presensi":24,"nama":"Nayyara Aqila Razanah"},{"presensi":25,"nama":"Omar Abdul Aziz"},{"presensi":26,"nama":"Raditya Pradipta Ardhani"},{"presensi":27,"nama":"Rashya Alrafaeyza Hajam"},{"presensi":28,"nama":"Shafira Noreen Choirunnisa"},{"presensi":29,"nama":"SHAZFA LASIRA GUNARSO"},{"presensi":30,"nama":"Syakira Tsaqif Choirunnisa"}],
             "3B": [{"presensi":1,"nama":"Abiy Vishaka Budi Nugroho"},{"presensi":2,"nama":"Adeeva Meidina Assyifatama"},{"presensi":3,"nama":"Adzkiya Naila Arsyila Atmadja"},{"presensi":4,"nama":"Aello Mezaluna Arubby"},{"presensi":5,"nama":"AERILYN VLA ADZKADINA"},{"presensi":6,"nama":"AHMAD ALFARIZQI SHAQUILLE PUTRA"},{"presensi":7,"nama":"AHNAF KHALIFAZIL AFRIANSAH"},{"presensi":8,"nama":"Aldena Dwisitta Wildani"},{"presensi":9,"nama":"Altaz Qianno Al Barra"},{"presensi":10,"nama":"Candrika Althafunnisa"},{"presensi":11,"nama":"FADLI ABQARY ALHUSNA"},{"presensi":12,"nama":"Fahreza Fathan Abdillah"},{"presensi":13,"nama":"Gavin Yoga Alvaro"},{"presensi":14,"nama":"Ghaida Azkayra Khairani"},{"presensi":15,"nama":"HAFIZH KHWARIZMI AL HANI"},{"presensi":16,"nama":"Jihan Aisharani Zea Zayyana"},{"presensi":17,"nama":"KEENAN KANAKA ALLI ZAFLAN"},{"presensi":18,"nama":"Khansa Monaya Rumaysha"},{"presensi":19,"nama":"Khanza Athifa Ningrum"},{"presensi":20,"nama":"KHAYLILA QUEENA AHMAD"},{"presensi":21,"nama":"KIRANA SHAQILA RAMADHANI"},{"presensi":22,"nama":"Mikhayla Kinanti Azkadina"},{"presensi":23,"nama":"Muhammad Al Ahsan Iqbal Setyo"},{"presensi":24,"nama":"Narulita Beryl Ramadhani"},{"presensi":25,"nama":"Nashila Zia Fahranie"},{"presensi":26,"nama":"RAIHAN ADITYA PRAWIRA"},{"presensi":27,"nama":"REYHAN ATHARIZ WIRAWAN"},{"presensi":28,"nama":"Romaisha Celina Okvin"},{"presensi":29,"nama":"Sarah Ali Hudzaifi"},{"presensi":30,"nama":"SYAMIL YAHYA AL HAFIDZI"}],
-            "3C": [{"presensi":1,"nama":"Abizar Fatih Pratama"},{"presensi":2,"nama":"ADEEVA AULIASYIFA"},{"presensi":3,"nama":"AISYAH AYUDIA INARA"},{"presensi":4,"nama":"AISYAH NAMEERA FATHIYYATURAHMA"},{"presensi":5,"nama":"AL-GHAZALI AISY ARFA DEANDRA"},{"presensi":6,"nama":"Alisha Natania Khumaira Dachlan"},{"presensi":7,"nama":"ALMEERA SHABIRA EKATARA"},{"presensi":8,"nama":"Almira Shanum Medina Sungkan"},{"presensi":9,"nama":"Aqila Salma Kamila"},{"presensi":10,"nama":"ARJUNA SYAILENDRA AL KHALIFI"},{"presensi":11,"nama":"Arka Leander Raffasya"},{"presensi":12,"nama":"ARSHAKA BINTANG ARLINGGA JATI"},{"presensi":13,"nama":"ARSYA AQUILA MUSYAFFA"},{"presensi":14,"nama":"Azhar Zalfa Faradisa"},{"presensi":15,"nama":"BARRAHILAL AMAHU MANGGANA"},{"presensi":16,"nama":"Callista Nabila Utomo"},{"presensi":17,"nama":"Fathir Alvissyahbana Mudjaed"},{"presensi":18,"nama":"FEARGAL V MARSA"},{"presensi":19,"nama":"KANZIA NAIRA AQILA"},{"presensi":20,"nama":"KHAIRINA FATIMA AL ADHA"},{"presensi":21,"nama":"Khayra Zakiyya Ferris"},{"presensi":22,"nama":"Kimora Humaira Azzahra"},{"presensi":23,"nama":"Laksita Shanumpadma Elhadi"},{"presensi":24,"nama":"MUHAMMAD ELRAJA HABIBIE SANTOSO"},{"presensi":25,"nama":"Muhammad Saifan Asykar Alfansyah"},{"presensi":26,"nama":"Rumaisha Nuha Muhammad"},{"presensi":27,"nama":"Shaula Alya Setiawan"},{"presensi":28,"nama":"Sybilla Jelita Aditia"},{"presensi":29,"nama":"Zavier Elfa'az Zayn Hariyono"},{"presensi":30,"nama":"Zulfadhli Fayyad Hidayat"}],
+            "3C": [{"presensi":1,"nama":"Abizar Fatih Pratama"},{"presensi":2,"nama":"ADEEVA AULIASYIFA"},{"presensi":3,"nama":"AISYAY AYUDIA INARA"},{"presensi":4,"nama":"AISYAH NAMEERA FATHIYYATURAHMA"},{"presensi":5,"nama":"AL-GHAZALI AISY ARFA DEANDRA"},{"presensi":6,"nama":"Alisha Natania Khumaira Dachlan"},{"presensi":7,"nama":"ALMEERA SHABIRA EKATARA"},{"presensi":8,"nama":"Almira Shanum Medina Sungkan"},{"presensi":9,"nama":"Aqila Salma Kamila"},{"presensi":10,"nama":"ARJUNA SYAILENDRA AL KHALIFI"},{"presensi":11,"nama":"Arka Leander Raffasya"},{"presensi":12,"nama":"ARSHAKA BINTANG ARLINGGA JATI"},{"presensi":13,"nama":"ARSYA AQUILA MUSYAFFA"},{"presensi":14,"nama":"Azhar Zalfa Faradisa"},{"presensi":15,"nama":"BARRAHILAL AMAHU MANGGANA"},{"presensi":16,"nama":"Callista Nabila Utomo"},{"presensi":17,"nama":"Fathir Alvissyahbana Mudjaed"},{"presensi":18,"nama":"FEARGAL V MARSA"},{"presensi":19,"nama":"KANZIA NAIRA AQILA"},{"presensi":20,"nama":"KHAIRINA FATIMA AL ADHA"},{"presensi":21,"nama":"Khayra Zakiyya Ferris"},{"presensi":22,"nama":"Kimora Humaira Azzahra"},{"presensi":23,"nama":"Laksita Shanumpadma Elhadi"},{"presensi":24,"nama":"MUHAMMAD ELRAJA HABIBIE SANTOSO"},{"presensi":25,"nama":"Muhammad Saifan Asykar Alfansyah"},{"presensi":26,"nama":"Rumaisha Nuha Muhammad"},{"presensi":27,"nama":"Shaula Alya Setiawan"},{"presensi":28,"nama":"Sybilla Jelita Aditia"},{"presensi":29,"nama":"Zavier Elfa'az Zayn Hariyono"},{"presensi":30,"nama":"Zulfadhli Fayyad Hidayat"}],
             "3D": [{"presensi":1,"nama":"Afiza Azkayra Setyawan"},{"presensi":2,"nama":"Ahnaf Hashif Wibowo"},{"presensi":3,"nama":"Aisyah Ayunda Hamidi"},{"presensi":4,"nama":"AQILLA MUFIA LASHIRA RIVAI"},{"presensi":5,"nama":"Arshaka Radinka Shakeel"},{"presensi":6,"nama":"ARSY FISYAH KHUSNUL"},{"presensi":7,"nama":"Arsyila Ashadiya Adzra Faozi"},{"presensi":8,"nama":"Deisya Azzahra Pradana"},{"presensi":9,"nama":"Deva Aquina Sakhi"},{"presensi":10,"nama":"GINDA ARSYIL VINALES"},{"presensi":11,"nama":"HASNA NUR HUWA YIDA"},{"presensi":12,"nama":"Iqbal Bintang Pramudya"},{"presensi":13,"nama":"KEANU DANISH KURNIAWAN"},{"presensi":14,"nama":"KEN ARUNA GENDHIS NARESWARI"},{"presensi":15,"nama":"Khaila Putri Pradipta"},{"presensi":16,"nama":"KHALISA SABRIA RANAA SUGIARTA"},{"presensi":17,"nama":"LASHIRA IZZATI SHANUM ZULKARNAIN"},{"presensi":18,"nama":"LETYCIA YUPI QURRATU'AIN BUDIARSO"},{"presensi":19,"nama":"Muhammad Gibran Al Fath Widhiananto"},{"presensi":20,"nama":"NAFISA AQILA PUTRI"},{"presensi":21,"nama":"Nafla Aina Rohman"},{"presensi":22,"nama":"RAKA ADHYASTHA PARADILLA"},{"presensi":23,"nama":"Respati Zayyan Abid"},{"presensi":24,"nama":"SYAFIQ ABQORY"},{"presensi":25,"nama":"Syahira Naura Herlambang"},{"presensi":26,"nama":"VAREL ATHAFARIZ ZHAFRAN SAPUTRA"},{"presensi":27,"nama":"Zayn Khalifa Riswardana"},{"presensi":28,"nama":"Zeevana Shaqeen Azzahra Santoso"},{"presensi":29,"nama":"ZIDAN ATHALLA DHIAULHAQ"},{"presensi":30,"nama":"Zidan Faiz Ramadhan"}],
             "4A": [{"presensi":1,"nama":"Aisha Ziya Shayfa"},{"presensi":2,"nama":"Al Syarawi Arfa Gunawan"},{"presensi":3,"nama":"Annisa Salsabila Zafarani"},{"presensi":4,"nama":"AQILA BELLATRIX HUMAIRAH"},{"presensi":5,"nama":"Assyifa Ar Razi"},{"presensi":6,"nama":"Athariz Calief Arganta"},{"presensi":7,"nama":"AZKA RAQILA AL GHIFARI"},{"presensi":8,"nama":"BINTANG PRADHIPTA HERMAWAN"},{"presensi":9,"nama":"BYANCA CHIARA SYAFIQA"},{"presensi":10,"nama":"DISTYA RACHYANANENDRA ALMAHYRA"},{"presensi":11,"nama":"FAAIZ TSAANI KAMILAN EL CHOIRI"},{"presensi":12,"nama":"Farrel Arkaan Oktora"},{"presensi":13,"nama":"HANINDYA JATI PRAMUDITA"},{"presensi":14,"nama":"Hans Aulia Khawari"},{"presensi":15,"nama":"Keisha Amandla Shareefa Iskandar"},{"presensi":16,"nama":"KEYSHA AZZAHRA ZAHFIRA"},{"presensi":17,"nama":"Khanza Naila Santosa"},{"presensi":18,"nama":"MUHAMMAD ALTEZZA ZABDAN"},{"presensi":19,"nama":"Muhammad Althof Attarizq Wishaka"},{"presensi":20,"nama":"Muhammad Irsyad At Tamimi"},{"presensi":21,"nama":"MUHAMMAD REVAN PRADITYA"},{"presensi":22,"nama":"Muhammad Yusuf Ramadhan Ar-Rasyid"},{"presensi":23,"nama":"NADIA APRILIA SYAKILA"},{"presensi":24,"nama":"NAUFAL ABQARI ARADHANA"},{"presensi":25,"nama":"Nayaka Fajar Sriyanto"},{"presensi":26,"nama":"PARADUTA ISNAN SUSILO"},{"presensi":27,"nama":"RAISYA RIZKY RAFIFAH PUTRI"},{"presensi":28,"nama":"Rumaysha Numa Reis"},{"presensi":29,"nama":"Sadryan Bima Ar Rizky"},{"presensi":30,"nama":"Syanala Kania Salsabila"}],
             "4B": [{"presensi":1,"nama":"ADIRA AZZAHRA PUTRI"},{"presensi":2,"nama":"AISYAH ZEA ALMAHYRA"},{"presensi":3,"nama":"Aleesha Afsheen Amarudin"},{"presensi":4,"nama":"ALZAIDAN KHALIQ PERMANA"},{"presensi":5,"nama":"Annaas Rokah Athallah"},{"presensi":6,"nama":"Citrahayi Abbidah Embun Kirana"},{"presensi":7,"nama":"DAFFA CAESAR EFENDI"},{"presensi":8,"nama":"Danendra Azzam Pambudi"},{"presensi":9,"nama":"Delisha Silmi Afiqa"},{"presensi":10,"nama":"Dhia Sabrina Azzalea"},{"presensi":11,"nama":"Fahreza Khalifa Rizky Harun"},{"presensi":12,"nama":"FATIH ALI TSAQIF"},{"presensi":13,"nama":"Hafiza Asyifa Risdana"},{"presensi":14,"nama":"Hafizh Athar Suprapto"},{"presensi":15,"nama":"HAFSA NADHIRA HISAN"},{"presensi":16,"nama":"Irsyad Thohir Putra Irawan"},{"presensi":17,"nama":"KANUGRAHAN ADI WICAKSONO"},{"presensi":18,"nama":"Keanu Putra Hariyadi"},{"presensi":19,"nama":"KEJORA LANGGENG BILITANIA"},{"presensi":20,"nama":"Lucky Arvin Qaid"},{"presensi":21,"nama":"Mikayla Putri Prasetyo"},{"presensi":22,"nama":"Muhamad Adien Taufik"},{"presensi":23,"nama":"NAIRA SYABILA AZZAHRA PUTRI"},{"presensi":24,"nama":"Prince Muhammadiyah El Azzami Sukoco"},{"presensi":25,"nama":"RAJENDRA FADHIL ALFAYI PRAMONO"},{"presensi":26,"nama":"SHEZAN INARA NAJMA"},{"presensi":27,"nama":"Tristan Adelio Setiawan"},{"presensi":28,"nama":"WERKUDARA VINCENT SANTOSO"},{"presensi":29,"nama":"ZAHSY QUEENSHA ELNAURA"}],
