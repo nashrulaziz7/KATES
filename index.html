@@ -37,9 +37,6 @@
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 8s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        #install-banner { transform: translateY(-100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        #install-banner.show { transform: translateY(0); }
-
         .subject-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; overflow: hidden; }
         .symbol { position: absolute; font-weight: 900; white-space: nowrap; will-change: transform, opacity; animation: float-up linear infinite; text-shadow: 0 2px 5px rgba(255,255,255,0.8); }
         @keyframes float-up { 0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; } 15% { opacity: 0.35; } 50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; } 85% { opacity: 0.35; } 100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; } }
@@ -60,9 +57,18 @@
         .input-active { border: 2px solid #3b82f6 !important; background-color: #eff6ff !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         
         select.custom-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 1.5rem; }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* YouTube Hidden Player */
+        #ytplayer-wrapper { position: absolute; width: 0; height: 0; overflow: hidden; top: -9999px; left: -9999px; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
+
+    <!-- Area Untuk YouTube Player (Disembunyikan) -->
+    <div id="ytplayer-wrapper"><div id="ytplayer"></div></div>
 
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
         <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1">
@@ -109,7 +115,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: MANAJEMEN SISWA (TAMBAH / EDIT / HAPUS) -->
+    <!-- MODAL 2: MANAJEMEN SISWA -->
     <div id="tambah-siswa-modal" class="fixed inset-0 z-[60] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('tambah-siswa-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
@@ -170,18 +176,67 @@
         </div>
     </div>
 
-    <!-- MODAL 6: MANAGER MUSIK -->
+    <!-- MODAL 6: MANAGER MUSIK (DUAL MODE DENGAN YOUTUBE EXPLORER) -->
     <div id="music-manager-modal" class="fixed inset-0 z-[75] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal('music-manager-modal', false)"></div>
-        <div class="relative bg-white rounded-3xl p-4 shadow-2xl max-w-xs w-[90%] border border-slate-100 flex flex-col text-center transform scale-95 transition-transform duration-300 max-h-[75vh]">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-black text-slate-800 text-lg flex items-center gap-2"><span class="text-xl">🎵</span> Playlist Lagu</h3>
+        <div class="relative bg-white rounded-3xl p-4 shadow-2xl max-w-sm w-[92%] border border-slate-100 flex flex-col transform scale-95 transition-transform duration-300 h-[85vh]">
+            <div class="flex justify-between items-center mb-2 shrink-0">
+                <h3 class="font-black text-slate-800 text-lg flex items-center gap-2"><span class="text-xl">🎵</span> Music Player</h3>
                 <button onclick="toggleModal('music-manager-modal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div id="playlist-container" class="overflow-y-auto mb-4 border border-slate-100 rounded-xl bg-slate-50 flex-1 max-h-[45vh] text-left p-1 space-y-1"></div>
-            <button onclick="triggerUploadMusik()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black rounded-xl shadow-lg shadow-emerald-100 text-[11px] active:scale-95 transition-all flex items-center justify-center gap-2 tracking-widest uppercase">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg> Tambah Lagu Baru
-            </button>
+            
+            <!-- TABS MODE MUSIK -->
+            <div class="flex bg-slate-100 rounded-lg p-1 mb-3 shrink-0">
+                <button id="tab-music-offline" onclick="setMusicMode('offline')" class="flex-1 py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all flex items-center justify-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg> MP3 LOKAL</button>
+                <button id="tab-music-online" onclick="setMusicMode('online')" class="flex-1 py-1.5 text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all flex items-center justify-center gap-1"><svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> YOUTUBE</button>
+            </div>
+
+            <!-- CONTAINER OFFLINE -->
+            <div id="container-offline" class="flex flex-col flex-1 min-h-0">
+                <div id="playlist-container-offline" class="overflow-y-auto mb-3 border border-slate-100 rounded-xl bg-slate-50 flex-1 text-left p-1 space-y-1"></div>
+                <button onclick="triggerUploadMusik()" class="w-full shrink-0 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-black rounded-xl shadow-lg shadow-blue-100 text-[10px] active:scale-95 transition-all flex items-center justify-center gap-1.5 tracking-widest uppercase mt-auto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg> Tambah MP3 Lokal
+                </button>
+            </div>
+
+            <!-- CONTAINER ONLINE (YOUTUBE BROWSER) -->
+            <div id="container-online" class="hidden flex-col flex-1 min-h-0 bg-slate-50 rounded-xl p-2 border border-slate-100">
+                <!-- Search Bar YouTube -->
+                <div class="flex gap-1.5 mb-2 shrink-0">
+                    <input type="text" id="yt-search-input" placeholder="Cari lagu di YouTube..." class="flex-1 p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-red-400 shadow-sm" onkeydown="if(event.key==='Enter') executeYTSearch()">
+                    <button onclick="executeYTSearch()" class="bg-red-500 text-white w-10 rounded-xl font-black text-xs hover:bg-red-600 active:scale-95 flex items-center justify-center shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Quick Categories -->
+                <div class="flex gap-1.5 mb-2 overflow-x-auto pb-1 scrollbar-hide shrink-0">
+                    <button onclick="quickSearchYT('Lofi Relaxing Music')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🎧 Lofi</button>
+                    <button onclick="quickSearchYT('Acoustic Cafe Pop')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🎸 Akustik</button>
+                    <button onclick="quickSearchYT('Murottal Alquran Paling Merdu')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🕌 Murottal</button>
+                    <button onclick="quickSearchYT('Top Hits Pop Indonesia')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🔥 Hits</button>
+                </div>
+
+                <!-- Toggle View: Playlist vs Search Results -->
+                <div class="flex justify-between items-center mb-1 shrink-0 px-1">
+                    <span id="yt-view-title" class="text-[10px] font-black text-slate-500 uppercase tracking-widest">PLAYLIST TERSIMPAN</span>
+                    <button id="btn-back-playlist" onclick="showYtPlaylistView()" class="hidden text-[9px] font-bold text-red-500 hover:underline">Tutup Pencarian</button>
+                </div>
+
+                <!-- Dynamic Content Area (Scrollable) -->
+                <div id="yt-dynamic-content" class="overflow-y-auto flex-1 min-h-0 bg-white border border-slate-200 rounded-xl p-1.5 space-y-1 relative">
+                    <!-- Playlist View (Default) -->
+                    <div id="playlist-container-online" class="space-y-1"></div>
+                    <!-- Search Results View (Hidden) -->
+                    <div id="yt-search-results" class="hidden space-y-1.5 pb-2"></div>
+                </div>
+
+                <!-- Fallback Manual Link -->
+                <div class="flex gap-1 mt-2 shrink-0 pt-2 border-t border-slate-200">
+                    <input type="text" id="yt-url-input" placeholder="Atau paste URL Youtube..." class="flex-1 p-2 border border-slate-200 bg-white rounded-lg text-[10px] font-bold outline-none focus:border-red-400">
+                    <button onclick="tambahLaguYoutubeManual()" class="bg-slate-800 text-white px-3 rounded-lg font-black text-[10px] hover:bg-slate-700 active:scale-95">ADD</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -192,9 +247,10 @@
             
             <div class="mx-auto flex flex-col items-center mb-1 relative z-30 pointer-events-auto w-full px-2">
                 <div id="equalizer" class="flex items-end justify-center gap-[2px] h-[14px] mb-1 opacity-0 transition-opacity duration-300 w-[80%] max-w-[200px]"></div>
-                <div class="bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer" onclick="bukaManagerMusik()">
-                    <span class="text-blue-400 text-[11px] shrink-0 animate-pulse">🎵</span>
-                    <div class="marquee-wrapper border-r border-slate-600 pr-1 mr-1 flex-1 shrink"><span id="music-title" class="marquee-text text-[9px] text-white font-black uppercase tracking-widest" style="animation-play-state: paused;">SIAP MEMUTAR...</span></div>
+                <!-- PLAYER UI -->
+                <div id="player-ui" class="bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer transition-colors duration-300" onclick="bukaManagerMusik()">
+                    <span id="player-icon" class="text-blue-400 text-[11px] shrink-0 animate-pulse">🎵</span>
+                    <div class="marquee-wrapper border-r border-slate-600 pr-1 mr-1 flex-1 shrink"><span id="music-title" class="marquee-text text-[9px] text-white font-black uppercase tracking-widest" style="animation-play-state: paused;">PILIH MUSIK...</span></div>
                     <div class="flex items-center gap-2 shrink-0">
                         <button onclick="event.stopPropagation(); prevMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg></button>
                         <button onclick="event.stopPropagation(); toggleMusik()" id="btn-play-musik" class="text-white hover:text-blue-300 active:scale-90 transition-transform"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg><svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg></button>
@@ -311,9 +367,12 @@
         </div>
     </div>
 
+    <!-- YouTube IFrame API Script -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
         function refreshApp() { window.location.href = window.location.pathname + '?v=' + new Date().getTime(); }
-
+        // (Modul Kalkulator Standard Dibawah)
         function bersihkanLayar() {
             activeKelas = null; activeSiswaId = ""; document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
@@ -359,57 +418,332 @@
             setTimeout(() => { popup.classList.remove('opacity-100'); popup.classList.add('opacity-0', 'pointer-events-none'); }, 250);
         }
 
-        const musicLibrary = [{ title: 'MBG_Mas Bahlil Ganteng', src: 'MBG_Mas Bahlil Ganteng.mp3' }, { title: 'BGN_Bos Gizi Nyolong', src: 'BGN_Bos Gizi Nyolong.mp3' }, { title: 'Perdamaian', src: 'Perdamaian.mp3' }, { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' }, { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' }, { title: 'SurgaMu', src: 'SurgaMu.mp3' }, { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' }, { title: 'Para PencariMu', src: 'Para PencariMu.mp3' }, { title: 'Maha Besar', src: 'Maha Besar.mp3' }, { title: 'Ijinkan Aku', src: 'Ijinkan Aku.mp3' }, { title: 'Hidup Hanya Sementara', src: 'Hidup Hanya Sementar.mp3' }, { title: 'Doa Untuk Ibu', src: 'Doa Untuk Ibu.mp3' }, { title: 'Dia Maha Sempurna', src: 'Dia Maha Sempurna.mp3' }, { title: 'Dengan NafasMu', src: 'Dengan NafasMu.mp3' }, { title: 'Asmara Terindah', src: 'Asmara Terindah.mp3' }, { title: 'Andai Ku Tahu', src: 'Andai Ku Tahu.mp3' }];
-        let currentAudio = new Audio(); let isPlaying = false; let currentTrackIndex = 0;
+        // ==========================================
+        // ======= MODULE MUSIK YOUTUBE EXPLORER ====
+        // ==========================================
+        let isPlaying = false; 
+        let musicMode = 'offline'; 
 
-        function renderEqualizer() {
-            const eqContainer = document.getElementById('equalizer'); eqContainer.innerHTML = '';
-            for (let i = 0; i < 25; i++) { const bar = document.createElement('div'); bar.className = 'eq-bar'; bar.style.height = `${Math.floor(Math.random() * 10) + 4}px`; bar.style.animationDelay = `${Math.random() * 0.5}s`; eqContainer.appendChild(bar); }
+        let currentAudio = new Audio(); 
+        let currentTrackIndex = 0;
+        let musicLibrary = [{ title: 'Perdamaian', src: 'Perdamaian.mp3' }, { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' }, { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' }, { title: 'SurgaMu', src: 'SurgaMu.mp3' }, { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' }];
+        
+        let ytPlayer;
+        let isYtReady = false;
+        let currentYtIndex = 0;
+        let youtubeLibrary = [
+            { title: 'Lofi Girl - beats to relax/study to', id: 'jfKfPfyJRdk', channel: 'Lofi Girl' },
+            { title: 'Acoustic Pop Indonesia Terbaik', id: 'm1YF2p8XlA0', channel: 'Acoustic Music' }
+        ];
+
+        // Fallback Database jika API Error
+        const ytFallbackData = [
+            { id: 'jfKfPfyJRdk', title: 'Lofi Girl - beats to relax/study to', channel: 'Lofi Girl' },
+            { id: 'lTrublsj_uQ', title: 'Relaxing Piano Music & Rain Sounds', channel: 'OCM' },
+            { id: 'm1YF2p8XlA0', title: 'Kumpulan Lagu Akustik Pop Indonesia', channel: 'Acoustic Vibes' },
+            { id: '9UMxZofMNbA', title: 'Murottal Al-Quran Paling Merdu', channel: 'Muzammil Hasballah' },
+            { id: 'rUxyKA_-grg', title: 'Hits Pop Indonesia 2024 Pilihan', channel: 'Indo Hits Music' },
+            { id: 'tNkZsRW7hXc', title: 'Lagu Barat Populer Terbaru (Acoustic)', channel: 'Chill Mix' },
+            { id: '7NOSDKb0HlU', title: 'Study & Focus Lofi', channel: 'Chillhop Music' }
+        ];
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('ytplayer', {
+                height: '0', width: '0', videoId: '', 
+                playerVars: { 'playsinline': 1, 'autoplay': 0 },
+                events: { 'onReady': () => { isYtReady = true; }, 'onStateChange': onPlayerStateChange }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                let videoData = ytPlayer.getVideoData();
+                if(videoData && videoData.title && youtubeLibrary[currentYtIndex]) {
+                    youtubeLibrary[currentYtIndex].title = videoData.title; 
+                    document.getElementById('music-title').innerText = videoData.title;
+                }
+                updateUIPlayer();
+            } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+                isPlaying = false;
+                updateUIPlayer();
+                if(event.data == YT.PlayerState.ENDED) nextMusik();
+            }
+        }
+
+        function setMusicMode(mode) {
+            if (musicMode !== mode) stopMusik(); 
+            musicMode = mode;
+            
+            document.getElementById('tab-music-offline').className = mode === 'offline' ? "flex-1 py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all flex items-center justify-center gap-1" : "flex-1 py-1.5 text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all flex items-center justify-center gap-1";
+            document.getElementById('tab-music-online').className = mode === 'online' ? "flex-1 py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-red-500 transition-all flex items-center justify-center gap-1" : "flex-1 py-1.5 text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all flex items-center justify-center gap-1";
+            
+            document.getElementById('container-offline').classList.toggle('hidden', mode === 'online');
+            document.getElementById('container-offline').classList.toggle('flex', mode === 'offline');
+            document.getElementById('container-online').classList.toggle('hidden', mode === 'offline');
+            document.getElementById('container-online').classList.toggle('flex', mode === 'online');
+
+            const playerUi = document.getElementById('player-ui');
+            const iconUi = document.getElementById('player-icon');
+            if(mode === 'online') {
+                playerUi.className = "bg-red-950 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer transition-colors duration-300";
+                iconUi.innerHTML = `<svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>`;
+                showYtPlaylistView();
+            } else {
+                playerUi.className = "bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer transition-colors duration-300";
+                iconUi.innerHTML = "🎵";
+            }
+            document.getElementById('music-title').innerText = "SIAP MEMUTAR...";
+            bukaManagerMusik();
+        }
+
+        // === FUNGSI YOUTUBE BROWSER ===
+        function showYtPlaylistView() {
+            document.getElementById('yt-search-results').classList.add('hidden');
+            document.getElementById('playlist-container-online').classList.remove('hidden');
+            document.getElementById('btn-back-playlist').classList.add('hidden');
+            document.getElementById('yt-view-title').innerText = "PLAYLIST TERSIMPAN";
+        }
+
+        function showYtSearchView() {
+            document.getElementById('playlist-container-online').classList.add('hidden');
+            document.getElementById('yt-search-results').classList.remove('hidden');
+            document.getElementById('btn-back-playlist').classList.remove('hidden');
+            document.getElementById('yt-view-title').innerText = "HASIL PENCARIAN";
+        }
+
+        function quickSearchYT(query) {
+            document.getElementById('yt-search-input').value = query;
+            executeYTSearch();
+        }
+
+        async function executeYTSearch() {
+            const query = document.getElementById('yt-search-input').value.trim();
+            if(!query) return;
+            
+            showYtSearchView();
+            const resultBox = document.getElementById('yt-search-results');
+            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-2"></div><p class="text-[10px] font-bold text-slate-500">Mencari di YouTube...</p></div>';
+
+            try {
+                // Public Piped API (CORS friendly)
+                const res = await fetch(`https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=music_songs`, { signal: AbortSignal.timeout(6000) });
+                if (!res.ok) throw new Error('API down');
+                const data = await res.json();
+                
+                const streams = data.items.filter(i => i.type === 'stream').slice(0, 15);
+                if(streams.length === 0) throw new Error('No results');
+                
+                resultBox.innerHTML = '';
+                streams.forEach(item => {
+                    const vidId = item.url.split('?v=')[1] || item.url.split('/watch?v=')[1];
+                    renderYTResultItem(vidId, item.title, item.uploaderName, item.thumbnail);
+                });
+            } catch (e) {
+                // Fallback UI yang elegan jika Piped API down
+                console.log("Menggunakan fallback database...");
+                resultBox.innerHTML = '<p class="text-[9px] text-center text-rose-500 font-bold mb-2 bg-rose-50 p-1 rounded">Gagal menyambung server pencarian. Menggunakan Rekomendasi Offline:</p>';
+                const filtered = ytFallbackData.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
+                const toShow = filtered.length > 0 ? filtered : ytFallbackData;
+                toShow.forEach(item => {
+                    renderYTResultItem(item.id, item.title, item.channel, `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`);
+                });
+            }
+        }
+
+        function renderYTResultItem(id, title, channel, thumbUrl) {
+            const resultBox = document.getElementById('yt-search-results');
+            const row = document.createElement('div');
+            // Hindari base64 dengan menggunakan mqdefault thumbnail youtube asli
+            row.className = "flex gap-2.5 p-1.5 hover:bg-slate-50 cursor-pointer rounded-xl border border-transparent hover:border-slate-200 transition-all active:scale-[0.98]";
+            // Simpan data aman untuk onClick event
+            const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            const safeChannel = channel.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            row.setAttribute('onclick', `tambahDanPutarYT('${id}', '${safeTitle}', '${safeChannel}')`);
+            row.innerHTML = `
+                <div class="w-20 h-[50px] shrink-0 relative rounded-lg overflow-hidden bg-slate-200 shadow-sm border border-slate-100">
+                    <img src="${thumbUrl}" onerror="this.src='https://img.youtube.com/vi/${id}/default.jpg'" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors"></div>
+                </div>
+                <div class="flex flex-col justify-center min-w-0 pr-1 py-0.5">
+                    <p class="text-[11px] font-black text-slate-800 line-clamp-2 leading-tight">${title}</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-1 truncate flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> ${channel}</p>
+                </div>
+            `;
+            resultBox.appendChild(row);
+        }
+
+        function tambahDanPutarYT(id, title, channel) {
+            youtubeLibrary.push({ title: title, id: id, channel: channel });
+            currentYtIndex = youtubeLibrary.length - 1;
+            setTrackOnline(currentYtIndex);
+            
+            showYtPlaylistView();
+            bukaManagerMusik();
+            
+            if(isYtReady) ytPlayer.playVideo();
+            toggleModal('music-manager-modal', false); // Tutup otomatis agar nyaman
+        }
+
+        function extractYTId(url) {
+            let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            let match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function tambahLaguYoutubeManual() {
+            let input = document.getElementById('yt-url-input');
+            let url = input.value.trim();
+            let id = extractYTId(url);
+            if(id) {
+                tambahDanPutarYT(id, 'YouTube Media (Manual)', 'Unknown');
+                input.value = '';
+            } else { alert("Link YouTube tidak valid!"); }
         }
 
         function triggerUploadMusik() { document.getElementById('upload-musik').click(); }
         function prosesUploadMusik(event) {
             const files = event.target.files; if (files.length === 0) return; let addedCount = 0;
             for (let i = 0; i < files.length; i++) { if (files[i].type.startsWith('audio/')) { musicLibrary.push({ title: files[i].name.replace(/\.[^/.]+$/, ""), src: URL.createObjectURL(files[i]) }); addedCount++; } }
-            if (addedCount > 0) { alert(`${addedCount} lagu ditambahkan! 🎶`); setTrack(musicLibrary.length - addedCount); if (!isPlaying) toggleMusik(); const modal = document.getElementById('music-manager-modal'); if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik(); }
+            if (addedCount > 0) { alert(`${addedCount} MP3 ditambahkan! 🎶`); setTrackOffline(musicLibrary.length - addedCount); if (!isPlaying) toggleMusik(); bukaManagerMusik(); }
             event.target.value = '';
         }
 
         function bukaManagerMusik() {
-            const container = document.getElementById('playlist-container'); container.innerHTML = '';
-            if (musicLibrary.length === 0) { container.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Daftar putar kosong.</p>'; } else {
+            // Render Offline
+            const conOff = document.getElementById('playlist-container-offline'); conOff.innerHTML = '';
+            if (musicLibrary.length === 0) { conOff.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Daftar putar kosong.</p>'; } else {
                 musicLibrary.forEach((track, index) => {
-                    const isPlayingRow = (index === currentTrackIndex);
+                    const isActive = (musicMode === 'offline' && index === currentTrackIndex);
                     const row = document.createElement('div');
-                    row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isPlayingRow ? 'bg-indigo-50 border-indigo-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
-                    const eqIndicator = isPlayingRow && isPlaying ? `<div class="flex items-end gap-[1px] h-[10px] ml-1"><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div></div>` : '';
-                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-1.5" onclick="playLaguPilihan(${index})"><span class="text-xs font-black truncate ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">${index + 1}. ${track.title}</span>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
-                    container.appendChild(row);
+                    row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isActive ? 'bg-indigo-50 border-indigo-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
+                    const eqIndicator = isActive && isPlaying ? `<div class="flex items-end gap-[1px] h-[10px] ml-1"><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div></div>` : '';
+                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-1.5" onclick="setTrackOffline(${index}); toggleMusik(); bukaManagerMusik();"><span class="text-[11px] font-black truncate ${isActive ? 'text-indigo-600' : 'text-slate-600'}">${index + 1}. ${track.title}</span>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLagu('offline', ${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                    conOff.appendChild(row);
                 });
             }
-            toggleModal('music-manager-modal', true);
+
+            // Render Online Playlist
+            const conOn = document.getElementById('playlist-container-online'); conOn.innerHTML = '';
+            if (youtubeLibrary.length === 0) { conOn.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Belum ada lagu tersimpan.</p>'; } else {
+                youtubeLibrary.forEach((track, index) => {
+                    const isActive = (musicMode === 'online' && index === currentYtIndex);
+                    const row = document.createElement('div');
+                    row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isActive ? 'bg-red-50 border-red-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
+                    const eqIndicator = isActive && isPlaying ? `<div class="flex items-end gap-[1px] h-[10px] ml-1"><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div></div>` : '';
+                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-2" onclick="setTrackOnline(${index}); if(isYtReady)ytPlayer.playVideo(); bukaManagerMusik();"><div class="w-10 h-7 shrink-0 rounded overflow-hidden shadow-sm"><img src="https://img.youtube.com/vi/${track.id}/mqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${track.id}/default.jpg'" class="w-full h-full object-cover"></div><div class="flex flex-col min-w-0"><span class="text-[10px] font-black truncate ${isActive ? 'text-red-600' : 'text-slate-700'}">${index + 1}. ${track.title}</span><span class="text-[8px] text-slate-400 font-bold truncate">${track.channel || 'YouTube Media'}</span></div>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLagu('online', ${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                    conOn.appendChild(row);
+                });
+            }
+
+            const modal = document.getElementById('music-manager-modal');
+            if(modal.classList.contains('pointer-events-none')) toggleModal('music-manager-modal', true);
         }
 
-        function playLaguPilihan(index) { setTrack(index); if (!isPlaying) toggleMusik(); else currentAudio.play().catch(e => console.log(e)); bukaManagerMusik(); }
-        function hapusLaguDariManager(index) { if(confirm(`Hapus lagu "${musicLibrary[index].title}"?`)) { musicLibrary.splice(index, 1); if (musicLibrary.length === 0) { stopMusik(); document.getElementById('music-title').innerText = "KOSONG"; document.getElementById('music-title').classList.remove('marquee-text'); currentTrackIndex = 0; } else { if (index < currentTrackIndex) { currentTrackIndex--; } else if (index === currentTrackIndex) { if (currentTrackIndex >= musicLibrary.length) currentTrackIndex = 0; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); } } bukaManagerMusik(); } }
+        function hapusLagu(type, index) {
+            if(confirm(`Hapus lagu ini?`)) { 
+                if(type === 'offline') {
+                    musicLibrary.splice(index, 1); 
+                    if (musicLibrary.length === 0) { stopMusik(); } 
+                    else if (index <= currentTrackIndex) { currentTrackIndex = Math.max(0, currentTrackIndex - 1); setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play(); } 
+                } else {
+                    youtubeLibrary.splice(index, 1);
+                    if (youtubeLibrary.length === 0) { stopMusik(); } 
+                    else if (index <= currentYtIndex) { currentYtIndex = Math.max(0, currentYtIndex - 1); setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo(); } 
+                }
+                bukaManagerMusik(); 
+            } 
+        }
 
-        function setTrack(index) {
+        function renderEqualizer() {
+            const eqContainer = document.getElementById('equalizer'); eqContainer.innerHTML = '';
+            for (let i = 0; i < 25; i++) { const bar = document.createElement('div'); bar.className = 'eq-bar'; bar.style.height = `${Math.floor(Math.random() * 10) + 4}px`; bar.style.animationDelay = `${Math.random() * 0.5}s`; eqContainer.appendChild(bar); }
+        }
+
+        function setTrackOffline(index) {
+            if(musicMode !== 'offline') return;
+            if(musicLibrary.length === 0) return;
             currentTrackIndex = index; currentAudio.src = musicLibrary[currentTrackIndex].src;
             const titleEl = document.getElementById('music-title'); titleEl.innerText = musicLibrary[currentTrackIndex].title;
-            if (musicLibrary[currentTrackIndex].title.length > 18) { titleEl.classList.add('marquee-text'); titleEl.style.animationPlayState = isPlaying ? 'running' : 'paused'; } else { titleEl.classList.remove('marquee-text'); titleEl.style.animationPlayState = 'paused'; }
+            if (musicLibrary[currentTrackIndex].title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
             renderEqualizer();
         }
 
-        function toggleMusik() {
-            if (musicLibrary.length === 0) { alert("Daftar putar kosong!"); return; }
-            if (!currentAudio.src) setTrack(0);
-            if (isPlaying) { currentAudio.pause(); isPlaying = false; document.getElementById('icon-play').classList.remove('hidden'); document.getElementById('icon-pause').classList.add('hidden'); document.getElementById('equalizer').classList.remove('opacity-100'); document.getElementById('equalizer').classList.add('opacity-0'); if(document.getElementById('music-title').classList.contains('marquee-text')) document.getElementById('music-title').style.animationPlayState = 'paused'; } else { currentAudio.play().catch(e => console.log(e)); isPlaying = true; document.getElementById('icon-play').classList.add('hidden'); document.getElementById('icon-pause').classList.remove('hidden'); document.getElementById('equalizer').classList.remove('opacity-0'); document.getElementById('equalizer').classList.add('opacity-100'); if(document.getElementById('music-title').classList.contains('marquee-text')) document.getElementById('music-title').style.animationPlayState = 'running'; }
+        function setTrackOnline(index) {
+            if(musicMode !== 'online') return;
+            if(!isYtReady || youtubeLibrary.length === 0) return;
+            currentYtIndex = index; 
+            ytPlayer.loadVideoById(youtubeLibrary[currentYtIndex].id);
+            const titleEl = document.getElementById('music-title'); titleEl.innerText = youtubeLibrary[currentYtIndex].title;
+            if (youtubeLibrary[currentYtIndex].title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
+            renderEqualizer();
+        }
+
+        function updateUIPlayer() {
+            const titleEl = document.getElementById('music-title');
+            if (isPlaying) {
+                document.getElementById('icon-play').classList.add('hidden'); document.getElementById('icon-pause').classList.remove('hidden'); 
+                document.getElementById('equalizer').classList.remove('opacity-0'); document.getElementById('equalizer').classList.add('opacity-100'); 
+                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'running';
+            } else {
+                document.getElementById('icon-play').classList.remove('hidden'); document.getElementById('icon-pause').classList.add('hidden'); 
+                document.getElementById('equalizer').classList.remove('opacity-100'); document.getElementById('equalizer').classList.add('opacity-0'); 
+                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'paused';
+            }
             if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
-        function stopMusik() { if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; } isPlaying = false; document.getElementById('icon-play').classList.remove('hidden'); document.getElementById('icon-pause').classList.add('hidden'); document.getElementById('equalizer').classList.remove('opacity-100'); document.getElementById('equalizer').classList.add('opacity-0'); if(document.getElementById('music-title').classList.contains('marquee-text')) { document.getElementById('music-title').style.animationPlayState = 'paused'; document.getElementById('music-title').style.transform = 'translate(0, 0)'; } if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
-        function nextMusik() { if (musicLibrary.length === 0) return; currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
-        function prevMusik() { if (musicLibrary.length === 0) return; currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
+        function toggleMusik() {
+            if (musicMode === 'offline') {
+                if (musicLibrary.length === 0) return alert("Daftar putar kosong!");
+                if (!currentAudio.src) setTrackOffline(0);
+                if (isPlaying) { currentAudio.pause(); isPlaying = false; } else { currentAudio.play().catch(e => console.log(e)); isPlaying = true; }
+                updateUIPlayer();
+            } else {
+                if (youtubeLibrary.length === 0) return alert("Playlist YouTube kosong! Cari lagu dulu.");
+                if (!isYtReady) return alert("Menyiapkan koneksi ke YouTube, tunggu sebentar...");
+                
+                let state = ytPlayer.getPlayerState();
+                if (state == YT.PlayerState.PLAYING) {
+                    ytPlayer.pauseVideo();
+                } else {
+                    let url = ytPlayer.getVideoUrl();
+                    if(!url || url.includes('undefined')) setTrackOnline(currentYtIndex);
+                    ytPlayer.playVideo();
+                }
+            }
+        }
+
+        function stopMusik() { 
+            if (musicMode === 'offline' && currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; } 
+            if (musicMode === 'online' && isYtReady) { ytPlayer.stopVideo(); }
+            isPlaying = false; 
+            updateUIPlayer();
+            document.getElementById('music-title').style.transform = 'translate(0, 0)'; 
+        }
+
+        function nextMusik() { 
+            if (musicMode === 'offline') {
+                if (musicLibrary.length === 0) return; 
+                currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length; setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play();
+            } else {
+                if (youtubeLibrary.length === 0 || !isYtReady) return; 
+                currentYtIndex = (currentYtIndex + 1) % youtubeLibrary.length; setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo();
+            }
+            updateUIPlayer();
+        }
+
+        function prevMusik() { 
+            if (musicMode === 'offline') {
+                if (musicLibrary.length === 0) return; 
+                currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length; setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play();
+            } else {
+                if (youtubeLibrary.length === 0 || !isYtReady) return; 
+                currentYtIndex = (currentYtIndex - 1 + youtubeLibrary.length) % youtubeLibrary.length; setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo();
+            }
+            updateUIPlayer();
+        }
+        
         currentAudio.addEventListener('ended', () => { nextMusik(); });
 
         let configKelas = {
@@ -422,7 +756,7 @@
             'lain': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'LAIN', valPembagi: 45 }
         };
 
-        // KODE DEWA: DATABASE SISWA FULL TIDAK TERPOTONG!
+        // KODE DEWA: DATABASE SISWA FULL
         const defaultSiswa = {
             "1 ICP A": [{"presensi":1,"nama":"ALTHAF SHAQUILLE ABHIVANDYA"},{"presensi":2,"nama":"ANDARU GESIT YANARTA"},{"presensi":3,"nama":"Atarazka Syahnan Haziq"},{"presensi":4,"nama":"Balqis Akasha Shafiyah"},{"presensi":5,"nama":"BOY ATHALLAH BAKHRY"},{"presensi":6,"nama":"Elvara Aiza Santosa"},{"presensi":7,"nama":"Hamda Batrisya Seika"},{"presensi":8,"nama":"Inara Putri Arkadewi"},{"presensi":9,"nama":"LUKITA ASKANA SAKHI"},{"presensi":10,"nama":"Muhammad Tangguh Asnawi"},{"presensi":11,"nama":"Nizar Abdillah Ghazwan"},{"presensi":12,"nama":"PESONA HARUM HUMAIRA"},{"presensi":13,"nama":"RIFANI REYYA ANNISA"},{"presensi":14,"nama":"WAFAZENA JANITRALESHA"}],
             "1 ICP B": [{"presensi":1,"nama":"CINTA AFIA SYAILENDRA"},{"presensi":2,"nama":"DAVIN AL CHALIEF ERABBANI"},{"presensi":3,"nama":"Diana Aiza Hudaya"},{"presensi":4,"nama":"Illona Nusaibah Azzahra"},{"presensi":5,"nama":"Jihan Arsylia Nugroho"},{"presensi":6,"nama":"KHALISTA ALIFIA GUNTORO"},{"presensi":7,"nama":"KHAWLA ADIBA DHATU"},{"presensi":8,"nama":"MALVEN RAFIIANDRA ARLY WIBOWO"},{"presensi":9,"nama":"MOZEIN ARKEVIN"},{"presensi":10,"nama":"Muhammad Zhafran Abdurrahman"},{"presensi":11,"nama":"Ocean Hoki Praditya"},{"presensi":12,"nama":"Zharif Almuqaffi Digit"},{"presensi":13,"nama":"Herdinar Siti Noorjehan Fidiyanto"}],
@@ -473,13 +807,10 @@
         }
 
         function simpanSiswaKeLocal() { localStorage.setItem('kates_database_siswa', JSON.stringify(databaseSiswa)); }
-        
-        // FOKUS: Auto-Repair Database yang rusak
         function muatSiswaDariLocal() { 
             const saved = localStorage.getItem('kates_database_siswa'); 
             if(saved) {
                 databaseSiswa = JSON.parse(saved);
-                // Jika database 1A kurang dari 5 orang, berarti data terpotong karena bug sebelumnya. Auto-restorasi!
                 if(databaseSiswa["1A"] && databaseSiswa["1A"].length < 5) {
                     databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
                     simpanSiswaKeLocal();
@@ -669,7 +1000,6 @@
         
         window.addEventListener('load', () => {
             initMathBg(); muatAturanDariLocal(); muatSiswaDariLocal(); muatNilaiDariLocal(); initLongPressEvents(); updateKelasDropdownOptions();
-            if (localStorage.getItem('kates_pro_version') !== '2.0') setTimeout(() => toggleModal('update-modal', true), 1200);
             activeKelas = null; document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' }; updateTampilan(); kalkulasi(); muatDataOffline();
         });
