@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>KATES Pro - Kalkulator & Rekap Siswa</title>
     
-    <!-- Icon & PWA Manifest Inline -->
     <link class="favicon" rel="icon" href="LOGO.png" type="image/png">
     <link rel="apple-touch-icon" href="LOGO.png">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22KATES%20Pro%20-%20Kalkulator%20Tes%20Siswa%22%2C%22short_name%22%3A%22KATES%20Pro%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%233b82f6%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22LOGO.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
@@ -14,47 +13,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
         
-        html, body {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0; left: 0;
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
+        html, body { width: 100%; height: 100%; position: fixed; top: 0; left: 0; overflow: hidden; overscroll-behavior: none; }
+        body { font-family: 'Nunito', sans-serif; margin: 0; background: linear-gradient(135deg, #f0f4f8, #e2e8f0); touch-action: manipulation; -webkit-user-select: none; user-select: none; }
 
-        body {
-            font-family: 'Nunito', sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
-            touch-action: manipulation;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        /* --- STREAMING_CHUNK: Mengatur Animasi Utama --- */
-        @keyframes fade-in-down {
-            0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes pop-in {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes fade-in-up {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-up-numpad {
-            0% { transform: translateY(100%); }
-            100% { transform: translateY(0); }
-        }
-        @keyframes wiggle {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.05) rotate(-5deg); }
-            50% { transform: scale(1.05) rotate(5deg); }
-            75% { transform: scale(1.05) rotate(-5deg); }
-        }
+        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes pop-in { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-up-numpad { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
+        @keyframes wiggle { 0%, 100% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.05) rotate(-5deg); } 50% { transform: scale(1.05) rotate(5deg); } 75% { transform: scale(1.05) rotate(-5deg); } }
 
         .anim-header  { animation: fade-in-down 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
         .anim-scores  { animation: pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s both; }
@@ -64,158 +30,50 @@
         .anim-numpad  { animation: slide-up-numpad 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.7s both; }
         .anim-wiggle  { animation: wiggle 0.6s ease-in-out; }
 
-        /* --- STREAMING_CHUNK: Animasi Equalizer Musik & Marquee --- */
-        .eq-bar {
-            width: 3px;
-            background: linear-gradient(to top, #3b82f6, #ec4899);
-            border-radius: 2px;
-            animation: eq-bounce 0.5s ease-in-out infinite alternate;
-        }
-        @keyframes eq-bounce {
-            0% { transform: scaleY(0.3); }
-            100% { transform: scaleY(1); }
-        }
+        .eq-bar { width: 3px; background: linear-gradient(to top, #3b82f6, #ec4899); border-radius: 2px; animation: eq-bounce 0.5s ease-in-out infinite alternate; }
+        @keyframes eq-bounce { 0% { transform: scaleY(0.3); } 100% { transform: scaleY(1); } }
         
-        .marquee-wrapper {
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
-        .marquee-text {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 8s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        .marquee-wrapper { overflow: hidden; white-space: nowrap; display: flex; align-items: center; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 8s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        #install-banner {
-            transform: translateY(-100%);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        #install-banner { transform: translateY(-100%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         #install-banner.show { transform: translateY(0); }
 
-        .subject-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .symbol {
-            position: absolute;
-            font-weight: 900;
-            white-space: nowrap;
-            will-change: transform, opacity;
-            animation: float-up linear infinite;
-            text-shadow: 0 2px 5px rgba(255,255,255,0.8);
-        }
-        @keyframes float-up {
-            0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; }
-            15% { opacity: 0.35; } 
-            50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; }
-            85% { opacity: 0.35; } 
-            100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; }
-        }
+        .subject-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; overflow: hidden; }
+        .symbol { position: absolute; font-weight: 900; white-space: nowrap; will-change: transform, opacity; animation: float-up linear infinite; text-shadow: 0 2px 5px rgba(255,255,255,0.8); }
+        @keyframes float-up { 0% { transform: translateY(110vh) rotate(-15deg) scale(0.8); opacity: 0; } 15% { opacity: 0.35; } 50% { transform: translateY(40vh) rotate(10deg) scale(1.05); opacity: 0.35; } 85% { opacity: 0.35; } 100% { transform: translateY(-15vh) rotate(-10deg) scale(1.15); opacity: 0; } }
 
-        .class-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background-color: #ffffff;
-            color: #64748b;
-            border: 1px solid #cbd5e1;
-            position: relative;
-            overflow: hidden;
-        }
-        .class-active {
-            transform: scale(1.03) translateY(-2px);
-            box-shadow: 0 8px 20px -6px var(--glow-color);
-            color: #ffffff !important;
-            border-color: transparent !important;
-            animation: breathe 2s ease-in-out infinite;
-            z-index: 10;
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); }
-            50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); }
-        }
+        .class-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #ffffff; color: #64748b; border: 1px solid #cbd5e1; position: relative; overflow: hidden; }
+        .class-active { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); color: #ffffff !important; border-color: transparent !important; animation: breathe 2s ease-in-out infinite; z-index: 10; }
+        @keyframes breathe { 0%, 100% { transform: scale(1.03) translateY(-2px); box-shadow: 0 8px 20px -6px var(--glow-color); } 50% { transform: scale(1.01) translateY(0px); box-shadow: 0 4px 10px -4px var(--glow-color); } }
 
         .needs-class .class-btn { animation: pulse-warning 0.5s ease-in-out; }
-        @keyframes pulse-warning {
-            0%, 100% { transform: scale(1); border-color: #cbd5e1; }
-            50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; }
-        }
+        @keyframes pulse-warning { 0%, 100% { transform: scale(1); border-color: #cbd5e1; } 50% { transform: scale(1.02); border-color: #f43f5e; background-color: #fff1f2; } }
 
         .pop-effect { animation: pop-score 0.3s ease-out; }
-        @keyframes pop-score {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); color: #3b82f6; }
-            100% { transform: scale(1); }
-        }
+        @keyframes pop-score { 0% { transform: scale(1); } 50% { transform: scale(1.15); color: #3b82f6; } 100% { transform: scale(1); } }
 
         .numpad-btn { height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; border-radius: 0.75rem; border: 1px solid #e2e8f0; background: white; transition: all 0.1s; }
-        .numpad-btn:active {
-            transform: scale(0.92);
-            background-color: #cbd5e1;
-        }
+        .numpad-btn:active { transform: scale(0.92); background-color: #cbd5e1; }
 
-        .input-active {
-            border: 2px solid #3b82f6 !important;
-            background-color: #eff6ff !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
+        .input-active { border: 2px solid #3b82f6 !important; background-color: #eff6ff !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         
-        /* Modern Dropdown Design */
-        select.custom-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1em;
-            padding-right: 1.5rem;
-        }
+        select.custom-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 1.5rem; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
 
-    <!-- --- STREAMING_CHUNK: Bar Navigasi Atas --- -->
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
         <button onclick="refreshApp()" class="pointer-events-auto bg-blue-100/90 backdrop-blur-sm border border-blue-200 text-blue-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-blue-200 active:scale-95 transition-all flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            REFRESH
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> REFRESH
         </button>
-
         <div class="pointer-events-auto bg-white/60 backdrop-blur-md px-3 py-1 rounded-full shadow-sm border border-slate-100 mt-0.5">
             <p class="text-[9px] uppercase tracking-[0.2em] text-blue-600 font-bold opacity-90 m-0">By Zivi•Ai</p>
         </div>
-
         <button onclick="bersihkanLayar()" class="pointer-events-auto bg-rose-100/90 backdrop-blur-sm border border-rose-200 text-rose-600 text-[9px] font-black px-2.5 py-1.5 rounded-lg shadow-sm hover:bg-rose-200 active:scale-95 transition-all flex items-center gap-1" title="Bersihkan Angka Layar">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-            RESET
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg> RESET
         </button>
-    </div>
-
-    <!-- Banner Install PWA -->
-    <div id="install-banner" class="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-3 flex justify-between items-center shadow-lg rounded-b-2xl">
-        <div class="flex items-center gap-3 pl-2">
-            <img src="LOGO.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-xl bg-white/20 p-1">
-            <div class="flex flex-col">
-                <span class="text-sm font-black tracking-wide">Install KATES Pro</span>
-                <span class="text-[10px] opacity-90 font-medium">Buka lebih cepat & tanpa internet!</span>
-            </div>
-        </div>
-        <div class="flex gap-2 items-center pr-1">
-            <button onclick="installApp()" class="bg-white text-blue-600 text-[11px] font-bold px-4 py-2 rounded-full shadow-md active:scale-95 transition-transform uppercase tracking-wider">Install</button>
-            <button onclick="tutupBanner()" class="text-white/80 hover:text-white px-2 text-2xl font-black">&times;</button>
-        </div>
     </div>
 
     <!-- POPUP PERINGATAN LUCU -->
@@ -232,29 +90,18 @@
         </div>
     </div>
 
-    <!-- --- STREAMING_CHUNK: Modals --- -->
     <!-- MODAL 1: REKAPITULASI & MANAJEMEN SISWA -->
     <div id="rekap-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('rekap-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-sm w-11/12 h-[80vh] flex flex-col border border-slate-100 transform scale-95 transition-transform duration-300">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <span>📊 Rekap Nilai</span>
-                    <span id="rekap-class-tag" class="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold">Semua</span>
-                </h2>
+                <h2 class="text-lg font-black text-slate-800 flex items-center gap-2"><span>📊 Rekap Nilai</span><span id="rekap-class-tag" class="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold">Semua</span></h2>
                 <button onclick="toggleModal('rekap-modal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-
             <div class="flex gap-2 mb-4">
-                <button onclick="bukaExportDialog()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">
-                    🟢 EXPORT EXCEL
-                </button>
+                <button onclick="bukaExportDialog()" class="flex-1 bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-100 hover:bg-emerald-600 transition-colors text-xs flex items-center justify-center gap-1">🟢 EXPORT EXCEL</button>
             </div>
-
-            <div class="flex-1 overflow-y-auto pr-1 border border-slate-100 rounded-2xl bg-slate-50 p-2">
-                <div id="tabel-rekap-body" class="space-y-2"></div>
-            </div>
-
+            <div class="flex-1 overflow-y-auto pr-1 border border-slate-100 rounded-2xl bg-slate-50 p-2"><div id="tabel-rekap-body" class="space-y-2"></div></div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-400 font-bold">
                 <span id="rekap-total-siswa">Total: 0 Siswa</span>
                 <button onclick="clearSemuaNilai()" class="text-red-500 hover:underline">Hapus Semua Nilai</button>
@@ -267,40 +114,22 @@
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('tambah-siswa-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
             <h3 class="font-black text-slate-800 text-lg mb-2 text-center">Data Siswa</h3>
-            
             <div class="flex bg-slate-100 rounded-lg p-1 mb-4">
                 <button id="tab-manage-tambah" onclick="setModeManage('tambah')" class="flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all">TAMBAH BARU</button>
                 <button id="tab-manage-edit" onclick="setModeManage('edit')" class="flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all">EDIT / HAPUS</button>
             </div>
-            
             <div class="space-y-3 mb-5 text-left">
-                <div>
-                    <label class="text-[9px] font-bold text-slate-400 block mb-1">KELAS TARGET</label>
-                    <select id="manage-kelas" onchange="onChangeManageKelas()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
-                </div>
-                
-                <div id="box-manage-select" class="hidden">
-                    <label class="text-[9px] font-bold text-slate-400 block mb-1">PILIH SISWA</label>
-                    <select id="manage-siswa-select" onchange="onChangeManageSiswa()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select>
-                </div>
-
+                <div><label class="text-[9px] font-bold text-slate-400 block mb-1">KELAS TARGET</label><select id="manage-kelas" onchange="onChangeManageKelas()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select></div>
+                <div id="box-manage-select" class="hidden"><label class="text-[9px] font-bold text-slate-400 block mb-1">PILIH SISWA</label><select id="manage-siswa-select" onchange="onChangeManageSiswa()" class="custom-select w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 bg-white"></select></div>
                 <div class="flex gap-2 w-full">
-                    <div class="w-1/3">
-                        <label class="text-[9px] font-bold text-slate-400 block mb-1">NO. URUT</label>
-                        <input type="number" id="manage-presensi" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 text-center" placeholder="No">
-                    </div>
-                    <div class="w-2/3">
-                        <label class="text-[9px] font-bold text-slate-400 block mb-1">NAMA LENGKAP</label>
-                        <input type="text" id="manage-nama" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500" placeholder="Nama siswa...">
-                    </div>
+                    <div class="w-1/3"><label class="text-[9px] font-bold text-slate-400 block mb-1">NO. URUT</label><input type="number" id="manage-presensi" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500 text-center" placeholder="No"></div>
+                    <div class="w-2/3"><label class="text-[9px] font-bold text-slate-400 block mb-1">NAMA LENGKAP</label><input type="text" id="manage-nama" class="w-full p-2 border-2 border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500" placeholder="Nama siswa..."></div>
                 </div>
             </div>
-
             <div id="btn-group-tambah" class="flex gap-2">
                 <button onclick="toggleModal('tambah-siswa-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs hover:bg-slate-200">Batal</button>
                 <button onclick="simpanSiswaBaru()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs hover:bg-blue-700">Tambahkan</button>
             </div>
-            
             <div id="btn-group-edit" class="flex gap-2 hidden">
                 <button onclick="hapusSiswaManage()" class="flex-1 py-2 bg-rose-100 text-rose-600 font-extrabold rounded-xl text-xs hover:bg-rose-200">🗑️ Hapus</button>
                 <button onclick="simpanEditSiswa()" class="flex-1 py-2 bg-emerald-500 text-white font-extrabold rounded-xl text-xs hover:bg-emerald-600">💾 Simpan</button>
@@ -308,24 +137,16 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDIT PENGATURAN KELAS (LONG PRESS) -->
+    <!-- MODAL 3: EDIT PENGATURAN KELAS -->
     <div id="edit-kelas-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('edit-kelas-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col">
             <h3 class="font-black text-slate-800 text-lg mb-1 text-center" id="edit-kelas-title">Edit Aturan Kelas</h3>
             <p class="text-xs text-slate-400 text-center mb-4">Ubah nama dan bobot kelas sesukamu</p>
-            
             <div class="space-y-3 mb-5">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA LABEL TOMBOL</label>
-                    <input type="text" id="edit-label-nama" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">ANGKA PEMBAGI (MAKS SKOR)</label>
-                    <input type="number" id="edit-pembagi-val" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm">
-                </div>
+                <div><label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA LABEL TOMBOL</label><input type="text" id="edit-label-nama" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm"></div>
+                <div><label class="text-[10px] font-bold text-slate-400 block mb-1">ANGKA PEMBAGI (MAKS SKOR)</label><input type="number" id="edit-pembagi-val" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-sm"></div>
             </div>
-
             <div class="flex gap-2">
                 <button onclick="toggleModal('edit-kelas-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
                 <button onclick="simpanEditAturan()" class="flex-1 py-2 bg-blue-600 text-white font-extrabold rounded-xl text-xs">Simpan</button>
@@ -333,20 +154,15 @@
         </div>
     </div>
 
-    <!-- MODAL 4: INPUT NAMA MAPEL -->
+    <!-- MODAL 4: EXPORT EXCEL -->
     <div id="export-excel-modal" class="fixed inset-0 z-[70] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleModal('export-excel-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-5/6 border border-slate-100 flex flex-col text-center">
             <h3 class="font-black text-slate-800 text-lg mb-1">Atur Laporan Excel</h3>
             <p class="text-xs text-slate-400 mb-4">Masukkan nama mata pelajaran duls</p>
-            
             <div class="space-y-3 mb-5 text-left">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA MATA PELAJARAN (MAPEL)</label>
-                    <input type="text" id="export-mapel-name" value="" placeholder="Contoh: Matematika" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500">
-                </div>
+                <div><label class="text-[10px] font-bold text-slate-400 block mb-1">NAMA MATA PELAJARAN (MAPEL)</label><input type="text" id="export-mapel-name" value="" placeholder="Contoh: Matematika" class="w-full p-2.5 border border-slate-200 rounded-lg font-bold text-xs outline-none focus:border-blue-500"></div>
             </div>
-
             <div class="flex gap-2">
                 <button onclick="toggleModal('export-excel-modal', false)" class="flex-1 py-2 bg-slate-100 text-slate-600 font-extrabold rounded-xl text-xs">Batal</button>
                 <button onclick="prosesUnduhExcel()" class="flex-1 py-2 bg-emerald-500 text-white font-extrabold rounded-xl text-xs">Download</button>
@@ -354,29 +170,7 @@
         </div>
     </div>
 
-    <!-- MODAL 5: UPDATE NOTIFIKASI -->
-    <div id="update-modal" class="fixed inset-0 z-[80] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="tutupUpdateModal()"></div>
-        <div class="relative bg-white rounded-3xl p-5 shadow-2xl max-w-xs w-11/12 border-4 border-blue-400 flex flex-col text-center transform scale-95 transition-transform duration-300 max-h-[85vh]">
-            <div class="text-5xl mb-2 animate-bounce">🚀</div>
-            <h3 class="font-black text-slate-800 text-xl leading-tight">KATES Kini Jadi<br><span class="text-blue-600 text-2xl font-black">KATES PRO!</span></h3>
-            <p class="text-[10px] text-blue-500 font-bold uppercase tracking-widest mt-1">Edisi Dewa v2.0</p>
-            
-            <div class="my-4 overflow-y-auto text-left space-y-3 pr-1 text-xs text-slate-600 max-h-[40vh] border-y border-slate-100 py-3">
-                <p class="font-extrabold text-slate-700 text-center italic mb-2">"Wassup Ustadz & Ustadzah! Ada update gokil nih!"</p>
-                <div class="flex gap-2"><span class="text-base">🎵</span><div><p class="font-black text-slate-800">VIP Music Player</p><p class="text-[11px] text-slate-500">Ada lagu instrumen penenang jiwa pas ngoreksi.</p></div></div>
-                <div class="flex gap-2"><span class="text-base">🔥</span><div><p class="font-black text-slate-800">Database Lengkap</p><p class="text-[11px] text-slate-500">Semua nama siswa udah masuk urut presensi!</p></div></div>
-                <div class="flex gap-2"><span class="text-base">🎯</span><div><p class="font-black text-slate-800">Target Grading</p><p class="text-[11px] text-slate-500">Gak usah nyari-nyari kelas lagi, dropdown otomatis nyaring.</p></div></div>
-                <div class="flex gap-2"><span class="text-base">📈</span><div><p class="font-black text-slate-800">Excel Ramping</p><p class="text-[11px] text-slate-500">Bisa diunduh full warna tanpa error di HP.</p></div></div>
-            </div>
-
-            <button onclick="tutupUpdateModal()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black rounded-2xl shadow-lg shadow-blue-100 text-xs active:scale-95 transition-all uppercase tracking-widest">
-                Gaskeun Pakai! 🚀
-            </button>
-        </div>
-    </div>
-
-    <!-- MODAL 6: MANAGER MUSIK (PLAYLIST & UPLOAD) -->
+    <!-- MODAL 6: MANAGER MUSIK -->
     <div id="music-manager-modal" class="fixed inset-0 z-[75] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal('music-manager-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-4 shadow-2xl max-w-xs w-[90%] border border-slate-100 flex flex-col text-center transform scale-95 transition-transform duration-300 max-h-[75vh]">
@@ -384,101 +178,76 @@
                 <h3 class="font-black text-slate-800 text-lg flex items-center gap-2"><span class="text-xl">🎵</span> Playlist Lagu</h3>
                 <button onclick="toggleModal('music-manager-modal', false)" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            
-            <div id="playlist-container" class="overflow-y-auto mb-4 border border-slate-100 rounded-xl bg-slate-50 flex-1 max-h-[45vh] text-left p-1 space-y-1">
-                <!-- List lagu dirender dari JS -->
-            </div>
-
+            <div id="playlist-container" class="overflow-y-auto mb-4 border border-slate-100 rounded-xl bg-slate-50 flex-1 max-h-[45vh] text-left p-1 space-y-1"></div>
             <button onclick="triggerUploadMusik()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-black rounded-xl shadow-lg shadow-emerald-100 text-[11px] active:scale-95 transition-all flex items-center justify-center gap-2 tracking-widest uppercase">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
-                Tambah Lagu Baru
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg> Tambah Lagu Baru
             </button>
         </div>
     </div>
 
-    <!-- Background Animasi -->
     <div class="subject-bg" id="mathBg"></div>
 
-    <!-- WADAH UTAMA KONTEN -->
     <div class="relative z-10 w-full max-w-sm h-full flex flex-col p-2 mx-auto justify-between pb-3 pt-14 sm:pt-12">
-        
-        <!-- BAGIAN ATAS & TENGAH -->
         <div class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
             
-            <!-- Kapsul VIP Musik -->
             <div class="mx-auto flex flex-col items-center mb-1 relative z-30 pointer-events-auto w-full px-2">
                 <div id="equalizer" class="flex items-end justify-center gap-[2px] h-[14px] mb-1 opacity-0 transition-opacity duration-300 w-[80%] max-w-[200px]"></div>
-                
                 <div class="bg-indigo-900 border border-slate-700 shadow-[0_4px_15px_rgba(0,0,0,0.3)] rounded-full px-3 py-1 flex items-center justify-between gap-2 w-[85%] sm:w-[90%] max-w-full overflow-hidden shrink cursor-pointer" onclick="bukaManagerMusik()">
                     <span class="text-blue-400 text-[11px] shrink-0 animate-pulse">🎵</span>
-                    
-                    <div class="marquee-wrapper border-r border-slate-600 pr-1 mr-1 flex-1 shrink">
-                        <span id="music-title" class="marquee-text text-[9px] text-white font-black uppercase tracking-widest" style="animation-play-state: paused;">SIAP MEMUTAR...</span>
-                    </div>
-
+                    <div class="marquee-wrapper border-r border-slate-600 pr-1 mr-1 flex-1 shrink"><span id="music-title" class="marquee-text text-[9px] text-white font-black uppercase tracking-widest" style="animation-play-state: paused;">SIAP MEMUTAR...</span></div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="event.stopPropagation(); prevMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg>
-                        </button>
-                        <button onclick="event.stopPropagation(); toggleMusik()" id="btn-play-musik" class="text-white hover:text-blue-300 active:scale-90 transition-transform">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg>
-                            <svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg>
-                        </button>
-                        <button onclick="event.stopPropagation(); stopMusik()" class="text-slate-400 hover:text-rose-400 active:scale-90 transition-transform">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg>
-                        </button>
-                        <button onclick="event.stopPropagation(); nextMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg>
-                        </button>
+                        <button onclick="event.stopPropagation(); prevMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4h2v12H4V4zm12 0L7 10l9 6V4z"/></svg></button>
+                        <button onclick="event.stopPropagation(); toggleMusik()" id="btn-play-musik" class="text-white hover:text-blue-300 active:scale-90 transition-transform"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" id="icon-play"><path d="M4 4l12 6-12 6V4z"/></svg><svg class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20" id="icon-pause"><path d="M6 4h3v12H6V4zm5 0h3v12h-3V4z"/></svg></button>
+                        <button onclick="event.stopPropagation(); stopMusik()" class="text-slate-400 hover:text-rose-400 active:scale-90 transition-transform"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 3h14v14H3V3z" clip-rule="evenodd"/></svg></button>
+                        <button onclick="event.stopPropagation(); nextMusik()" class="text-slate-400 hover:text-white active:scale-90 transition-transform"><svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M14 4h2v12h-2V4zM4 4l9 6-9 6V4z"/></svg></button>
                     </div>
                 </div>
                 <input type="file" id="upload-musik" accept="audio/*" multiple class="hidden" onchange="prosesUploadMusik(event)">
             </div>
 
-            <!-- Header: Judul KATES -->
             <div class="text-center anim-header w-full">
                 <img src="JUDUL.png" alt="KATES" class="max-h-[6.5vh] object-contain mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.15)]"> 
                 <p class="text-[9px] font-extrabold text-slate-400 tracking-widest mt-0.5">-KALKULATOR TES SISWA PRO-</p>
             </div>
 
-            <!-- Display Box (Nilai) -->
             <div class="w-full flex items-center justify-between gap-1.5 relative anim-scores">
                 <div class="flex flex-col items-center justify-center flex-1 h-[7.5vh] bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl py-1 border-2 border-blue-300 shadow-sm relative overflow-hidden">
                     <p class="text-[8px] text-blue-600 font-bold tracking-widest uppercase mb-0.5">Nilai Asli</p>
                     <div class="text-2xl sm:text-3xl font-black text-blue-700 tabular-nums" id="nilaiAsli">0.00</div>
                 </div>
-
                 <div id="gif-reaction" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-300 scale-0 pointer-events-none drop-shadow-lg flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20"></div>
-                
                 <div class="flex flex-col items-center justify-center flex-1 h-[7.5vh] bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl py-1 border-2 border-emerald-300 shadow-sm relative overflow-hidden">
                     <p class="text-[8px] text-emerald-600 font-bold tracking-widest uppercase mb-0.5">Pembulatan</p>
                     <div class="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums" id="nilaiBulat">0</div>
                 </div>
             </div>
 
-            <!-- Pilihan Kelas -->
             <div class="anim-classes w-full" id="area-kelas">
-                <div class="grid grid-cols-4 gap-1">
-                    <button id="btn-55" data-kelas="55" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
-                        <span id="label-name-55" class="text-[9px] font-black">KLS 1</span>
-                        <span id="label-sub-55" class="text-[7.5px] font-bold opacity-80">Bagi 55</span>
+                <div class="grid grid-cols-7 gap-1">
+                    <button id="btn-kls1" data-kelas="kls1" style="--glow-color: rgba(59,130,246,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls1" class="text-[9px] font-black">KLS 1</span><span id="label-sub-kls1" class="text-[7.5px] font-bold opacity-80">/55</span>
                     </button>
-                    <button id="btn-60" data-kelas="60" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
-                        <span id="label-name-60" class="text-[9px] font-black">KLS 2-3</span>
-                        <span id="label-sub-60" class="text-[7.5px] font-bold opacity-80">Bagi 60</span>
+                    <button id="btn-kls2" data-kelas="kls2" style="--glow-color: rgba(16,185,129,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls2" class="text-[9px] font-black">KLS 2</span><span id="label-sub-kls2" class="text-[7.5px] font-bold opacity-80">/60</span>
                     </button>
-                    <button id="btn-65" data-kelas="65" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
-                        <span id="label-name-65" class="text-[9px] font-black">KLS 4-5</span>
-                        <span id="label-sub-65" class="text-[7.5px] font-bold opacity-80">Bagi 65</span>
+                    <button id="btn-kls3" data-kelas="kls3" style="--glow-color: rgba(20,184,166,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls3" class="text-[9px] font-black">KLS 3</span><span id="label-sub-kls3" class="text-[7.5px] font-bold opacity-80">/60</span>
                     </button>
-                    <button id="btn-45" data-kelas="45" style="--glow-color: rgba(6,182,212,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
-                        <span id="label-name-45" class="text-[9px] font-black tracking-widest text-cyan-600">KODING</span>
-                        <span id="label-sub-45" class="text-[7.5px] font-bold opacity-80">Bagi 45</span>
+                    <button id="btn-kls4" data-kelas="kls4" style="--glow-color: rgba(244,63,94,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls4" class="text-[9px] font-black">KLS 4</span><span id="label-sub-kls4" class="text-[7.5px] font-bold opacity-80">/65</span>
+                    </button>
+                    <button id="btn-kls5" data-kelas="kls5" style="--glow-color: rgba(217,70,239,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls5" class="text-[9px] font-black">KLS 5</span><span id="label-sub-kls5" class="text-[7.5px] font-bold opacity-80">/65</span>
+                    </button>
+                    <button id="btn-kls6" data-kelas="kls6" style="--glow-color: rgba(168,85,247,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-kls6" class="text-[9px] font-black">KLS 6</span><span id="label-sub-kls6" class="text-[7.5px] font-bold opacity-80">/70</span>
+                    </button>
+                    <button id="btn-lain" data-kelas="lain" style="--glow-color: rgba(6,182,212,0.4)" class="class-btn rounded-xl py-1 sm:py-1.5 flex flex-col items-center justify-center">
+                        <span id="label-name-lain" class="text-[8px] font-black tracking-tight text-cyan-600">LAIN</span><span id="label-sub-lain" class="text-[7.5px] font-bold opacity-80">/45</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Menu Toggle (Romawi/Jumlah) -->
             <div class="flex justify-center anim-toggle w-full">
                 <div class="bg-white p-0.5 rounded-full flex gap-1 border border-slate-200 w-4/5 shadow-sm relative z-20">
                     <button onclick="setMode('romawi')" id="tab-romawi" class="flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent">ROMAWI</button>
@@ -486,457 +255,174 @@
                 </div>
             </div>
 
-            <!-- Area Input Box -->
             <div class="flex items-center justify-center anim-input w-full min-h-[50px]">
-                <!-- View Romawi -->
                 <div id="view-romawi" class="hidden w-full grid-cols-3 gap-2 transition-all duration-300">
                     <div onclick="setFokus('r1')" id="box-r1" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors input-active">
-                        <label class="text-[8px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label>
-                        <div id="disp-r1" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r1" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
+                        <label class="text-[8px] font-extrabold text-blue-500 mb-0.5">ROM I (x1)</label><div id="disp-r1" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div><span id="max-r1" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                     <div onclick="setFokus('r2')" id="box-r2" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label id="label-r2" class="text-[8px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label>
-                        <div id="disp-r2" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r2" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
+                        <label id="label-r2" class="text-[8px] font-extrabold text-emerald-500 mb-0.5">ROM II (x2)</label><div id="disp-r2" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div><span id="max-r2" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                     <div onclick="setFokus('r3')" id="box-r3" class="bg-white rounded-xl py-1 px-1 border-2 border-slate-200 flex flex-col items-center justify-center cursor-pointer transition-colors">
-                        <label class="text-[8px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label>
-                        <div id="disp-r3" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-r3" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
+                        <label class="text-[8px] font-extrabold text-rose-500 mb-0.5">ROM III (x3)</label><div id="disp-r3" class="text-lg sm:text-xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div><span id="max-r3" class="text-[7px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                 </div>
-
-                <!-- View Jumlah -->
                 <div id="view-jumlah" class="w-full flex items-center justify-center">
                     <div onclick="setFokus('total')" id="box-total" class="bg-white rounded-xl py-1 px-4 w-[75%] max-w-[240px] border-2 border-amber-400 shadow-[0_4px_10px_rgba(251,191,36,0.2)] text-center cursor-pointer input-active flex flex-col items-center justify-center transition-all duration-300">
-                        <label class="text-[10px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label>
-                        <div id="disp-total" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div>
-                        <span id="max-total" class="text-[8px] text-slate-400 font-bold">Maks: ?</span>
+                        <label class="text-[10px] font-black text-amber-500 tracking-widest uppercase">Total Skormu</label><div id="disp-total" class="text-2xl font-black text-slate-800 empty:after:content-['-'] empty:text-slate-300"></div><span id="max-total" class="text-[8px] text-slate-400 font-bold">Maks: ?</span>
                     </div>
                 </div>
             </div>
 
-            <!-- DROPDOWN TARGET GRADING -->
             <div class="bg-white/80 backdrop-blur-md p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-1.5 anim-scores relative z-20 mx-3">
                 <div class="flex items-center justify-between gap-2">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Target Grading:</span>
                     <button onclick="bukaRekapNilai()" class="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg font-black border border-indigo-200 flex items-center gap-1">📊 REKAP & EXCEL</button>
                 </div>
                 <div class="flex gap-1.5 items-center w-full">
-                    <!-- Dropdown Kelas -->
                     <select id="select-kelas-grading" onchange="pilihKelasDariDropdown()" class="custom-select w-[85px] shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500"></select>
-
                     <div class="flex flex-1 gap-1 items-center min-w-0">
-                        <!-- Dropdown Siswa -->
-                        <select id="select-siswa" onchange="pilihSiswaManual()" class="custom-select flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500">
-                            <option value="">-- SISWA --</option>
-                        </select>
-                        <button onclick="tambahSiswaCepat()" class="shrink-0 bg-blue-600 text-white rounded-xl h-8 w-8 flex items-center justify-center font-bold hover:bg-blue-700 active:scale-95 transition-all text-sm" title="Manajemen Siswa (Tambah/Edit)">+</button>
+                        <select id="select-siswa" onchange="pilihSiswaManual()" class="custom-select flex-1 min-w-0 bg-slate-50 border-2 border-slate-200 rounded-xl px-2 py-1.5 text-[10px] font-black text-slate-700 outline-none focus:border-blue-500"><option value="">-- SISWA --</option></select>
+                        <button onclick="tambahSiswaCepat()" class="shrink-0 bg-blue-600 text-white rounded-xl h-8 w-8 flex items-center justify-center font-bold hover:bg-blue-700 active:scale-95 transition-all text-sm" title="Manajemen Siswa">+</button>
                     </div>
                 </div>
             </div>
 
-            <!-- TOMBOL SIMPAN DATA DEWA -->
             <div class="px-3 anim-input w-full">
                 <button id="btn-simpan-nilai" onclick="simpanNilaiKeSiswa()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black py-2.5 rounded-2xl shadow-lg shadow-blue-200 hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all text-xs flex items-center justify-center gap-2">📥 SIMPAN NILAI SISWA</button>
             </div>
-
         </div>
 
-        <!-- Keyboard Angka Bawaan -->
         <div class="w-[96%] max-w-[360px] mx-auto bg-white rounded-3xl border border-slate-200 shadow-[0_-5px_20px_-10px_rgba(0,0,0,0.05)] p-2.5 pb-3 h-[33vh] max-h-[220px] min-h-[150px] relative z-30 anim-numpad flex-shrink-0 mb-1 mt-1">
             <div class="grid grid-cols-3 grid-rows-4 gap-2 h-full">
                 <button onclick="tekanTombol('1')" class="numpad-btn text-slate-700 text-lg sm:text-xl">1</button>
                 <button onclick="tekanTombol('2')" class="numpad-btn text-slate-700 text-lg sm:text-xl">2</button>
                 <button onclick="tekanTombol('3')" class="numpad-btn text-slate-700 text-lg sm:text-xl">3</button>
-                
                 <button onclick="tekanTombol('4')" class="numpad-btn text-slate-700 text-lg sm:text-xl">4</button>
                 <button onclick="tekanTombol('5')" class="numpad-btn text-slate-700 text-lg sm:text-xl">5</button>
                 <button onclick="tekanTombol('6')" class="numpad-btn text-slate-700 text-lg sm:text-xl">6</button>
-                
                 <button onclick="tekanTombol('7')" class="numpad-btn text-slate-700 text-lg sm:text-xl">7</button>
                 <button onclick="tekanTombol('8')" class="numpad-btn text-slate-700 text-lg sm:text-xl">8</button>
                 <button onclick="tekanTombol('9')" class="numpad-btn text-slate-700 text-lg sm:text-xl">9</button>
-                
                 <button onclick="tekanTombol('C')" class="numpad-btn text-red-500 bg-red-50 border-red-100">C</button>
                 <button onclick="tekanTombol('0')" class="numpad-btn text-slate-700 text-lg sm:text-xl">0</button>
-                <button onclick="tekanTombol('DEL')" class="numpad-btn text-slate-600 bg-slate-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
-                    </svg>
-                </button>
+                <button onclick="tekanTombol('DEL')" class="numpad-btn text-slate-600 bg-slate-100"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" /></svg></button>
             </div>
         </div>
-
     </div>
 
-    <!-- --- Semua Skrip Javascript Inti --- -->
     <script>
-        // --- OFFLINE SERVICE WORKER ---
-        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Setup:', err));
-        }
-
-        function refreshApp() {
-            window.location.href = window.location.pathname + '?v=' + new Date().getTime();
-        }
+        function refreshApp() { window.location.href = window.location.pathname + '?v=' + new Date().getTime(); }
 
         function bersihkanLayar() {
-            // Mengembalikan status kelas ke netral (tidak ada yang dipilih)
-            activeKelas = null;
-            activeSiswaId = "";
-            document.getElementById('area-kelas').classList.remove('needs-class');
+            activeKelas = null; activeSiswaId = ""; document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-
-            // Reset warna tombol kelas ke default putih
-            ['55', '60', '65', '45'].forEach(k => {
+            ['kls1', 'kls2', 'kls3', 'kls4', 'kls5', 'kls6', 'lain'].forEach(k => {
                 const btn = document.getElementById('btn-' + k);
-                if(btn) {
-                    btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                    btn.classList.remove('class-active');
-                }
+                if(btn) { btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white'); btn.classList.remove('class-active'); }
             });
-
-            // Kosongkan target grading (dropdown kelas dan siswa)
             document.getElementById('select-kelas-grading').innerHTML = '<option value="">-- KELAS --</option>';
             document.getElementById('select-siswa').innerHTML = '<option value="">-- SISWA --</option>';
-            
-            // Reset info teks maksimal
-            document.getElementById('max-r1').innerText = 'Maks: ?';
-            document.getElementById('max-r2').innerText = 'Maks: ?';
-            document.getElementById('max-r3').innerText = 'Maks: ?';
-            document.getElementById('max-total').innerText = 'Maks: ?';
-
-            // Bersihkan hasil tampilan utama
-            document.getElementById('nilaiAsli').innerText = '0.00';
-            document.getElementById('nilaiBulat').innerText = '0';
-            
-            // Sembunyikan animasi GIF
+            document.getElementById('max-r1').innerText = 'Maks: ?'; document.getElementById('max-r2').innerText = 'Maks: ?';
+            document.getElementById('max-r3').innerText = 'Maks: ?'; document.getElementById('max-total').innerText = 'Maks: ?';
+            document.getElementById('nilaiAsli').innerText = '0.00'; document.getElementById('nilaiBulat').innerText = '0';
             const gifEl = document.getElementById('gif-reaction');
-            if(gifEl) {
-                gifEl.classList.remove('scale-100');
-                gifEl.classList.add('scale-0');
-                gifEl.innerHTML = '';
-            }
-
-            // Kembalikan tampilan input dan mode ke default (Jumlah)
-            updateTampilan();
-            setMode('jumlah');
-            
-            // Simpan status kosong ini (Database siswa, nilai, & musik dijamin TETAP AMAN)
-            simpanDataOffline();
+            if(gifEl) { gifEl.classList.remove('scale-100'); gifEl.classList.add('scale-0'); gifEl.innerHTML = ''; }
+            updateTampilan(); setMode('jumlah'); simpanDataOffline();
         }
 
-        // --- SISTEM PERINGATAN LUCU ---
         function tampilkanPeringatanLucu(tipe, maxVal = 0) {
-            const popup = document.getElementById('cute-popup');
-            const box = document.getElementById('cute-popup-box');
-            const emojiEl = document.getElementById('popup-emoji');
-            const titleEl = document.getElementById('popup-title');
-            const msgEl = document.getElementById('popup-message');
-            const maxBox = document.getElementById('popup-max-box');
-            
+            const popup = document.getElementById('cute-popup'); const box = document.getElementById('cute-popup-box');
+            const emojiEl = document.getElementById('popup-emoji'); const titleEl = document.getElementById('popup-title');
+            const msgEl = document.getElementById('popup-message'); const maxBox = document.getElementById('popup-max-box');
             if (tipe === 'nokelas') {
-                const variasi = [
-                    { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kategori kelas dulu ngab!' },
-                    { emoji: '☕', title: 'Cuci Muka Duls!', msg: 'Kelasnya belum dipencet tuh~' },
-                    { emoji: '✋', title: 'Eits, Sabar!', msg: 'Main pencet-pencet aja, kelasnya dulu dong!' },
-                    { emoji: '🙈', title: 'Kosong Melompong', msg: 'Klik dulu salah satu kelas di atas!' }
-                ];
+                const variasi = [ { emoji: '🗿', title: 'Woi Bangun!', msg: 'Pilih kategori kelas dulu ngab!' }, { emoji: '☕', title: 'Cuci Muka Duls!', msg: 'Kelasnya belum dipencet tuh~' }, { emoji: '✋', title: 'Eits, Sabar!', msg: 'Main pencet-pencet aja, kelasnya dulu dong!' }, { emoji: '🙈', title: 'Kosong Melompong', msg: 'Klik dulu salah satu kelas di atas!' } ];
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = "text-amber-500 font-black text-2xl mb-1";
-                msgEl.innerText = rand.msg;
-                maxBox.classList.add('hidden');
+                emojiEl.innerText = rand.emoji; titleEl.innerText = rand.title; titleEl.className = "text-amber-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg; maxBox.classList.add('hidden');
                 box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-amber-300 flex flex-col items-center";
-                
             } else if (tipe === 'over') {
-                const variasi = [
-                    { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' },
-                    { emoji: '🤣', title: 'Ngantuk lu ya?', msg: 'Waduh, kebanyakan ngetik tuh!' },
-                    { emoji: '🫣', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu? Kelebihan!' },
-                    { emoji: '🐲', title: 'Astaga Naga!', msg: 'Lebih dari batas maksimal woy!' }
-                ];
+                const variasi = [ { emoji: '🤯', title: 'Kelebihan!!', msg: 'Santai bre, angkanya nembus batas!' }, { emoji: '🤣', title: 'Ngantuk lu ya?', msg: 'Waduh, kebanyakan ngetik tuh!' }, { emoji: '🫣', title: 'Lagi Diskon?', msg: 'Nilainya diobral ya bu? Kelebihan!' }, { emoji: '🐲', title: 'Astaga Naga!', msg: 'Lebih dari batas maksimal woy!' } ];
                 const rand = variasi[Math.floor(Math.random() * variasi.length)];
-                emojiEl.innerText = rand.emoji;
-                titleEl.innerText = rand.title;
-                titleEl.className = "text-rose-500 font-black text-2xl mb-1";
-                msgEl.innerText = rand.msg;
-                maxBox.classList.remove('hidden');
-                document.getElementById('popup-max-val').innerText = maxVal;
+                emojiEl.innerText = rand.emoji; titleEl.innerText = rand.title; titleEl.className = "text-rose-500 font-black text-2xl mb-1";
+                msgEl.innerText = rand.msg; maxBox.classList.remove('hidden'); document.getElementById('popup-max-val').innerText = maxVal;
                 box.className = "relative bg-white rounded-[2rem] p-6 shadow-2xl transform scale-50 opacity-0 transition-all duration-300 max-w-[280px] w-4/5 text-center border-4 border-rose-300 flex flex-col items-center";
             }
-
-            popup.classList.remove('opacity-0', 'pointer-events-none');
-            popup.classList.add('opacity-100');
-            
-            setTimeout(() => {
-                box.classList.remove('scale-50', 'opacity-0');
-                box.classList.add('scale-100', 'opacity-100', 'anim-wiggle');
-            }, 10);
-
-            clearTimeout(popupTimeout);
-            popupTimeout = setTimeout(() => {
-                tutupPeringatanLucu();
-            }, 3000);
+            popup.classList.remove('opacity-0', 'pointer-events-none'); popup.classList.add('opacity-100');
+            setTimeout(() => { box.classList.remove('scale-50', 'opacity-0'); box.classList.add('scale-100', 'opacity-100', 'anim-wiggle'); }, 10);
+            clearTimeout(popupTimeout); popupTimeout = setTimeout(() => { tutupPeringatanLucu(); }, 3000);
         }
 
         function tutupPeringatanLucu() {
-            const popup = document.getElementById('cute-popup');
-            const box = document.getElementById('cute-popup-box');
-            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle');
-            box.classList.add('scale-50', 'opacity-0');
-            setTimeout(() => {
-                popup.classList.remove('opacity-100');
-                popup.classList.add('opacity-0', 'pointer-events-none');
-            }, 250);
+            const popup = document.getElementById('cute-popup'); const box = document.getElementById('cute-popup-box');
+            box.classList.remove('scale-100', 'opacity-100', 'anim-wiggle'); box.classList.add('scale-50', 'opacity-0');
+            setTimeout(() => { popup.classList.remove('opacity-100'); popup.classList.add('opacity-0', 'pointer-events-none'); }, 250);
         }
 
-        // --- VIP MUSIC PLAYER SYSTEM ---
-        const musicLibrary = [
-            { title: 'Perdamaian', src: 'Perdamaian.mp3' },
-            { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' },
-            { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' },
-            { title: 'SurgaMu', src: 'SurgaMu.mp3' },
-            { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' },
-            { title: 'Para PencariMu', src: 'Para PencariMu.mp3' },
-            { title: 'Maha Besar', src: 'Maha Besar.mp3' },
-            { title: 'Ijinkan Aku', src: 'Ijinkan Aku.mp3' },
-            { title: 'Hidup Hanya Sementara', src: 'Hidup Hanya Sementar.mp3' },
-            { title: 'Doa Untuk Ibu', src: 'Doa Untuk Ibu.mp3' },
-            { title: 'Dia Maha Sempurna', src: 'Dia Maha Sempurna.mp3' },
-            { title: 'Dengan NafasMu', src: 'Dengan NafasMu.mp3' },
-            { title: 'Asmara Terindah', src: 'Asmara Terindah.mp3' },
-            { title: 'Andai Ku Tahu', src: 'Andai Ku Tahu.mp3' }
-        ];
-
-        let currentAudio = new Audio();
-        let isPlaying = false;
-        let currentTrackIndex = 0;
+        const musicLibrary = [{ title: 'Perdamaian', src: 'Perdamaian.mp3' }, { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' }, { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' }, { title: 'SurgaMu', src: 'SurgaMu.mp3' }, { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' }, { title: 'Para PencariMu', src: 'Para PencariMu.mp3' }, { title: 'Maha Besar', src: 'Maha Besar.mp3' }, { title: 'Ijinkan Aku', src: 'Ijinkan Aku.mp3' }, { title: 'Hidup Hanya Sementara', src: 'Hidup Hanya Sementar.mp3' }, { title: 'Doa Untuk Ibu', src: 'Doa Untuk Ibu.mp3' }, { title: 'Dia Maha Sempurna', src: 'Dia Maha Sempurna.mp3' }, { title: 'Dengan NafasMu', src: 'Dengan NafasMu.mp3' }, { title: 'Asmara Terindah', src: 'Asmara Terindah.mp3' }, { title: 'Andai Ku Tahu', src: 'Andai Ku Tahu.mp3' }];
+        let currentAudio = new Audio(); let isPlaying = false; let currentTrackIndex = 0;
 
         function renderEqualizer() {
-            const eqContainer = document.getElementById('equalizer');
-            eqContainer.innerHTML = '';
-            for (let i = 0; i < 25; i++) {
-                const bar = document.createElement('div');
-                bar.className = 'eq-bar';
-                const height = Math.floor(Math.random() * 10) + 4;
-                const delay = Math.random() * 0.5;
-                bar.style.height = `${height}px`;
-                bar.style.animationDelay = `${delay}s`;
-                eqContainer.appendChild(bar);
-            }
+            const eqContainer = document.getElementById('equalizer'); eqContainer.innerHTML = '';
+            for (let i = 0; i < 25; i++) { const bar = document.createElement('div'); bar.className = 'eq-bar'; bar.style.height = `${Math.floor(Math.random() * 10) + 4}px`; bar.style.animationDelay = `${Math.random() * 0.5}s`; eqContainer.appendChild(bar); }
         }
 
-        function triggerUploadMusik() {
-            document.getElementById('upload-musik').click();
-        }
-
+        function triggerUploadMusik() { document.getElementById('upload-musik').click(); }
         function prosesUploadMusik(event) {
-            const files = event.target.files;
-            if (files.length === 0) return;
-
-            let addedCount = 0;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type.startsWith('audio/')) {
-                    const fileUrl = URL.createObjectURL(file);
-                    const title = file.name.replace(/\.[^/.]+$/, "");
-                    musicLibrary.push({ title: title, src: fileUrl });
-                    addedCount++;
-                }
-            }
-
-            if (addedCount > 0) {
-                alert(`Wih mantap! ${addedCount} lagu barumu berhasil ditambahkan. Langsung gaskeun play! 🎶`);
-                setTrack(musicLibrary.length - addedCount);
-                if (!isPlaying) toggleMusik();
-                
-                const modal = document.getElementById('music-manager-modal');
-                if (!modal.classList.contains('pointer-events-none')) {
-                    bukaManagerMusik();
-                }
-            }
+            const files = event.target.files; if (files.length === 0) return; let addedCount = 0;
+            for (let i = 0; i < files.length; i++) { if (files[i].type.startsWith('audio/')) { musicLibrary.push({ title: files[i].name.replace(/\.[^/.]+$/, ""), src: URL.createObjectURL(files[i]) }); addedCount++; } }
+            if (addedCount > 0) { alert(`${addedCount} lagu ditambahkan! 🎶`); setTrack(musicLibrary.length - addedCount); if (!isPlaying) toggleMusik(); const modal = document.getElementById('music-manager-modal'); if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik(); }
             event.target.value = '';
         }
 
         function bukaManagerMusik() {
-            const container = document.getElementById('playlist-container');
-            container.innerHTML = '';
-            
-            if (musicLibrary.length === 0) {
-                container.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Daftar putar kosong melompong.</p>';
-            } else {
+            const container = document.getElementById('playlist-container'); container.innerHTML = '';
+            if (musicLibrary.length === 0) { container.innerHTML = '<p class="text-center text-xs text-slate-400 py-6 italic font-bold">Daftar putar kosong.</p>'; } else {
                 musicLibrary.forEach((track, index) => {
                     const isPlayingRow = (index === currentTrackIndex);
                     const row = document.createElement('div');
                     row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isPlayingRow ? 'bg-indigo-50 border-indigo-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
-                    
-                    const eqIndicator = isPlayingRow && isPlaying ? `
-                        <div class="flex items-end gap-[1px] h-[10px] ml-1">
-                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div>
-                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div>
-                            <div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div>
-                        </div>
-                    ` : '';
-
-                    row.innerHTML = `
-                        <div class="flex-1 min-w-0 pr-2 flex items-center gap-1.5" onclick="playLaguPilihan(${index})">
-                            <span class="text-xs font-black truncate ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">
-                                ${index + 1}. ${track.title}
-                            </span>
-                            ${eqIndicator}
-                        </div>
-                        <button onclick="event.stopPropagation(); hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
-                    `;
+                    const eqIndicator = isPlayingRow && isPlaying ? `<div class="flex items-end gap-[1px] h-[10px] ml-1"><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div><div class="w-1 bg-indigo-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div></div>` : '';
+                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-1.5" onclick="playLaguPilihan(${index})"><span class="text-xs font-black truncate ${isPlayingRow ? 'text-indigo-600' : 'text-slate-600'}">${index + 1}. ${track.title}</span>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLaguDariManager(${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus Lagu"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
                     container.appendChild(row);
                 });
             }
             toggleModal('music-manager-modal', true);
         }
 
-        function playLaguPilihan(index) {
-            setTrack(index);
-            if (!isPlaying) {
-                toggleMusik();
-            } else {
-                currentAudio.play().catch(e => console.log(e));
-            }
-            bukaManagerMusik(); 
-        }
-
-        function hapusLaguDariManager(index) {
-            const trackTitle = musicLibrary[index].title;
-            if(confirm(`Yakin mau menghapus lagu "${trackTitle}" dari daftar putar?`)) {
-                musicLibrary.splice(index, 1);
-                if (musicLibrary.length === 0) {
-                    stopMusik();
-                    document.getElementById('music-title').innerText = "KOSONG";
-                    document.getElementById('music-title').classList.remove('marquee-text');
-                    currentTrackIndex = 0;
-                } else {
-                    if (index < currentTrackIndex) {
-                        currentTrackIndex--;
-                    } else if (index === currentTrackIndex) {
-                        if (currentTrackIndex >= musicLibrary.length) {
-                            currentTrackIndex = 0;
-                        }
-                        setTrack(currentTrackIndex);
-                        if (isPlaying) currentAudio.play().catch(e => console.log(e));
-                    }
-                }
-                bukaManagerMusik();
-            }
-        }
+        function playLaguPilihan(index) { setTrack(index); if (!isPlaying) toggleMusik(); else currentAudio.play().catch(e => console.log(e)); bukaManagerMusik(); }
+        function hapusLaguDariManager(index) { if(confirm(`Hapus lagu "${musicLibrary[index].title}"?`)) { musicLibrary.splice(index, 1); if (musicLibrary.length === 0) { stopMusik(); document.getElementById('music-title').innerText = "KOSONG"; document.getElementById('music-title').classList.remove('marquee-text'); currentTrackIndex = 0; } else { if (index < currentTrackIndex) { currentTrackIndex--; } else if (index === currentTrackIndex) { if (currentTrackIndex >= musicLibrary.length) currentTrackIndex = 0; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); } } bukaManagerMusik(); } }
 
         function setTrack(index) {
-            currentTrackIndex = index;
-            const currentTrackObj = musicLibrary[currentTrackIndex];
-            currentAudio.src = currentTrackObj.src;
-            
-            const titleEl = document.getElementById('music-title');
-            titleEl.innerText = currentTrackObj.title;
-            
-            if (currentTrackObj.title.length > 18) {
-                titleEl.classList.add('marquee-text');
-                titleEl.style.animationPlayState = isPlaying ? 'running' : 'paused';
-            } else {
-                titleEl.classList.remove('marquee-text');
-                titleEl.style.animationPlayState = 'paused';
-            }
+            currentTrackIndex = index; currentAudio.src = musicLibrary[currentTrackIndex].src;
+            const titleEl = document.getElementById('music-title'); titleEl.innerText = musicLibrary[currentTrackIndex].title;
+            if (musicLibrary[currentTrackIndex].title.length > 18) { titleEl.classList.add('marquee-text'); titleEl.style.animationPlayState = isPlaying ? 'running' : 'paused'; } else { titleEl.classList.remove('marquee-text'); titleEl.style.animationPlayState = 'paused'; }
             renderEqualizer();
         }
 
         function toggleMusik() {
-            if (musicLibrary.length === 0) {
-                alert("Daftar putar kosong! Silakan upload lagu dulu (tombol daftar putar di sebelah kanan).");
-                return;
-            }
+            if (musicLibrary.length === 0) { alert("Daftar putar kosong!"); return; }
             if (!currentAudio.src) setTrack(0);
-
-            const iconPlay = document.getElementById('icon-play');
-            const iconPause = document.getElementById('icon-pause');
-            const eq = document.getElementById('equalizer');
-            const titleEl = document.getElementById('music-title');
-
-            if (isPlaying) {
-                currentAudio.pause();
-                isPlaying = false;
-                iconPlay.classList.remove('hidden');
-                iconPause.classList.add('hidden');
-                eq.classList.remove('opacity-100');
-                eq.classList.add('opacity-0');
-                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'paused';
-            } else {
-                currentAudio.play().catch(e => console.log(e));
-                isPlaying = true;
-                iconPlay.classList.add('hidden');
-                iconPause.classList.remove('hidden');
-                eq.classList.remove('opacity-0');
-                eq.classList.add('opacity-100');
-                if(titleEl.classList.contains('marquee-text')) titleEl.style.animationPlayState = 'running';
-            }
-            
-            const modal = document.getElementById('music-manager-modal');
-            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
+            if (isPlaying) { currentAudio.pause(); isPlaying = false; document.getElementById('icon-play').classList.remove('hidden'); document.getElementById('icon-pause').classList.add('hidden'); document.getElementById('equalizer').classList.remove('opacity-100'); document.getElementById('equalizer').classList.add('opacity-0'); if(document.getElementById('music-title').classList.contains('marquee-text')) document.getElementById('music-title').style.animationPlayState = 'paused'; } else { currentAudio.play().catch(e => console.log(e)); isPlaying = true; document.getElementById('icon-play').classList.add('hidden'); document.getElementById('icon-pause').classList.remove('hidden'); document.getElementById('equalizer').classList.remove('opacity-0'); document.getElementById('equalizer').classList.add('opacity-100'); if(document.getElementById('music-title').classList.contains('marquee-text')) document.getElementById('music-title').style.animationPlayState = 'running'; }
+            if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik();
         }
 
-        function stopMusik() {
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
-            isPlaying = false;
-            document.getElementById('icon-play').classList.remove('hidden');
-            document.getElementById('icon-pause').classList.add('hidden');
-            document.getElementById('equalizer').classList.remove('opacity-100');
-            document.getElementById('equalizer').classList.add('opacity-0');
-            
-            const titleEl = document.getElementById('music-title');
-            if(titleEl.classList.contains('marquee-text')) {
-                titleEl.style.animationPlayState = 'paused';
-                titleEl.style.transform = 'translate(0, 0)'; 
-            }
-            
-            const modal = document.getElementById('music-manager-modal');
-            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
-        }
-
-        function nextMusik() {
-            if (musicLibrary.length === 0) return;
-            currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length;
-            setTrack(currentTrackIndex);
-            if (isPlaying) currentAudio.play().catch(e => console.log(e));
-            
-            const modal = document.getElementById('music-manager-modal');
-            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
-        }
-
-        function prevMusik() {
-            if (musicLibrary.length === 0) return;
-            currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length;
-            setTrack(currentTrackIndex);
-            if (isPlaying) currentAudio.play().catch(e => console.log(e));
-            
-            const modal = document.getElementById('music-manager-modal');
-            if (!modal.classList.contains('pointer-events-none')) bukaManagerMusik();
-        }
-
+        function stopMusik() { if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; } isPlaying = false; document.getElementById('icon-play').classList.remove('hidden'); document.getElementById('icon-pause').classList.add('hidden'); document.getElementById('equalizer').classList.remove('opacity-100'); document.getElementById('equalizer').classList.add('opacity-0'); if(document.getElementById('music-title').classList.contains('marquee-text')) { document.getElementById('music-title').style.animationPlayState = 'paused'; document.getElementById('music-title').style.transform = 'translate(0, 0)'; } if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
+        function nextMusik() { if (musicLibrary.length === 0) return; currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
+        function prevMusik() { if (musicLibrary.length === 0) return; currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length; setTrack(currentTrackIndex); if (isPlaying) currentAudio.play().catch(e => console.log(e)); if (!document.getElementById('music-manager-modal').classList.contains('pointer-events-none')) bukaManagerMusik(); }
         currentAudio.addEventListener('ended', () => { nextMusik(); });
 
-        // --- ATURAN KATEGORI KELAS ---
         let configKelas = {
-            '55': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500', name: 'KLS 1' },
-            '60': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500', name: 'KLS 2-3' },
-            '65': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500', name: 'KLS 4-5' },
-            '45': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'KODING' } 
+            'kls1': { maxR1: 20, maxR2: 10, maxR3: 5, color: 'bg-blue-500', name: 'KLS 1', valPembagi: 55 },
+            'kls2': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-emerald-500', name: 'KLS 2', valPembagi: 60 },
+            'kls3': { maxR1: 25, maxR2: 10, maxR3: 5, color: 'bg-teal-500', name: 'KLS 3', valPembagi: 60 },
+            'kls4': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-rose-500', name: 'KLS 4', valPembagi: 65 },
+            'kls5': { maxR1: 30, maxR2: 10, maxR3: 5, color: 'bg-fuchsia-500', name: 'KLS 5', valPembagi: 65 },
+            'kls6': { maxR1: 35, maxR2: 10, maxR3: 5, color: 'bg-purple-500', name: 'KLS 6', valPembagi: 70 },
+            'lain': { maxR1: 15, maxR2: 30, maxR3: 0, color: 'bg-cyan-500', name: 'LAIN', valPembagi: 45 }
         };
 
-        // --- KOMPRESI DATABASE 1 BARIS (ANTI TERPOTONG) ---
+        // KODE DEWA: DATABASE SISWA FULL TIDAK TERPOTONG!
         const defaultSiswa = {
             "1 ICP A": [{"presensi":1,"nama":"ALTHAF SHAQUILLE ABHIVANDYA"},{"presensi":2,"nama":"ANDARU GESIT YANARTA"},{"presensi":3,"nama":"Atarazka Syahnan Haziq"},{"presensi":4,"nama":"Balqis Akasha Shafiyah"},{"presensi":5,"nama":"BOY ATHALLAH BAKHRY"},{"presensi":6,"nama":"Elvara Aiza Santosa"},{"presensi":7,"nama":"Hamda Batrisya Seika"},{"presensi":8,"nama":"Inara Putri Arkadewi"},{"presensi":9,"nama":"LUKITA ASKANA SAKHI"},{"presensi":10,"nama":"Muhammad Tangguh Asnawi"},{"presensi":11,"nama":"Nizar Abdillah Ghazwan"},{"presensi":12,"nama":"PESONA HARUM HUMAIRA"},{"presensi":13,"nama":"RIFANI REYYA ANNISA"},{"presensi":14,"nama":"WAFAZENA JANITRALESHA"}],
             "1 ICP B": [{"presensi":1,"nama":"CINTA AFIA SYAILENDRA"},{"presensi":2,"nama":"DAVIN AL CHALIEF ERABBANI"},{"presensi":3,"nama":"Diana Aiza Hudaya"},{"presensi":4,"nama":"Illona Nusaibah Azzahra"},{"presensi":5,"nama":"Jihan Arsylia Nugroho"},{"presensi":6,"nama":"KHALISTA ALIFIA GUNTORO"},{"presensi":7,"nama":"KHAWLA ADIBA DHATU"},{"presensi":8,"nama":"MALVEN RAFIIANDRA ARLY WIBOWO"},{"presensi":9,"nama":"MOZEIN ARKEVIN"},{"presensi":10,"nama":"Muhammad Zhafran Abdurrahman"},{"presensi":11,"nama":"Ocean Hoki Praditya"},{"presensi":12,"nama":"Zharif Almuqaffi Digit"},{"presensi":13,"nama":"Herdinar Siti Noorjehan Fidiyanto"}],
@@ -967,988 +453,231 @@
             "6D": [{"presensi":1,"nama":"Adinda Aurelia"},{"presensi":2,"nama":"Afifah Bilqis Azzahra"},{"presensi":3,"nama":"Akma Safaraz Ajunta"},{"presensi":4,"nama":"Alaina Arufa Nisa'"},{"presensi":5,"nama":"Alisha Shafia Sugianto"},{"presensi":6,"nama":"Anarta Rizki Pratama"},{"presensi":7,"nama":"Annorafatech Aqilahamdah"},{"presensi":8,"nama":"Aprilio Wifa Albyansyah"},{"presensi":9,"nama":"Ceisya Hazkia Rizky Subagyo"},{"presensi":10,"nama":"Devandra Alvaro El Zahran"},{"presensi":11,"nama":"Dzakiyya Talita Sakhi Wicaksono"},{"presensi":12,"nama":"Dzaky Almair Jamil Wibowo"},{"presensi":13,"nama":"Fathiya Halwa Nisa"},{"presensi":14,"nama":"Faza Hanifa Nugroho"},{"presensi":15,"nama":"Hafuza Gentza Gunarso"},{"presensi":16,"nama":"Helios Cakrabirawa Samsudin"},{"presensi":17,"nama":"Justitia Kafila"},{"presensi":18,"nama":"Kaureen Fazeela Syakira"},{"presensi":19,"nama":"Khafi Aqlan Raiz"},{"presensi":20,"nama":"Kinasih Helga Hares"},{"presensi":21,"nama":"Lionel Castila"},{"presensi":22,"nama":"Mosanda Maarif"},{"presensi":23,"nama":"Muhammad Yahya Asy'ari"},{"presensi":24,"nama":"Nadifa Nur Medina"},{"presensi":25,"nama":"Nailah Hafiza Izzatunnisa"},{"presensi":26,"nama":"Novandra Arjuna Pratama"},{"presensi":27,"nama":"Radinwangi Avatara Azura Kertabhauma Cakraningrat"},{"presensi":28,"nama":"Umar Al-Faruq"}]
         };
 
-        let databaseSiswa = {};
-        let dataNilaiSiswa = {}; 
+        let databaseSiswa = {}; let dataNilaiSiswa = {}; 
+        let activeKelas = null; let activeMode = 'jumlah'; let fokusInput = 'total'; let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
+        let activeSiswaId = ""; let popupTimeout; let selectedEditClassKey = null; let modeManageSiswa = 'tambah';
 
-        let activeKelas = null; 
-        let activeMode = 'jumlah'; 
-        let fokusInput = 'total';
-        let nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-        let activeSiswaId = "";
-        let popupTimeout;
-        let selectedEditClassKey = null;
-        let modeManageSiswa = 'tambah';
-
-        // --- SISTEM LOCAL STORAGE DAN INIT ---
-        function simpanAturanKeLocal() {
-            localStorage.setItem('kates_config_kelas', JSON.stringify(configKelas));
-        }
-
+        function simpanAturanKeLocal() { localStorage.setItem('kates_config_kelas', JSON.stringify(configKelas)); }
         function muatAturanDariLocal() {
             const saved = localStorage.getItem('kates_config_kelas');
             if(saved) {
-                configKelas = JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+                if(parsed['kls1']) { configKelas = parsed; } else { simpanAturanKeLocal(); }
                 Object.keys(configKelas).forEach(key => {
-                    const labelName = document.getElementById('label-name-' + key);
-                    const labelSub = document.getElementById('label-sub-' + key);
+                    const labelName = document.getElementById('label-name-' + key); const labelSub = document.getElementById('label-sub-' + key);
                     if (labelName) labelName.innerText = configKelas[key].name;
-                    if (labelSub) labelSub.innerText = 'Bagi ' + key;
+                    let valP = configKelas[key].valPembagi;
+                    if (labelSub) labelSub.innerText = '/' + valP;
                 });
             }
         }
 
-        function simpanSiswaKeLocal() {
-            localStorage.setItem('kates_database_siswa', JSON.stringify(databaseSiswa));
-        }
-
-        function muatSiswaDariLocal() {
-            const saved = localStorage.getItem('kates_database_siswa');
+        function simpanSiswaKeLocal() { localStorage.setItem('kates_database_siswa', JSON.stringify(databaseSiswa)); }
+        
+        // FOKUS: Auto-Repair Database yang rusak
+        function muatSiswaDariLocal() { 
+            const saved = localStorage.getItem('kates_database_siswa'); 
             if(saved) {
                 databaseSiswa = JSON.parse(saved);
-            } else {
-                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
-                simpanSiswaKeLocal();
-            }
-        }
-
-        function simpanNilaiKeLocal() {
-            localStorage.setItem('kates_data_nilai_siswa', JSON.stringify(dataNilaiSiswa));
-        }
-
-        function muatNilaiDariLocal() {
-            const saved = localStorage.getItem('kates_data_nilai_siswa');
-            if(saved) {
-                dataNilaiSiswa = JSON.parse(saved);
-            }
-        }
-
-        function simpanDataOffline() {
-            const state = { activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId };
-            localStorage.setItem('kates_offline_state', JSON.stringify(state));
-        }
-
-        function muatDataOffline() {
-            try {
-                const state = JSON.parse(localStorage.getItem('kates_offline_state'));
-                if (state && state.activeKelas) {
-                    nilaiInput = state.nilaiInput || { r1: '', r2: '', r3: '', total: '' };
-                    setMode(state.activeMode || 'jumlah');
-                    pilihKelasAktif(state.activeKelas);
-                    setFokus(state.fokusInput || 'total');
-                    if(state.activeSiswaId) {
-                        setTimeout(() => {
-                            document.getElementById('select-siswa').value = state.activeSiswaId;
-                            activeSiswaId = state.activeSiswaId;
-                            muatNilaiSiswaAktif();
-                        }, 50);
-                    }
-                    return true;
+                // Jika database 1A kurang dari 5 orang, berarti data terpotong karena bug sebelumnya. Auto-restorasi!
+                if(databaseSiswa["1A"] && databaseSiswa["1A"].length < 5) {
+                    databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa));
+                    simpanSiswaKeLocal();
                 }
-            } catch (e) { console.log('Gagal memuat offline state'); }
-            return false;
+            } else { 
+                databaseSiswa = JSON.parse(JSON.stringify(defaultSiswa)); 
+                simpanSiswaKeLocal(); 
+            } 
+        }
+        
+        function simpanNilaiKeLocal() { localStorage.setItem('kates_data_nilai_siswa', JSON.stringify(dataNilaiSiswa)); }
+        function muatNilaiDariLocal() { const saved = localStorage.getItem('kates_data_nilai_siswa'); if(saved) dataNilaiSiswa = JSON.parse(saved); }
+        function simpanDataOffline() { localStorage.setItem('kates_offline_state', JSON.stringify({ activeKelas, activeMode, fokusInput, nilaiInput, activeSiswaId })); }
+        function muatDataOffline() { 
+            try { 
+                const state = JSON.parse(localStorage.getItem('kates_offline_state')); 
+                if (state && state.activeKelas) { 
+                    nilaiInput = state.nilaiInput || { r1: '', r2: '', r3: '', total: '' }; 
+                    setMode(state.activeMode || 'jumlah'); 
+                    
+                    let aKelas = state.activeKelas;
+                    if(aKelas === '55') aKelas = 'kls1'; else if(aKelas === '60') aKelas = 'kls2'; else if(aKelas === '65') aKelas = 'kls4'; else if(aKelas === '45') aKelas = 'lain';
+                    
+                    pilihKelasAktif(aKelas); 
+                    setFokus(state.fokusInput || 'total'); 
+                    if(state.activeSiswaId) { 
+                        setTimeout(() => { 
+                            document.getElementById('select-siswa').value = state.activeSiswaId; 
+                            activeSiswaId = state.activeSiswaId; 
+                            muatNilaiSiswaAktif(); 
+                        }, 50); 
+                    } 
+                    return true; 
+                } 
+            } catch (e) {} return false; 
         }
 
-        // --- SISTEM PEMILIHAN KELAS ---
         function initLongPressEvents() {
-            ['55', '60', '65', '45'].forEach(key => {
-                const btn = document.getElementById('btn-' + key);
-                if (!btn) return;
-                let touchTimer;
-                let isLongPress = false;
-
+            ['kls1', 'kls2', 'kls3', 'kls4', 'kls5', 'kls6', 'lain'].forEach(key => {
+                const btn = document.getElementById('btn-' + key); if (!btn) return; let touchTimer; let isLongPress = false;
                 btn.addEventListener('contextmenu', e => e.preventDefault());
-
-                const startAction = (e) => {
-                    isLongPress = false;
-                    touchTimer = setTimeout(() => {
-                        isLongPress = true;
-                        if (navigator.vibrate) navigator.vibrate(50);
-                        bukaEditKelas(key);
-                    }, 800);
-                };
-
-                const endAction = (e) => {
-                    clearTimeout(touchTimer);
-                    if (!isLongPress) {
-                        pilihKelasAktif(key);
-                    }
-                };
-
-                btn.addEventListener('mousedown', startAction);
-                btn.addEventListener('mouseup', endAction);
-                btn.addEventListener('mouseleave', () => clearTimeout(touchTimer));
-
-                btn.addEventListener('touchstart', (e) => { startAction(); }, {passive: true});
-                btn.addEventListener('touchend', endAction);
-                btn.addEventListener('touchmove', () => clearTimeout(touchTimer));
+                const startAction = (e) => { isLongPress = false; touchTimer = setTimeout(() => { isLongPress = true; if (navigator.vibrate) navigator.vibrate(50); bukaEditKelas(key); }, 800); };
+                const endAction = (e) => { clearTimeout(touchTimer); if (!isLongPress) pilihKelasAktif(key); };
+                btn.addEventListener('mousedown', startAction); btn.addEventListener('mouseup', endAction); btn.addEventListener('mouseleave', () => clearTimeout(touchTimer));
+                btn.addEventListener('touchstart', (e) => { startAction(); }, {passive: true}); btn.addEventListener('touchend', endAction); btn.addEventListener('touchmove', () => clearTimeout(touchTimer));
             });
         }
 
         function bukaEditKelas(key) {
-            selectedEditClassKey = key;
-            document.getElementById('edit-kelas-title').innerText = "Edit " + configKelas[key].name;
-            document.getElementById('edit-label-nama').value = configKelas[key].name;
-            document.getElementById('edit-pembagi-val').value = key;
-            toggleModal('edit-kelas-modal', true);
+            selectedEditClassKey = key; document.getElementById('edit-kelas-title').innerText = "Edit " + configKelas[key].name; document.getElementById('edit-label-nama').value = configKelas[key].name; document.getElementById('edit-pembagi-val').value = configKelas[key].valPembagi; toggleModal('edit-kelas-modal', true);
         }
 
         function simpanEditAturan() {
-            const newName = document.getElementById('edit-label-nama').value.trim();
-            const newPembagi = document.getElementById('edit-pembagi-val').value.trim();
-            if(!newName || !newPembagi) return;
-
-            const oldKey = selectedEditClassKey;
-            if (oldKey !== newPembagi) {
-                configKelas[newPembagi] = {
-                    maxR1: configKelas[oldKey].maxR1,
-                    maxR2: configKelas[oldKey].maxR2,
-                    maxR3: configKelas[oldKey].maxR3,
-                    color: configKelas[oldKey].color,
-                    name: newName
-                };
-                databaseSiswa[newPembagi] = databaseSiswa[oldKey] || [];
-                delete configKelas[oldKey];
-                delete databaseSiswa[oldKey];
-            } else {
-                configKelas[oldKey].name = newName;
-            }
-
+            const newName = document.getElementById('edit-label-nama').value.trim(); const newPembagi = document.getElementById('edit-pembagi-val').value.trim();
+            if(!newName || !newPembagi) return; const oldKey = selectedEditClassKey;
+            
+            configKelas[oldKey].name = newName;
+            configKelas[oldKey].valPembagi = parseInt(newPembagi);
             simpanAturanKeLocal();
-            simpanSiswaKeLocal();
+            
+            const labelName = document.getElementById('label-name-' + oldKey); const labelSub = document.getElementById('label-sub-' + oldKey);
+            if (labelName) labelName.innerText = newName; if (labelSub) labelSub.innerText = '/' + newPembagi;
             toggleModal('edit-kelas-modal', false);
-            location.reload();
+            if(activeKelas === oldKey) pilihKelasAktif(oldKey);
         }
 
-        function toggleModal(id, show) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if(show) {
-                el.classList.remove('pointer-events-none', 'opacity-0');
-                el.classList.add('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-95');
-                el.querySelector('.relative').classList.add('scale-100');
-            } else {
-                el.classList.add('pointer-events-none', 'opacity-0');
-                el.classList.remove('opacity-100');
-                el.querySelector('.relative').classList.remove('scale-100');
-                el.querySelector('.relative').classList.add('scale-95');
-            }
-        }
+        function toggleModal(id, show) { const el = document.getElementById(id); if (!el) return; if(show) { el.classList.remove('pointer-events-none', 'opacity-0'); el.classList.add('opacity-100'); el.querySelector('.relative').classList.remove('scale-95'); el.querySelector('.relative').classList.add('scale-100'); } else { el.classList.add('pointer-events-none', 'opacity-0'); el.classList.remove('opacity-100'); el.querySelector('.relative').classList.remove('scale-100'); el.querySelector('.relative').classList.add('scale-95'); } }
 
         function updateKelasDropdownOptions() {
-            const selectKelas = document.getElementById('select-kelas-grading');
-            const selectManageKelas = document.getElementById('manage-kelas');
-            
-            selectKelas.innerHTML = '<option value="">-- KELAS --</option>';
-            selectManageKelas.innerHTML = '';
-
-            const keys = Object.keys(databaseSiswa).sort();
-            keys.forEach(key => {
-                const optGrading = document.createElement('option');
-                optGrading.value = key;
-                optGrading.innerText = key;
-                selectKelas.appendChild(optGrading);
-
-                const optManage = document.createElement('option');
-                optManage.value = key;
-                optManage.innerText = key;
-                selectManageKelas.appendChild(optManage);
-            });
+            const selectKelas = document.getElementById('select-kelas-grading'); const selectManageKelas = document.getElementById('manage-kelas'); selectKelas.innerHTML = '<option value="">-- KELAS --</option>'; selectManageKelas.innerHTML = '';
+            Object.keys(databaseSiswa).sort().forEach(key => { const optGrading = document.createElement('option'); optGrading.value = key; optGrading.innerText = key; selectKelas.appendChild(optGrading); const optManage = document.createElement('option'); optManage.value = key; optManage.innerText = key; selectManageKelas.appendChild(optManage); });
         }
 
         function pilihKelasDariDropdown() {
-            const selectedClass = document.getElementById('select-kelas-grading').value;
-            if(!selectedClass) return;
-
-            let targetCategory = '55';
-            if (['2 ICP A', '2A', '2B', '2C', '2D', '3A', '3B', '3C', '3D'].includes(selectedClass)) {
-                targetCategory = '60';
-            } else if (['4A', '4B', '4C', '4D', '5A', '5B', '5C', '5D'].includes(selectedClass)) {
-                targetCategory = '65';
-            } else if (['6A', '6B', '6C', '6D'].includes(selectedClass)) {
-                targetCategory = '65'; 
-            }
-
-            if (activeKelas === '45') {
-                targetCategory = '45'; 
-            }
-
+            const selectedClass = document.getElementById('select-kelas-grading').value; if(!selectedClass) return;
+            let targetCategory = 'kls1';
+            if (selectedClass.startsWith('1')) targetCategory = 'kls1';
+            else if (selectedClass.startsWith('2')) targetCategory = 'kls2';
+            else if (selectedClass.startsWith('3')) targetCategory = 'kls3';
+            else if (selectedClass.startsWith('4')) targetCategory = 'kls4';
+            else if (selectedClass.startsWith('5')) targetCategory = 'kls5';
+            else if (selectedClass.startsWith('6')) targetCategory = 'kls6';
+            
+            if (activeKelas === 'lain') targetCategory = 'lain';
             pilihKelasAktif(targetCategory, selectedClass);
         }
 
-        function getSiswaList(namaKelas) {
-            if (activeKelas === '45' && namaKelas) {
-                return databaseSiswa[namaKelas] || [];
-            }
-            return databaseSiswa[namaKelas] || [];
-        }
+        function getSiswaList(namaKelas) { if (activeKelas === 'lain' && namaKelas) return databaseSiswa[namaKelas] || []; return databaseSiswa[namaKelas] || []; }
 
         function updateSiswaDropdown() {
-            const select = document.getElementById('select-siswa');
-            select.innerHTML = '<option value="">-- SISWA --</option>';
-            
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-
-            if(!currentClassName) return;
-
+            const select = document.getElementById('select-siswa'); select.innerHTML = '<option value="">-- SISWA --</option>';
+            const currentClassName = document.getElementById('select-kelas-grading').value; if(!currentClassName) return;
             const siswaKelas = getSiswaList(currentClassName);
             siswaKelas.forEach(s => {
-                const storageId = activeKelas === '45' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
+                const storageId = activeKelas === 'lain' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
                 const statusSaved = dataNilaiSiswa[storageId] ? " ✅" : "";
-                const opt = document.createElement('option');
-                opt.value = s.nama;
-                
-                // Konversi Tampilan ke Proper Case Otomatis
+                const opt = document.createElement('option'); opt.value = s.nama;
                 const properName = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-                opt.innerText = `${s.presensi}. ${properName}${statusSaved}`;
-                select.appendChild(opt);
+                opt.innerText = `${s.presensi}. ${properName}${statusSaved}`; select.appendChild(opt);
             });
-
-            const belumTernilai = siswaKelas.find(s => {
-                const storageId = activeKelas === '45' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
-                return !dataNilaiSiswa[storageId];
-            });
-
-            if(belumTernilai) {
-                select.value = belumTernilai.nama;
-                activeSiswaId = belumTernilai.nama;
-            } else if (siswaKelas.length > 0) {
-                select.value = siswaKelas[0].nama;
-                activeSiswaId = siswaKelas[0].nama;
-            } else {
-                activeSiswaId = "";
-            }
+            const belumTernilai = siswaKelas.find(s => !dataNilaiSiswa[activeKelas === 'lain' ? s.nama + '_koding' : s.nama + '_' + currentClassName]);
+            if(belumTernilai) { select.value = belumTernilai.nama; activeSiswaId = belumTernilai.nama; } else if (siswaKelas.length > 0) { select.value = siswaKelas[0].nama; activeSiswaId = siswaKelas[0].nama; } else { activeSiswaId = ""; }
             muatNilaiSiswaAktif();
         }
 
-        function pilihSiswaManual() {
-            activeSiswaId = document.getElementById('select-siswa').value;
-            muatNilaiSiswaAktif();
-        }
+        function pilihSiswaManual() { activeSiswaId = document.getElementById('select-siswa').value; muatNilaiSiswaAktif(); }
 
         function muatNilaiSiswaAktif() {
-            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-            
-            const storageId = activeKelas === '45' ? activeSiswaId + '_koding' : activeSiswaId + '_' + currentClassName;
-
-            if (activeSiswaId && dataNilaiSiswa[storageId]) {
-                const nilai = dataNilaiSiswa[storageId];
-                nilaiInput.r1 = nilai.r1 || '';
-                nilaiInput.r2 = nilai.r2 || '';
-                nilaiInput.r3 = nilai.r3 || '';
-                nilaiInput.total = nilai.total || '';
-                setMode(nilai.mode || 'jumlah');
-            } else {
-                updateTampilan();
-                kalkulasi();
-            }
-            updateTampilan();
-            kalkulasi();
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' }; const currentClassName = document.getElementById('select-kelas-grading').value;
+            const storageId = activeKelas === 'lain' ? activeSiswaId + '_koding' : activeSiswaId + '_' + currentClassName;
+            if (activeSiswaId && dataNilaiSiswa[storageId]) { const nilai = dataNilaiSiswa[storageId]; nilaiInput.r1 = nilai.r1 || ''; nilaiInput.r2 = nilai.r2 || ''; nilaiInput.r3 = nilai.r3 || ''; nilaiInput.total = nilai.total || ''; setMode(nilai.mode || 'jumlah'); } else { updateTampilan(); kalkulasi(); } updateTampilan(); kalkulasi();
         }
 
         function setModeManage(mode) {
             modeManageSiswa = mode;
-            const tabTambah = document.getElementById('tab-manage-tambah');
-            const tabEdit = document.getElementById('tab-manage-edit');
-            const boxSelect = document.getElementById('box-manage-select');
-            const btnTambah = document.getElementById('btn-group-tambah');
-            const btnEdit = document.getElementById('btn-group-edit');
-
-            if(mode === 'tambah') {
-                tabTambah.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all";
-                tabEdit.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
-                boxSelect.classList.add('hidden');
-                btnTambah.classList.remove('hidden');
-                btnEdit.classList.add('hidden');
-                
-                onChangeManageKelas(); 
-            } else {
-                tabEdit.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all";
-                tabTambah.className = "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
-                boxSelect.classList.remove('hidden');
-                btnTambah.classList.add('hidden');
-                btnEdit.classList.remove('hidden');
-                
-                onChangeManageKelas();
-            }
+            document.getElementById('tab-manage-tambah').className = mode === 'tambah' ? "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all" : "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
+            document.getElementById('tab-manage-edit').className = mode === 'edit' ? "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all" : "flex-1 py-1.5 text-[9px] sm:text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all";
+            document.getElementById('box-manage-select').classList.toggle('hidden', mode === 'tambah');
+            document.getElementById('btn-group-tambah').classList.toggle('hidden', mode === 'edit');
+            document.getElementById('btn-group-edit').classList.toggle('hidden', mode === 'tambah');
+            onChangeManageKelas(); 
         }
 
-        function tambahSiswaCepat() {
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-            if(!currentClassName) {
-                tampilkanPeringatanLucu('nokelas');
-                return;
-            }
-            
-            document.getElementById('manage-kelas').value = currentClassName;
-            setModeManage('tambah'); 
-            toggleModal('tambah-siswa-modal', true);
-        }
+        function tambahSiswaCepat() { const currentClassName = document.getElementById('select-kelas-grading').value; if(!currentClassName) { tampilkanPeringatanLucu('nokelas'); return; } document.getElementById('manage-kelas').value = currentClassName; setModeManage('tambah'); toggleModal('tambah-siswa-modal', true); }
+        function onChangeManageKelas() { const kelas = document.getElementById('manage-kelas').value; if(!kelas) return; if (modeManageSiswa === 'tambah') { document.getElementById('manage-presensi').value = getSiswaList(kelas).length + 1; document.getElementById('manage-nama').value = ""; } else { const selectSiswa = document.getElementById('manage-siswa-select'); selectSiswa.innerHTML = '<option value="">-- Pilih Siswa --</option>'; getSiswaList(kelas).forEach(s => { const opt = document.createElement('option'); opt.value = s.nama; opt.innerText = `${s.presensi}. ${s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}`; selectSiswa.appendChild(opt); }); onChangeManageSiswa(); } }
+        function onChangeManageSiswa() { const s = getSiswaList(document.getElementById('manage-kelas').value).find(x => x.nama === document.getElementById('manage-siswa-select').value); if(s) { document.getElementById('manage-presensi').value = s.presensi; document.getElementById('manage-nama').value = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()); } else { document.getElementById('manage-presensi').value = ""; document.getElementById('manage-nama').value = ""; } }
+        
+        function simpanSiswaBaru() { const targetClass = document.getElementById('manage-kelas').value; const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1; const rawNama = document.getElementById('manage-nama').value.trim(); if(!targetClass || !rawNama) return; const nama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); if(!databaseSiswa[targetClass]) databaseSiswa[targetClass] = []; databaseSiswa[targetClass].push({ presensi: presensiNum, nama: nama }); databaseSiswa[targetClass].sort((a, b) => a.presensi - b.presensi); simpanSiswaKeLocal(); toggleModal('tambah-siswa-modal', false); document.getElementById('select-kelas-grading').value = targetClass; updateSiswaDropdown(); document.getElementById('select-siswa').value = nama; activeSiswaId = nama; muatNilaiSiswaAktif(); }
+        function simpanEditSiswa() { const targetClass = document.getElementById('manage-kelas').value; const oldNamaSiswa = document.getElementById('manage-siswa-select').value; const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1; const rawNama = document.getElementById('manage-nama').value.trim(); if(!targetClass || !oldNamaSiswa || !rawNama) return; const newNama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); const list = databaseSiswa[targetClass]; const studentIndex = list.findIndex(s => s.nama === oldNamaSiswa); if(studentIndex > -1) { list[studentIndex].presensi = presensiNum; list[studentIndex].nama = newNama; list.sort((a, b) => a.presensi - b.presensi); const oldStorageId = activeKelas === 'lain' ? oldNamaSiswa + '_koding' : oldNamaSiswa + '_' + targetClass; const newStorageId = activeKelas === 'lain' ? newNama + '_koding' : newNama + '_' + targetClass; if (oldStorageId !== newStorageId && dataNilaiSiswa[oldStorageId]) { dataNilaiSiswa[newStorageId] = dataNilaiSiswa[oldStorageId]; delete dataNilaiSiswa[oldStorageId]; simpanNilaiKeLocal(); } simpanSiswaKeLocal(); toggleModal('tambah-siswa-modal', false); updateSiswaDropdown(); if(activeSiswaId === oldNamaSiswa) { document.getElementById('select-siswa').value = newNama; activeSiswaId = newNama; muatNilaiSiswaAktif(); } } }
+        function hapusSiswaManage() { const targetClass = document.getElementById('manage-kelas').value; const namaSiswa = document.getElementById('manage-siswa-select').value; if(!namaSiswa) return; if(confirm(`Yakin hapus "${namaSiswa}"?`)) { const list = databaseSiswa[targetClass]; const index = list.findIndex(s => s.nama === namaSiswa); if(index > -1) { list.splice(index, 1); delete dataNilaiSiswa[namaSiswa + '_koding']; delete dataNilaiSiswa[namaSiswa + '_' + targetClass]; simpanSiswaKeLocal(); simpanNilaiKeLocal(); toggleModal('tambah-siswa-modal', false); updateSiswaDropdown(); } } }
 
-        function onChangeManageKelas() {
-            const kelas = document.getElementById('manage-kelas').value;
-            if(!kelas) return;
-            
-            if (modeManageSiswa === 'tambah') {
-                const list = getSiswaList(kelas);
-                document.getElementById('manage-presensi').value = list.length + 1;
-                document.getElementById('manage-nama').value = "";
-            } else {
-                const selectSiswa = document.getElementById('manage-siswa-select');
-                selectSiswa.innerHTML = '<option value="">-- Pilih Siswa --</option>';
-                const list = getSiswaList(kelas);
-                list.forEach(s => {
-                    const properName = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-                    const opt = document.createElement('option');
-                    opt.value = s.nama;
-                    opt.innerText = `${s.presensi}. ${properName}`;
-                    selectSiswa.appendChild(opt);
-                });
-                onChangeManageSiswa();
-            }
-        }
+        function simpanNilaiKeSiswa() { if(!activeKelas) return tampilkanPeringatanLucu('nokelas'); if(!activeSiswaId) return alert("Pilih siswa dulu!"); const storageId = activeKelas === 'lain' ? activeSiswaId + '_koding' : activeSiswaId + '_' + document.getElementById('select-kelas-grading').value; dataNilaiSiswa[storageId] = { mode: activeMode, r1: nilaiInput.r1, r2: nilaiInput.r2, r3: nilaiInput.r3, total: nilaiInput.total, asli: document.getElementById('nilaiAsli').innerText, bulat: document.getElementById('nilaiBulat').innerText }; simpanNilaiKeLocal(); if (navigator.vibrate) navigator.vibrate(50); const saveBtn = document.getElementById('btn-simpan-nilai'); saveBtn.innerText = "✅ BERHASIL DISIMPAN!"; saveBtn.classList.replace('from-blue-600', 'from-emerald-500'); saveBtn.classList.replace('to-indigo-600', 'to-emerald-600'); setTimeout(() => { saveBtn.innerHTML = "📥 SIMPAN NILAI SISWA"; saveBtn.classList.replace('from-emerald-500', 'from-blue-600'); saveBtn.classList.replace('to-emerald-600', 'to-indigo-600'); }, 1000); const select = document.getElementById('select-siswa'); if (select.selectedIndex < select.options.length - 1) { select.selectedIndex++; activeSiswaId = select.value; muatNilaiSiswaAktif(); } else { activeSiswaId = ""; select.value = ""; muatNilaiSiswaAktif(); } }
+        function bukaRekapNilai() { const curClass = document.getElementById('select-kelas-grading').value; if(!curClass) return tampilkanPeringatanLucu('nokelas'); document.getElementById('rekap-class-tag').innerText = curClass; const body = document.getElementById('tabel-rekap-body'); body.innerHTML = ""; const list = getSiswaList(curClass); document.getElementById('rekap-total-siswa').innerText = `Total: ${list.length} Siswa`; if(list.length === 0) { body.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-10 italic">Kosong...</p>`; return toggleModal('rekap-modal', true); } list.forEach(s => { const n = dataNilaiSiswa[activeKelas === 'lain' ? s.nama + '_koding' : s.nama + '_' + curClass]; const proper = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()); const row = document.createElement('div'); row.className = "flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm"; row.innerHTML = `<div class="flex items-center gap-2"><span class="text-[10px] text-slate-400 font-bold">${s.presensi}</span><div><p class="text-xs font-black text-slate-700 leading-tight">${proper}</p><p class="text-[8px] text-slate-400 font-bold">${n ? (n.mode === 'romawi' ? `Rom I:${n.r1||0}, II:${n.r2||0}, III:${n.r3||0}` : `Total:${n.total||0}`) : 'Belum diisi'}</p></div></div><div class="flex items-center gap-3">${n ? `<div class="text-right"><div class="text-xs font-black text-emerald-600">${n.bulat}</div><div class="text-[9px] text-slate-400">Asli: ${n.asli}</div></div>` : `<span class="text-slate-300 font-bold italic text-[10px]">Kosong</span>`}<button onclick="hapusSiswaDariList('${s.nama}', '${curClass}')" class="text-rose-400 hover:text-rose-600 text-sm font-black px-1">&times;</button></div>`; body.appendChild(row); }); toggleModal('rekap-modal', true); }
+        function hapusSiswaDariList(nama, curClass) { if(confirm("Hapus siswa ini?")) { const list = databaseSiswa[curClass]; const i = list.findIndex(s => s.nama === nama); if(i > -1) { list.splice(i, 1); delete dataNilaiSiswa[activeKelas === 'lain' ? nama + '_koding' : nama + '_' + curClass]; simpanSiswaKeLocal(); simpanNilaiKeLocal(); bukaRekapNilai(); updateSiswaDropdown(); } } }
+        function clearSemuaNilai() { const curClass = document.getElementById('select-kelas-grading').value; if(!curClass) return; if(confirm("Kosongkan semua nilai di kelas ini?")) { getSiswaList(curClass).forEach(s => delete dataNilaiSiswa[activeKelas === 'lain' ? s.nama + '_koding' : s.nama + '_' + curClass]); simpanNilaiKeLocal(); bukaRekapNilai(); updateSiswaDropdown(); } }
+        function bukaExportDialog() { toggleModal('export-excel-modal', true); }
+        function prosesUnduhExcel() { const curClass = document.getElementById('select-kelas-grading').value; if(!curClass) return; const mapel = document.getElementById('export-mapel-name').value.trim() || "-"; const list = getSiswaList(curClass); const d = new Date(); const dateStr = `${["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"][d.getDay()]}, ${d.getDate()} ${["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"][d.getMonth()]} ${d.getFullYear()} pukul ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} WIB`; let table = `<html xmlns:x="urn:schemas-microsoft-com:office:excel"><body style="font-family:'Arial';font-size:11pt;"><table border="1" style="border-collapse:collapse;"><tr><td colspan="4" style="font-weight:bold;font-size:14pt;border:none;">DAFTAR NILAI KELAS ${curClass.toUpperCase()}</td></tr><tr><td colspan="4" style="font-weight:bold;font-size:11pt;border:none;">Mata Pelajaran: ${mapel}</td></tr><tr><td colspan="4" style="font-size:11pt;border:none;color:#555;">Di download pada: ${dateStr}</td></tr><tr><td colspan="4" style="border:none;height:15px;"></td></tr><tr style="background-color:#f1f5f9;"><th style="font-weight:bold;text-align:center;width:40px;padding:6px;">NO</th><th style="font-weight:bold;text-align:left;width:450px;padding:6px;">NAMA</th><th style="font-weight:bold;text-align:center;width:100px;padding:6px;">NILAI BULAT</th><th style="font-weight:bold;text-align:center;width:100px;padding:6px;">NILAI ASLI</th></tr>`; list.forEach(s => { const n = dataNilaiSiswa[activeKelas === 'lain' ? s.nama + '_koding' : s.nama + '_' + curClass]; const proper = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()); if(n) table += `<tr style="background-color:#d1fae5;"><td style="text-align:center;padding:5px;">${s.presensi}</td><td style="padding:5px;width:450px;">${proper}</td><td style="text-align:center;padding:5px;font-weight:bold;">${n.bulat}</td><td style="text-align:center;padding:5px;">${n.asli}</td></tr>`; else table += `<tr style="background-color:#fce7f3;color:#db2777;"><td style="text-align:center;padding:5px;">${s.presensi}</td><td style="padding:5px;width:450px;">${proper}</td><td style="text-align:center;padding:5px;font-weight:bold;">-</td><td style="text-align:center;padding:5px;">-</td></tr>`; }); table += `</table></body></html>`; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([table], {type: 'application/vnd.ms-excel'})); a.download = mapel !== "-" ? `Nilai Mapel ${mapel}.xls` : `Nilai Mapel.xls`; document.body.appendChild(a); a.click(); document.body.removeChild(a); toggleModal('export-excel-modal', false); }
 
-        function onChangeManageSiswa() {
-            const kelas = document.getElementById('manage-kelas').value;
-            const namaSiswa = document.getElementById('manage-siswa-select').value;
-            const list = getSiswaList(kelas);
-            const s = list.find(x => x.nama === namaSiswa);
-            
-            if(s) {
-                const properName = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-                document.getElementById('manage-presensi').value = s.presensi;
-                document.getElementById('manage-nama').value = properName;
-            } else {
-                document.getElementById('manage-presensi').value = "";
-                document.getElementById('manage-nama').value = "";
-            }
-        }
-
-        function simpanSiswaBaru() {
-            const targetClass = document.getElementById('manage-kelas').value;
-            const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1;
-            const rawNama = document.getElementById('manage-nama').value.trim();
-            if(!targetClass || !rawNama) return;
-
-            const nama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-
-            if(!databaseSiswa[targetClass]) databaseSiswa[targetClass] = [];
-            
-            databaseSiswa[targetClass].push({ presensi: presensiNum, nama: nama });
-            databaseSiswa[targetClass].sort((a, b) => a.presensi - b.presensi);
-            
-            simpanSiswaKeLocal();
-            toggleModal('tambah-siswa-modal', false);
-            
-            document.getElementById('select-kelas-grading').value = targetClass;
-            updateSiswaDropdown();
-            document.getElementById('select-siswa').value = nama;
-            activeSiswaId = nama;
-            muatNilaiSiswaAktif();
-        }
-
-        function simpanEditSiswa() {
-            const targetClass = document.getElementById('manage-kelas').value;
-            const oldNamaSiswa = document.getElementById('manage-siswa-select').value;
-            const presensiNum = parseInt(document.getElementById('manage-presensi').value) || 1;
-            const rawNama = document.getElementById('manage-nama').value.trim();
-            
-            if(!targetClass || !oldNamaSiswa || !rawNama) {
-                alert("Pilih siswa yang mau diedit!");
-                return;
-            }
-
-            const newNama = rawNama.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-            const list = databaseSiswa[targetClass];
-            const studentIndex = list.findIndex(s => s.nama === oldNamaSiswa);
-            
-            if(studentIndex > -1) {
-                list[studentIndex].presensi = presensiNum;
-                list[studentIndex].nama = newNama;
-                
-                list.sort((a, b) => a.presensi - b.presensi);
-                
-                const oldStorageId = activeKelas === '45' ? oldNamaSiswa + '_koding' : oldNamaSiswa + '_' + targetClass;
-                const newStorageId = activeKelas === '45' ? newNama + '_koding' : newNama + '_' + targetClass;
-                
-                if (oldStorageId !== newStorageId && dataNilaiSiswa[oldStorageId]) {
-                    dataNilaiSiswa[newStorageId] = dataNilaiSiswa[oldStorageId];
-                    delete dataNilaiSiswa[oldStorageId];
-                    simpanNilaiKeLocal();
-                }
-                
-                simpanSiswaKeLocal();
-                toggleModal('tambah-siswa-modal', false);
-                
-                updateSiswaDropdown();
-                if(activeSiswaId === oldNamaSiswa) {
-                    document.getElementById('select-siswa').value = newNama;
-                    activeSiswaId = newNama;
-                    muatNilaiSiswaAktif();
-                }
-            }
-        }
-
-        function hapusSiswaManage() {
-            const targetClass = document.getElementById('manage-kelas').value;
-            const namaSiswa = document.getElementById('manage-siswa-select').value;
-            if(!namaSiswa) return;
-            
-            if(confirm(`Yakin ingin menghapus permanen "${namaSiswa}"? Data nilainya juga akan lenyap.`)) {
-                const list = databaseSiswa[targetClass];
-                const index = list.findIndex(s => s.nama === namaSiswa);
-                if(index > -1) {
-                    list.splice(index, 1);
-                    
-                    const storageIdKoding = namaSiswa + '_koding';
-                    const storageIdRegular = namaSiswa + '_' + targetClass;
-                    delete dataNilaiSiswa[storageIdKoding];
-                    delete dataNilaiSiswa[storageIdRegular];
-                    
-                    simpanSiswaKeLocal();
-                    simpanNilaiKeLocal();
-                    
-                    toggleModal('tambah-siswa-modal', false);
-                    updateSiswaDropdown();
-                }
-            }
-        }
-
-        function simpanNilaiKeSiswa() {
-            if(!activeKelas) {
-                tampilkanPeringatanLucu('nokelas');
-                return;
-            }
-            if(!activeSiswaId) {
-                alert("Harap pilih nama siswa terlebih dahulu!");
-                return;
-            }
-
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-            const storageId = activeKelas === '45' ? activeSiswaId + '_koding' : activeSiswaId + '_' + currentClassName;
-
-            const r1 = nilaiInput.r1;
-            const r2 = nilaiInput.r2;
-            const r3 = nilaiInput.r3;
-            const total = nilaiInput.total;
-            const asli = document.getElementById('nilaiAsli').innerText;
-            const bulat = document.getElementById('nilaiBulat').innerText;
-
-            dataNilaiSiswa[storageId] = {
-                mode: activeMode,
-                r1: r1, r2: r2, r3: r3,
-                total: total,
-                asli: asli,
-                bulat: bulat
-            };
-
-            simpanNilaiKeLocal();
-            if (navigator.vibrate) navigator.vibrate(50);
-
-            const saveBtn = document.getElementById('btn-simpan-nilai');
-            saveBtn.innerText = "✅ BERHASIL DISIMPAN!";
-            saveBtn.classList.replace('from-blue-600', 'from-emerald-500');
-            saveBtn.classList.replace('to-indigo-600', 'to-emerald-600');
-
-            setTimeout(() => {
-                saveBtn.innerHTML = "📥 SIMPAN NILAI SISWA";
-                saveBtn.classList.replace('from-emerald-500', 'from-blue-600');
-                saveBtn.classList.replace('to-emerald-600', 'to-indigo-600');
-            }, 1000);
-
-            const select = document.getElementById('select-siswa');
-            const currentIndex = select.selectedIndex;
-            updateSiswaDropdown();
-
-            if (currentIndex < select.options.length - 1) {
-                select.selectedIndex = currentIndex + 1;
-                activeSiswaId = select.value;
-                muatNilaiSiswaAktif();
-            } else {
-                activeSiswaId = "";
-                document.getElementById('select-siswa').value = "";
-                muatNilaiSiswaAktif();
-            }
-        }
-
-        function bukaRekapNilai() {
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-
-            if(!currentClassName) {
-                tampilkanPeringatanLucu('nokelas');
-                return;
-            }
-            
-            document.getElementById('rekap-class-tag').innerText = currentClassName;
-            const body = document.getElementById('tabel-rekap-body');
-            body.innerHTML = "";
-
-            const siswaList = getSiswaList(currentClassName);
-            document.getElementById('rekap-total-siswa').innerText = `Total: ${siswaList.length} Siswa`;
-
-            if(siswaList.length === 0) {
-                body.innerHTML = `<p class="text-center text-xs text-slate-400 font-bold py-10 italic">Belum ada daftar siswa...</p>`;
-                toggleModal('rekap-modal', true);
-                return;
-            }
-
-            siswaList.forEach((s) => {
-                const storageId = activeKelas === '45' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
-                const n = dataNilaiSiswa[storageId];
-                const rincian = n ? (n.mode === 'romawi' ? `Rom I: ${n.r1 || 0}, Rom II: ${n.r2 || 0}, Rom III: ${n.r3 || 0}` : `Total Skor: ${n.total || 0}`) : 'Belum diisi';
-                const scoreDisplay = n ? `<div class="text-right"><div class="text-xs font-black text-emerald-600">${n.bulat}</div><div class="text-[9px] text-slate-400">Asli: ${n.asli}</div></div>` : `<span class="text-slate-300 font-bold italic text-[10px]">Kosong</span>`;
-
-                const properName = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-
-                const row = document.createElement('div');
-                row.className = "flex justify-between items-center bg-white p-2.5 rounded-xl border border-slate-100 shadow-sm";
-                row.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] text-slate-400 font-bold">${s.presensi}</span>
-                        <div>
-                            <p class="text-xs font-black text-slate-700 leading-tight">${properName}</p>
-                            <p class="text-[8px] text-slate-400 font-bold">${rincian}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        ${scoreDisplay}
-                        <button onclick="hapusSiswaDariList('${s.nama}', '${currentClassName}')" class="text-rose-400 hover:text-rose-600 text-sm font-black px-1">&times;</button>
-                    </div>
-                `;
-                body.appendChild(row);
-            });
-
-            toggleModal('rekap-modal', true);
-        }
-
-        function hapusSiswaDariList(nama, currentClassName) {
-            if(confirm("Apakah Anda yakin ingin menghapus siswa ini dari daftar?")) {
-                const list = databaseSiswa[currentClassName];
-                const index = list.findIndex(s => s.nama === nama);
-                if(index > -1) {
-                    list.splice(index, 1);
-                    const storageId = activeKelas === '45' ? nama + '_koding' : nama + '_' + currentClassName;
-                    delete dataNilaiSiswa[storageId];
-                    simpanSiswaKeLocal();
-                    simpanNilaiKeLocal();
-                    bukaRekapNilai();
-                    updateSiswaDropdown();
-                }
-            }
-        }
-
-        function clearSemuaNilai() {
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-            if(!currentClassName) return;
-
-            if(confirm("Yakin ingin mengosongkan seluruh nilai di kelas ini?")) {
-                const list = getSiswaList(currentClassName);
-                list.forEach(s => {
-                    const storageId = activeKelas === '45' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
-                    delete dataNilaiSiswa[storageId];
-                });
-                simpanNilaiKeLocal();
-                bukaRekapNilai();
-                updateSiswaDropdown();
-            }
-        }
-
-        function bukaExportDialog() {
-            toggleModal('export-excel-modal', true);
-        }
-
-        function prosesUnduhExcel() {
-            const dropdownKelas = document.getElementById('select-kelas-grading');
-            const currentClassName = dropdownKelas.value;
-            if(!currentClassName) return;
-
-            const mapelInput = document.getElementById('export-mapel-name').value.trim();
-            const mapel = mapelInput || "-";
-            const siswaList = getSiswaList(currentClassName);
-
-            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            const d = new Date();
-            const dateStr = `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} pukul ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')} WIB`;
-
-            let tableHTML = `
-            <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body style="font-family: 'Arial'; font-size: 11pt;">
-                <table border="1" style="border-collapse: collapse;">
-                    <tr><td colspan="4" style="font-weight: bold; font-size: 14pt; border: none; text-align: left;">DAFTAR NILAI KELAS ${currentClassName.toUpperCase()}</td></tr>
-                    <tr><td colspan="4" style="font-weight: bold; font-size: 11pt; border: none; text-align: left;">Mata Pelajaran: ${mapel}</td></tr>
-                    <tr><td colspan="4" style="font-size: 11pt; border: none; text-align: left; color: #555;">Di download pada: ${dateStr}</td></tr>
-                    <tr><td colspan="4" style="border: none; height: 15px;"></td></tr>
-                    <tr style="background-color: #f1f5f9;">
-                        <th style="font-weight: bold; text-align: center; width: 40px; padding: 6px;">NO</th>
-                        <th style="font-weight: bold; text-align: left; width: 450px; padding: 6px;">NAMA</th>
-                        <th style="font-weight: bold; text-align: center; width: 100px; padding: 6px;">NILAI BULAT</th>
-                        <th style="font-weight: bold; text-align: center; width: 100px; padding: 6px;">NILAI ASLI</th>
-                    </tr>`;
-
-            siswaList.forEach((s) => {
-                const storageId = activeKelas === '45' ? s.nama + '_koding' : s.nama + '_' + currentClassName;
-                const n = dataNilaiSiswa[storageId];
-                const properName = s.nama.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-                
-                if (n) {
-                    tableHTML += `
-                    <tr style="background-color: #d1fae5;">
-                        <td style="text-align: center; padding: 5px;">${s.presensi}</td>
-                        <td style="padding: 5px; width: 450px;">${properName}</td>
-                        <td style="text-align: center; padding: 5px; font-weight: bold;">${n.bulat}</td>
-                        <td style="text-align: center; padding: 5px;">${n.asli}</td>
-                    </tr>`;
-                } else {
-                    tableHTML += `
-                    <tr style="background-color: #fce7f3; color: #db2777;">
-                        <td style="text-align: center; padding: 5px;">${s.presensi}</td>
-                        <td style="padding: 5px; width: 450px;">${properName}</td>
-                        <td style="text-align: center; padding: 5px; font-weight: bold;">-</td>
-                        <td style="text-align: center; padding: 5px;">-</td>
-                    </tr>`;
-                }
-            });
-
-            tableHTML += `</table></body></html>`;
-
-            const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = mapelInput ? `Nilai Mapel ${mapelInput}.xls` : `Nilai Mapel.xls`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            toggleModal('export-excel-modal', false);
-        }
-
-        // --- SISTEM PEMILIHAN KELAS AKTIF ---
         function pilihKelasAktif(kelas, forceSubClass = null) {
-            activeKelas = kelas;
-            document.getElementById('area-kelas').classList.remove('needs-class');
-
-            ['55', '60', '65', '45'].forEach(k => {
-                const btn = document.getElementById('btn-' + k);
-                if(btn) {
-                    btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                    btn.classList.remove('class-active');
-                }
-            });
-
-            const activeBtn = document.getElementById('btn-' + kelas);
-            if(activeBtn) {
-                activeBtn.classList.remove('bg-white');
-                activeBtn.classList.add(configKelas[kelas].color, 'class-active');
-            }
-
-            const selectKelas = document.getElementById('select-kelas-grading');
-            selectKelas.innerHTML = '';
-
+            activeKelas = kelas; document.getElementById('area-kelas').classList.remove('needs-class');
+            ['kls1', 'kls2', 'kls3', 'kls4', 'kls5', 'kls6', 'lain'].forEach(k => { const btn = document.getElementById('btn-' + k); if(btn) { btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white'); btn.classList.remove('class-active'); } });
+            const activeBtn = document.getElementById('btn-' + kelas); if(activeBtn) { activeBtn.classList.remove('bg-white'); activeBtn.classList.add(configKelas[kelas].color, 'class-active'); }
+            const selectKelas = document.getElementById('select-kelas-grading'); selectKelas.innerHTML = '';
             let filteredClasses = [];
-            if (kelas === '55') {
-                filteredClasses = ["1 ICP A", "1 ICP B", "1A", "1B", "1C", "1D"];
-            } else if (kelas === '60') {
-                filteredClasses = ["2 ICP A", "2A", "2B", "2C", "2D", "3A", "3B", "3C", "3D"];
-            } else if (kelas === '65') {
-                filteredClasses = ["4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D"];
-            } else if (kelas === '45') {
-                filteredClasses = [
-                    "4A", "4B", "4C", "4D", 
-                    "5A", "5B", "5C", "5D", 
-                    "6A", "6B", "6C", "6D"
-                ];
-            }
+            if (kelas === 'kls1') filteredClasses = ["1 ICP A", "1 ICP B", "1A", "1B", "1C", "1D"];
+            else if (kelas === 'kls2') filteredClasses = ["2 ICP A", "2A", "2B", "2C", "2D"];
+            else if (kelas === 'kls3') filteredClasses = ["3A", "3B", "3C", "3D"];
+            else if (kelas === 'kls4') filteredClasses = ["4A", "4B", "4C", "4D"];
+            else if (kelas === 'kls5') filteredClasses = ["5A", "5B", "5C", "5D"];
+            else if (kelas === 'kls6') filteredClasses = ["6A", "6B", "6C", "6D"];
+            else if (kelas === 'lain') filteredClasses = Object.keys(databaseSiswa).sort();
 
-            filteredClasses.forEach(cName => {
-                const opt = document.createElement('option');
-                opt.value = cName;
-                opt.innerText = cName;
-                selectKelas.appendChild(opt);
-            });
+            filteredClasses.forEach(cName => { const opt = document.createElement('option'); opt.value = cName; opt.innerText = cName; selectKelas.appendChild(opt); });
+            if (forceSubClass && filteredClasses.includes(forceSubClass)) selectKelas.value = forceSubClass; else if (filteredClasses.length > 0) selectKelas.value = filteredClasses[0];
 
-            if (forceSubClass && filteredClasses.includes(forceSubClass)) {
-                selectKelas.value = forceSubClass;
-            } else if (filteredClasses.length > 0) {
-                selectKelas.value = filteredClasses[0];
-            }
-
-            const viewRomawi = document.getElementById('view-romawi');
-            const boxR3 = document.getElementById('box-r3');
-            const labelR2 = document.getElementById('label-r2');
-
-            if (kelas === '45') {
-                viewRomawi.classList.replace('grid-cols-3', 'grid-cols-2');
-                boxR3.classList.add('hidden');
-                labelR2.innerText = 'ROM II (x1)'; 
-                if (fokusInput === 'r3') setFokus('r2');
-            } else {
-                viewRomawi.classList.replace('grid-cols-2', 'grid-cols-3');
-                boxR3.classList.remove('hidden');
-                labelR2.innerText = 'ROM II (x2)'; 
-            }
-
-            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1;
-            document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2;
-            if (kelas !== '45') {
-                document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
-            }
-            document.getElementById('max-total').innerText = 'Maks: ' + kelas;
+            if (kelas === 'lain') { document.getElementById('view-romawi').classList.replace('grid-cols-3', 'grid-cols-2'); document.getElementById('box-r3').classList.add('hidden'); document.getElementById('label-r2').innerText = 'ROM II (x1)'; if (fokusInput === 'r3') setFokus('r2'); } else { document.getElementById('view-romawi').classList.replace('grid-cols-2', 'grid-cols-3'); document.getElementById('box-r3').classList.remove('hidden'); document.getElementById('label-r2').innerText = 'ROM II (x2)'; }
+            document.getElementById('max-r1').innerText = 'Maks: ' + configKelas[kelas].maxR1; document.getElementById('max-r2').innerText = 'Maks: ' + configKelas[kelas].maxR2; if (kelas !== 'lain') document.getElementById('max-r3').innerText = 'Maks: ' + configKelas[kelas].maxR3;
             
-            const labelKoding = document.getElementById('label-name-45');
-            if (kelas === '45') {
-                labelKoding.className = "text-[9px] font-black tracking-widest text-amber-300";
-            } else {
-                labelKoding.className = "text-[9px] font-black tracking-widest text-cyan-600";
-            }
-
-            updateSiswaDropdown();
-            validasiNilai();
-            updateTampilan();
-            kalkulasi();
-            simpanDataOffline();
+            document.getElementById('max-total').innerText = 'Maks: ' + configKelas[kelas].valPembagi;
+            document.getElementById('label-name-lain').className = kelas === 'lain' ? "text-[8px] font-black tracking-tight text-amber-300" : "text-[8px] font-black tracking-tight text-cyan-600";
+            updateSiswaDropdown(); validasiNilai(); updateTampilan(); kalkulasi(); simpanDataOffline();
         }
 
-        function setNetralState() {
-            activeKelas = null;
-            document.getElementById('area-kelas').classList.remove('needs-class');
-            nilaiInput = { r1: '', r2: '', r3: '', total: '' };
-
-            ['55', '60', '65', '45'].forEach(k => {
-                const btn = document.getElementById('btn-' + k);
-                if(btn) {
-                    btn.className = btn.className.replace(/bg-\w+-500/g, 'bg-white');
-                    btn.classList.remove('class-active');
-                }
-            });
-
-            document.getElementById('select-kelas-grading').innerHTML = '<option value="">-- KELAS --</option>';
-            document.getElementById('select-siswa').innerHTML = '<option value="">-- SISWA --</option>';
-            
-            document.getElementById('max-r1').innerText = 'Maks: ?';
-            document.getElementById('max-r2').innerText = 'Maks: ?';
-            document.getElementById('max-r3').innerText = 'Maks: ?';
-            document.getElementById('max-total').innerText = 'Maks: ?';
-            
-            updateTampilan();
-            kalkulasi();
+        function setMode(mode) { activeMode = mode; document.getElementById('tab-romawi').className = mode === 'romawi' ? "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md" : "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent"; document.getElementById('tab-jumlah').className = mode === 'jumlah' ? "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md" : "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent"; if(mode === 'romawi'){ document.getElementById('view-romawi').classList.replace('hidden','grid'); document.getElementById('view-jumlah').classList.replace('flex','hidden'); setFokus('r1'); }else{ document.getElementById('view-jumlah').classList.replace('hidden','flex'); document.getElementById('view-romawi').classList.replace('grid','hidden'); setFokus('total'); } kalkulasi(); simpanDataOffline(); }
+        function setFokus(idBox) { fokusInput = idBox; ['r1', 'r2', 'r3', 'total'].forEach(id => { const el = document.getElementById('box-' + id); if(el) el.classList.remove('input-active'); }); const target = document.getElementById('box-' + idBox); if(target) target.classList.add('input-active'); }
+        function tekanTombol(kunci) { if (!activeKelas) { document.getElementById('area-kelas').classList.add('needs-class'); return tampilkanPeringatanLucu('nokelas'); } let strCurrent = nilaiInput[fokusInput]; if (kunci === 'C') strCurrent = ''; else if (kunci === 'DEL') strCurrent = strCurrent.slice(0, -1); else { if(strCurrent === '0' && kunci === '0') return; strCurrent += kunci; } nilaiInput[fokusInput] = strCurrent; validasiNilai(); updateTampilan(); kalkulasi(); simpanDataOffline(); }
+        function validasiNilai() { 
+            if(!activeKelas) return; const valNum = parseInt(nilaiInput[fokusInput]); if(isNaN(valNum)) return; 
+            let maxAllow = 0; if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1; if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2; if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3; 
+            if(fokusInput === 'total') maxAllow = configKelas[activeKelas].valPembagi; 
+            if(valNum > maxAllow) { nilaiInput[fokusInput] = ''; tampilkanPeringatanLucu('over', maxAllow); } 
         }
-
-        // --- SISTEM KALKULASI & INPUT ---
-        function setMode(mode) {
-            activeMode = mode;
-            const tRomawi = document.getElementById('tab-romawi');
-            const tJumlah = document.getElementById('tab-jumlah');
-            
-            if(mode === 'romawi') {
-                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-indigo-500 text-white shadow-md";
-                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-romawi').classList.remove('hidden');
-                document.getElementById('view-romawi').classList.add('grid');
-                document.getElementById('view-jumlah').classList.add('hidden');
-                document.getElementById('view-jumlah').classList.remove('flex');
-                setFokus('r1'); 
-            } else {
-                tJumlah.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all bg-amber-400 text-slate-800 shadow-md";
-                tRomawi.className = "flex-1 py-1 rounded-full text-[10px] font-bold transition-all text-slate-500 bg-transparent";
-                document.getElementById('view-jumlah').classList.remove('hidden');
-                document.getElementById('view-jumlah').classList.add('flex');
-                document.getElementById('view-romawi').classList.add('hidden');
-                document.getElementById('view-romawi').classList.remove('grid');
-                setFokus('total'); 
-            }
-            kalkulasi();
-            simpanDataOffline();
-        }
-
-        function setFokus(idBox) {
-            fokusInput = idBox;
-            ['r1', 'r2', 'r3', 'total'].forEach(id => {
-                const el = document.getElementById('box-' + id);
-                if(el) el.classList.remove('input-active');
-            });
-            const target = document.getElementById('box-' + idBox);
-            if(target) target.classList.add('input-active');
-        }
-
-        function tekanTombol(kunci) {
-            if (!activeKelas) {
-                const areaKelas = document.getElementById('area-kelas');
-                areaKelas.classList.add('needs-class');
-                tampilkanPeringatanLucu('nokelas');
-                return;
-            }
-
-            let strCurrent = nilaiInput[fokusInput];
-
-            if (kunci === 'C') {
-                strCurrent = '';
-            } else if (kunci === 'DEL') {
-                strCurrent = strCurrent.slice(0, -1);
-            } else {
-                if(strCurrent === '0' && kunci === '0') return;
-                strCurrent += kunci;
-            }
-
-            nilaiInput[fokusInput] = strCurrent;
-            validasiNilai();
-            updateTampilan();
-            kalkulasi();
-            simpanDataOffline();
-        }
-
-        function validasiNilai() {
-            if(!activeKelas) return;
-            const valNum = parseInt(nilaiInput[fokusInput]);
-            if(isNaN(valNum)) return;
-
-            let maxAllow = 0;
-            if(fokusInput === 'r1') maxAllow = configKelas[activeKelas].maxR1;
-            if(fokusInput === 'r2') maxAllow = configKelas[activeKelas].maxR2;
-            if(fokusInput === 'r3') maxAllow = configKelas[activeKelas].maxR3;
-            if(fokusInput === 'total') maxAllow = parseInt(activeKelas);
-
-            if(valNum > maxAllow) {
-                nilaiInput[fokusInput] = '';
-                tampilkanPeringatanLucu('over', maxAllow);
-            }
-        }
-
-        function updateTampilan() {
-            document.getElementById('disp-r1').innerText = nilaiInput.r1;
-            document.getElementById('disp-r2').innerText = nilaiInput.r2;
-            document.getElementById('disp-r3').innerText = nilaiInput.r3;
-            document.getElementById('disp-total').innerText = nilaiInput.total;
-        }
-
+        function updateTampilan() { document.getElementById('disp-r1').innerText = nilaiInput.r1; document.getElementById('disp-r2').innerText = nilaiInput.r2; document.getElementById('disp-r3').innerText = nilaiInput.r3; document.getElementById('disp-total').innerText = nilaiInput.total; }
+        
         function kalkulasi() {
             if (!activeKelas) return;
-
-            let pembagi = parseInt(activeKelas);
+            let pembagi = configKelas[activeKelas].valPembagi;
             let totalSkor = 0;
-
-            if (activeMode === 'romawi') {
-                let r1 = parseInt(nilaiInput.r1) || 0;
-                let r2 = parseInt(nilaiInput.r2) || 0;
-                let r3 = parseInt(nilaiInput.r3) || 0;
-                
-                if (activeKelas === '45') {
-                    totalSkor = (r1 * 1) + (r2 * 1);
-                } else {
-                    totalSkor = (r1 * 1) + (r2 * 2) + (r3 * 3);
-                }
-            } else {
-                totalSkor = parseFloat(nilaiInput.total) || 0;
-            }
-
-            let nilaiAkhir = (totalSkor * 100) / pembagi;
-            
-            let valAsli = isNaN(nilaiAkhir) ? 0 : nilaiAkhir;
-            let strAsli = valAsli.toFixed(2);
-            if(strAsli.endsWith('.00')) strAsli = valAsli.toString();
-            let valBulat = Math.round(valAsli);
-            let strBulat = valBulat.toString();
-
-            const elAsli = document.getElementById('nilaiAsli');
-            const elBulat = document.getElementById('nilaiBulat');
-
-            if(elAsli.innerText !== strAsli) {
-                elAsli.innerText = strAsli;
-                elBulat.innerText = strBulat;
-                
-                elAsli.classList.remove('pop-effect');
-                elBulat.classList.remove('pop-effect');
-                void elAsli.offsetWidth; 
-                elAsli.classList.add('pop-effect');
-                elBulat.classList.add('pop-effect');
-            }
-
-            const gifEl = document.getElementById('gif-reaction');
-
-            if (totalSkor === 0 || !activeKelas) {
-                gifEl.innerHTML = '';
-                gifEl.classList.remove('scale-100');
-                gifEl.classList.add('scale-0');
-            } else {
-                gifEl.classList.remove('scale-0');
-                gifEl.classList.add('scale-100');
-                
-                if (valBulat < 70) {
-                    gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">';
-                } else if (valBulat >= 70 && valBulat <= 85) {
-                    gifEl.innerHTML = '<img src="senyum.gif" alt="senyum" class="w-full h-full object-contain">';
-                } else if (valBulat > 85) {
-                    gifEl.innerHTML = '<img src="bahagia.gif" alt="bahagia" class="w-full h-full object-contain">';
-                }
-            }
+            if (activeMode === 'romawi') { let r1 = parseInt(nilaiInput.r1) || 0; let r2 = parseInt(nilaiInput.r2) || 0; let r3 = parseInt(nilaiInput.r3) || 0; if (activeKelas === 'lain') totalSkor = (r1 * 1) + (r2 * 1); else totalSkor = (r1 * 1) + (r2 * 2) + (r3 * 3); } else { totalSkor = parseFloat(nilaiInput.total) || 0; }
+            let nilaiAkhir = (totalSkor * 100) / pembagi; let valAsli = isNaN(nilaiAkhir) ? 0 : nilaiAkhir; let strAsli = valAsli.toFixed(2); if(strAsli.endsWith('.00')) strAsli = valAsli.toString(); let valBulat = Math.round(valAsli); let strBulat = valBulat.toString();
+            const elAsli = document.getElementById('nilaiAsli'); const elBulat = document.getElementById('nilaiBulat');
+            if(elAsli.innerText !== strAsli) { elAsli.innerText = strAsli; elBulat.innerText = strBulat; elAsli.classList.remove('pop-effect'); elBulat.classList.remove('pop-effect'); void elAsli.offsetWidth; elAsli.classList.add('pop-effect'); elBulat.classList.add('pop-effect'); }
+            const gifEl = document.getElementById('gif-reaction'); if (totalSkor === 0 || !activeKelas) { gifEl.innerHTML = ''; gifEl.classList.replace('scale-100','scale-0'); } else { gifEl.classList.replace('scale-0','scale-100'); if (valBulat < 70) gifEl.innerHTML = '<img src="sedih.gif" alt="sedih" class="w-full h-full object-contain">'; else if (valBulat >= 70 && valBulat <= 85) gifEl.innerHTML = '<img src="senyum.gif" alt="senyum" class="w-full h-full object-contain">'; else gifEl.innerHTML = '<img src="bahagia.gif" alt="bahagia" class="w-full h-full object-contain">'; }
         }
 
-        // --- SISTEM BACKGROUND MELAYANG ---
-        function initMathBg() {
-            const bg = document.getElementById('mathBg');
-            const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; 
-            
-            for(let i = 0; i < 10; i++) {
-                let el = document.createElement('div');
-                el.className = 'symbol';
-                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-                el.style.left = `${Math.random() * 100}vw`;
-                el.style.animationDuration = `${12 + Math.random() * 10}s`;
-                el.style.animationDelay = `-${Math.random() * 15}s`; 
-                el.style.fontSize = `${2 + Math.random() * 2}rem`; 
-                bg.appendChild(el);
-            }
-        }
-        initMathBg();
-
-        // --- SETUP DAN LOAD AWAL ---
+        function initMathBg() { const bg = document.getElementById('mathBg'); const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; for(let i = 0; i < 10; i++) { let el = document.createElement('div'); el.className = 'symbol'; el.innerText = symbols[Math.floor(Math.random() * symbols.length)]; el.style.left = `${Math.random() * 100}vw`; el.style.animationDuration = `${12 + Math.random() * 10}s`; el.style.animationDelay = `-${Math.random() * 15}s`; el.style.fontSize = `${2 + Math.random() * 2}rem`; bg.appendChild(el); } }
+        
         window.addEventListener('load', () => {
-            muatAturanDariLocal();
-            muatSiswaDariLocal();
-            muatNilaiDariLocal();
-            initLongPressEvents();
-            updateKelasDropdownOptions();
-            
-            const currentVersion = '2.0';
-            const savedVersion = localStorage.getItem('kates_pro_version');
-            if (savedVersion !== currentVersion) {
-                setTimeout(() => {
-                    toggleModal('update-modal', true);
-                }, 1200); 
-            }
-
-            setNetralState();
-            muatDataOffline();
+            initMathBg(); muatAturanDariLocal(); muatSiswaDariLocal(); muatNilaiDariLocal(); initLongPressEvents(); updateKelasDropdownOptions();
+            if (localStorage.getItem('kates_pro_version') !== '2.0') setTimeout(() => toggleModal('update-modal', true), 1200);
+            activeKelas = null; document.getElementById('area-kelas').classList.remove('needs-class');
+            nilaiInput = { r1: '', r2: '', r3: '', total: '' }; updateTampilan(); kalkulasi(); muatDataOffline();
         });
-
-        function tutupUpdateModal() {
-            toggleModal('update-modal', false);
-            localStorage.setItem('kates_pro_version', '2.0');
-        }
 
         document.addEventListener('keydown', function(e) {
-            const key = e.key;
-            if (/^[0-9]$/.test(key)) {
-                tekanTombol(key);
-            } else if (key === 'Backspace') {
-                tekanTombol('DEL');
-            } else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') {
-                tekanTombol('C');
-            } else if (key === 'Enter') {
-                simpanNilaiKeSiswa();
-            }
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            const key = e.key; if (/^[0-9]$/.test(key)) tekanTombol(key); else if (key === 'Backspace') tekanTombol('DEL'); else if (key.toLowerCase() === 'c' || key === 'Delete' || key === 'Escape') tekanTombol('C'); else if (key === 'Enter') simpanNilaiKeSiswa();
         });
-
     </script>
 </body>
 </html>
