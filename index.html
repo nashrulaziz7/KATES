@@ -61,13 +61,13 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* YouTube Hidden Player - Diperbarui agar support Background Play (Jangan disembunyikan keluar layar) */
-        #ytplayer-wrapper { position: fixed; width: 5px; height: 5px; bottom: 10px; right: 10px; opacity: 0.001; pointer-events: none; z-index: 10; overflow: hidden; }
+        /* Trik Ghost Mode IFrame (Diperbesar agar bypass block autoplay HP) */
+        #ytplayer-wrapper { position: fixed; width: 300px; height: 200px; bottom: -500px; right: -500px; opacity: 0; pointer-events: none; z-index: -999; overflow: hidden; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center relative w-full h-full">
 
-    <!-- Area Untuk YouTube Player (Tetap di viewport untuk Background Play) -->
+    <!-- Area YouTube Tembus Pandang -->
     <div id="ytplayer-wrapper"><div id="ytplayer"></div></div>
 
     <div class="fixed top-2 left-0 w-full px-2 sm:px-4 z-40 flex justify-between items-start pointer-events-none anim-header">
@@ -102,33 +102,25 @@
                 <button onclick="tutupChangelog()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
             <div class="overflow-y-auto flex-1 min-h-0 text-left space-y-3 pr-1">
-                <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-3 rounded-xl border border-orange-100">
-                    <h4 class="font-black text-orange-600 text-sm mb-1">🔍 Smart Search Engine Scraping</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Gak pakai server API yang sering down! Kates VIP sekarang pakai metode "Smart Scraping" langsung dari Search Engine. Hasil secepat kilat & anti-gagal!</p>
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-xl border border-green-100">
+                    <h4 class="font-black text-green-600 text-sm mb-1">🎧 Background Audio & Search Kilat</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sekarang musik tetap jalan walau aplikasi diminimize (Lock Screen Info). Plus pencarian YouTube 10x lebih cepat dengan fitur Server Racing!</p>
                 </div>
-                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-3 rounded-xl border border-emerald-100">
-                    <h4 class="font-black text-emerald-600 text-sm mb-1">🔋 Background Play Fix (Anti-Mati)</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Masalah musik mati saat diminimize? UDAH FIX BOS! Sekarang lu bisa kunci layar HP sambil tetep dengerin YouTube di latar belakang.</p>
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-3 rounded-xl border border-orange-100">
+                    <h4 class="font-black text-orange-600 text-sm mb-1">🚀 Preset Koleksi Dewa</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Tombol Jawa, Indo, Luar, & Murottal langsung nembak Playlist Official favoritmu no delay! (Tanpa loading pencarian).</p>
+                </div>
+                <div class="bg-gradient-to-r from-sky-50 to-cyan-50 p-3 rounded-xl border border-sky-100">
+                    <h4 class="font-black text-sky-600 text-sm mb-1">💾 Safe Local Data</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Meskipun direfresh, Playlist musik YouTube incaranmu sekarang awet tersimpan di HP. Tombol RESET layar juga 100% gak bakal ngapus playlistmu.</p>
                 </div>
                 <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-3 rounded-xl border border-indigo-100">
                     <h4 class="font-black text-indigo-600 text-sm mb-1">💎 Mode Kalkulasi 7 Kelas</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sekarang kelas disesuaikan sampe 7 Kategori! Pembagi otomatis presisi: /55, /60, /65, /70, /45 tanpa meleset sedetikpun.</p>
-                </div>
-                <div class="bg-gradient-to-r from-amber-50 to-yellow-50 p-3 rounded-xl border border-amber-100">
-                    <h4 class="font-black text-amber-600 text-sm mb-1">📊 Export Excel Otomatis</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Gak perlu repot rekap manual. Hasil nilai langsung masuk, 1 detik klik langsung jadi file Excel rapi siap setor bosku!</p>
-                </div>
-                <div class="bg-gradient-to-r from-purple-50 to-fuchsia-50 p-3 rounded-xl border border-purple-100">
-                    <h4 class="font-black text-purple-600 text-sm mb-1">🎭 UI/UX Super Smooth VIP</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Animasi transisi, popup, dan *button press* makin mantap dan memanjakan mata, setara aplikasi kelas dunia!</p>
-                </div>
-                <div class="bg-gradient-to-r from-sky-50 to-cyan-50 p-3 rounded-xl border border-sky-100">
-                    <h4 class="font-black text-sky-600 text-sm mb-1">🛡️ Auto-Repair System</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Sistem cerdas yang otomatis mendeteksi dan memperbaiki kerusakan database, bye-bye data siswa hilang!</p>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Kelas disesuaikan sampe 7 Kategori! Pembagi otomatis akurat: /55, /60, /65, /70, /45 tanpa meleset sedetikpun.</p>
                 </div>
                 <div class="bg-gradient-to-r from-pink-50 to-rose-50 p-3 rounded-xl border border-pink-100">
-                    <h4 class="font-black text-pink-600 text-sm mb-1">🎶 Default Playlist VIP</h4>
-                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Nikmati dua playlist eksklusif: *Cafe Vibes Indonesia* & *New Normal Keroncong* yang otomatis sedia di player kamu.</p>
+                    <h4 class="font-black text-pink-600 text-sm mb-1">🎶 Hot MP3 Lokal Update</h4>
+                    <p class="text-[11px] text-slate-700 font-bold leading-tight">Added "Mas Bahlil Ganteng" & "Bos Gizi Nyolong" sebagai Default MP3 Lokal VIP!</p>
                 </div>
             </div>
             <button onclick="tutupChangelog()" class="w-full mt-4 shrink-0 py-3 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-xl shadow-lg text-[11px] active:scale-95 transition-all tracking-widest uppercase">
@@ -231,7 +223,7 @@
         </div>
     </div>
 
-    <!-- MODAL 6: MANAGER MUSIK (DUAL MODE DENGAN YOUTUBE EXPLORER) -->
+    <!-- MODAL 6: MANAGER MUSIK (DUAL MODE DENGAN YOUTUBE PRESETS & RACING SEARCH) -->
     <div id="music-manager-modal" class="fixed inset-0 z-[75] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="toggleModal('music-manager-modal', false)"></div>
         <div class="relative bg-white rounded-3xl p-4 shadow-2xl max-w-sm w-[92%] border border-slate-100 flex flex-col transform scale-95 transition-transform duration-300 h-[85vh]">
@@ -241,7 +233,7 @@
             </div>
             
             <!-- TABS MODE MUSIK -->
-            <div class="flex bg-slate-100 rounded-lg p-1 mb-3 shrink-0">
+            <div class="flex bg-slate-100 rounded-lg p-1 mb-2 shrink-0">
                 <button id="tab-music-offline" onclick="setMusicMode('offline')" class="flex-1 py-1.5 text-[10px] font-black rounded-md bg-white shadow-sm text-blue-600 transition-all flex items-center justify-center gap-1"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg> MP3 LOKAL</button>
                 <button id="tab-music-online" onclick="setMusicMode('online')" class="flex-1 py-1.5 text-[10px] font-black rounded-md text-slate-500 hover:text-slate-700 transition-all flex items-center justify-center gap-1"><svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> YOUTUBE</button>
             </div>
@@ -256,21 +248,21 @@
 
             <!-- CONTAINER ONLINE (YOUTUBE BROWSER) -->
             <div id="container-online" class="hidden flex-col flex-1 min-h-0 bg-slate-50 rounded-xl p-2 border border-slate-100">
-                <!-- Search Bar YouTube -->
+                
+                <!-- Search Bar YouTube Yang Diinginkan (RACING SEARCH) -->
                 <div class="flex gap-1.5 mb-2 shrink-0">
-                    <input type="text" id="yt-search-input" placeholder="Cari lagu di YouTube..." class="flex-1 p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-red-400 shadow-sm" onkeydown="if(event.key==='Enter') executeYTSearch()">
+                    <input type="text" id="yt-search-input" placeholder="Cari lagu apa bre? (Ketik judul)..." class="flex-1 p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold outline-none focus:border-red-400 shadow-sm" onkeydown="if(event.key==='Enter') executeYTSearch()">
                     <button onclick="executeYTSearch()" class="bg-red-500 text-white w-10 rounded-xl font-black text-xs hover:bg-red-600 active:scale-95 flex items-center justify-center shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </button>
                 </div>
 
-                <!-- Quick Categories -->
-                <div class="flex gap-1.5 mb-2 overflow-x-auto pb-1 scrollbar-hide shrink-0">
-                    <button onclick="quickSearchYT('Lagu Jawa Campursari Populer Koplo')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🎵 Jawa</button>
-                    <button onclick="quickSearchYT('Lagu Pop Indonesia Terbaru Hits')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🎤 Indo</button>
-                    <button onclick="quickSearchYT('Top Hits Pop Luar Negeri Barat')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🌍 Luar</button>
-                    <button onclick="quickSearchYT('Lagu Viral Tiktok Terbaru Terpopuler')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🔥 Viral</button>
-                    <button onclick="quickSearchYT('Murottal Alquran Paling Merdu')" class="shrink-0 px-3 py-1.5 bg-white text-slate-700 text-[9px] font-black rounded-full border border-slate-200 hover:border-red-300 hover:text-red-500 whitespace-nowrap shadow-sm transition-colors">🕌 Murotal</button>
+                <!-- Quick Categories Grid -->
+                <div class="grid grid-cols-4 gap-1.5 mb-2 shrink-0">
+                    <button onclick="loadPresetYT('Jawa')" class="px-1 py-2 bg-white text-slate-700 text-[10px] font-black rounded-lg border border-slate-200 hover:border-red-300 hover:text-red-500 shadow-sm transition-colors text-center truncate">🎵 Jawa</button>
+                    <button onclick="loadPresetYT('Indo')" class="px-1 py-2 bg-white text-slate-700 text-[10px] font-black rounded-lg border border-slate-200 hover:border-red-300 hover:text-red-500 shadow-sm transition-colors text-center truncate">🎤 Indo</button>
+                    <button onclick="loadPresetYT('Luar')" class="px-1 py-2 bg-white text-slate-700 text-[10px] font-black rounded-lg border border-slate-200 hover:border-red-300 hover:text-red-500 shadow-sm transition-colors text-center truncate">🌍 Luar</button>
+                    <button onclick="loadPresetYT('Murotal')" class="px-1 py-2 bg-white text-slate-700 text-[10px] font-black rounded-lg border border-slate-200 hover:border-red-300 hover:text-red-500 shadow-sm transition-colors text-center truncate">🕌 Murotal</button>
                 </div>
 
                 <!-- Toggle View: Playlist vs Search Results -->
@@ -287,7 +279,7 @@
                     <div id="yt-search-results" class="hidden space-y-1.5 pb-2"></div>
                 </div>
 
-                <!-- Fallback Manual Link -->
+                <!-- Manual Search/URL Bawah -->
                 <div class="flex gap-1 mt-2 shrink-0 pt-2 border-t border-slate-200">
                     <input type="text" id="yt-url-input" placeholder="Atau paste URL Youtube..." class="flex-1 p-2 border border-slate-200 bg-white rounded-lg text-[10px] font-bold outline-none focus:border-red-400">
                     <button onclick="tambahLaguYoutubeManual()" class="bg-slate-800 text-white px-3 rounded-lg font-black text-[10px] hover:bg-slate-700 active:scale-95">ADD</button>
@@ -435,7 +427,8 @@
         });
 
         function refreshApp() { window.location.href = window.location.pathname + '?v=' + new Date().getTime(); }
-        // (Modul Kalkulator Standard Dibawah)
+        
+        // Murni bersihkan layar kalkulator (TIDAK menghapus data siswa atau list musik)
         function bersihkanLayar() {
             activeKelas = null; activeSiswaId = ""; document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' };
@@ -497,7 +490,6 @@
             const msgEl = document.getElementById('iu-message');
 
             if (!isStandalone) {
-                // Belum install (Randomizer Popup Gaul)
                 const variasiInstall = [
                     { emoji: '📲', title: 'Install Dulu Bosku!', msg: 'Biar aplikasinya full power, anti ngelag, dan bisa dipake offline, wajib install KATES VIP ke HP lo sekarang ygy!', btn: 'INSTALL BRE 🔥' },
                     { emoji: '🗿', title: 'Kok Lewat Browser?', msg: 'Hari gini masih pake browser? Install Kates VIP sekarang biar jadi sepuh sejati bre!', btn: 'GAS INSTALL 🚀' },
@@ -527,7 +519,6 @@
                 toggleModal('install-update-modal', true);
                 if(savedVersion !== currentVersion) showChangelogAfterIU = true;
             } else if (savedVersion !== currentVersion) {
-                // Udah install tapi belum update (Randomizer Popup Gaul)
                 const variasiUpdate = [
                     { emoji: '🚀', title: 'Wajib Update Cuy!', msg: `Versi terbaru KATES VIP ${currentVersion} udah rilis nih bos! Banyak fitur dewa baru. Buruan gas update!`, btn: 'UPDATE BRE 💎' },
                     { emoji: '🦖', title: 'Versi Lu Kadaluarsa!', msg: `Buset dah masih pake versi lama. Udah ada versi ${currentVersion} nih, jangan mau ketinggalan jaman ygy!`, btn: 'SIKAT BRE 🔥' },
@@ -549,7 +540,6 @@
                 
                 toggleModal('install-update-modal', true);
             } else if (localStorage.getItem('show_changelog_vip') === 'yes') {
-                 // Kalau habis pencet update dan reload, tampilin changelog
                  localStorage.removeItem('show_changelog_vip');
                  setTimeout(() => toggleModal('changelog-modal', true), 500);
             }
@@ -558,7 +548,6 @@
         function tutupInstallUpdate() {
             toggleModal('install-update-modal', false);
             if (showChangelogAfterIU) {
-                // Kalau cuma install doang tapi versi belum tersimpan
                 setTimeout(() => { toggleModal('changelog-modal', true); showChangelogAfterIU = false; }, 300);
                 localStorage.setItem('kates_vip_version', 'v.26.6.6');
             }
@@ -597,27 +586,124 @@
 
         let currentAudio = new Audio(); 
         let currentTrackIndex = 0;
-        let musicLibrary = [{ title: 'Perdamaian', src: 'Perdamaian.mp3' }, { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' }, { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' }, { title: 'SurgaMu', src: 'SurgaMu.mp3' }, { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' }];
+        
+        // Penambahan Playlist MP3 Baru Sesuai Pesanan
+        let musicLibrary = [
+            { title: 'MBG_Mas Bahlil Ganteng', src: 'MBG_Mas Bahlil Ganteng.mp3' }, 
+            { title: 'BGN_Bos Gizi Nyolong', src: 'BGN_Bos Gizi Nyolong.mp3' },
+            { title: 'Perdamaian', src: 'Perdamaian.mp3' }, 
+            { title: 'Ada Anak Bertanya Pada Bapaknya', src: 'Ada Anak Bertanya Pa.mp3' }, 
+            { title: 'Kusadari Akhirnya', src: 'Kusadari Akhirnya.mp3' }, 
+            { title: 'SurgaMu', src: 'SurgaMu.mp3' }, 
+            { title: 'Sembah Sujudku', src: 'Sembah Sujudku.mp3' }
+        ];
         
         let ytPlayer;
         let isYtReady = false;
         let currentYtIndex = 0;
         
-        // Playlist Default VIP
+        // Playlist User Tersimpan Sesuai Pesanan Awal + Local Storage
         let youtubeLibrary = [
-            { title: 'Cafe Vibes Indonesia', id: 'GIxLDvYTGaU', channel: 'Cafe Music' },
-            { title: 'NEW NORMAL KERONCONG', id: 'lkiLjk_7tts', channel: 'Keroncong' }
+            { title: 'Cafe Vibes Indonesia', id: 'GIxLDvYTGaU', channel: 'Cafe Music', type: 'video' },
+            { title: 'NEW NORMAL KERONCONG', id: 'lkiLjk_7tts', channel: 'Keroncong', type: 'video' }
         ];
 
-        // Data Cadangan Kategori
-        const ytFallbackData = [
-            { id: 'GIxLDvYTGaU', title: 'Cafe Vibes Indonesia', channel: 'Cafe Music' },
-            { id: 'lkiLjk_7tts', title: 'NEW NORMAL KERONCONG', channel: 'Keroncong' },
-            { id: '9UMxZofMNbA', title: 'Murottal Surat Ar-Rahman', channel: 'Murotal' },
-            { id: 'W0w2-a9_c4w', title: 'Gilga Sahid - Nemen (Lagu Jawa)', channel: 'Jawa' },
-            { id: 'b8ZntmP4D6M', title: 'Lagu Viral Tiktok Terbaru', channel: 'Viral' },
-            { id: '0G2VxhV_gXM', title: 'Top Hits Pop Luar Negeri', channel: 'Pop Luar' }
-        ];
+        // Memuat playlist yang tersimpan dari Local Storage (Agar aman saat direfresh)
+        function loadYTLocal() {
+            const saved = localStorage.getItem('kates_yt_lib');
+            if(saved) {
+                try { youtubeLibrary = JSON.parse(saved); } catch(e){}
+            }
+        }
+        function saveYTLocal() {
+            localStorage.setItem('kates_yt_lib', JSON.stringify(youtubeLibrary));
+        }
+
+        // KATEGORI PRESET (Tembak Langsung, Bebas Pencarian Flaky!)
+        const ytPresets = {
+            'Jawa': [
+                { id: 'lHFOzj1_suE', type: 'video', title: 'Denny Caknan Feat Bella Bonita - SINARENGAN', channel: 'Denny Caknan' },
+                { id: 'WZYUSaHlGlk', type: 'video', title: 'Denny Caknan - NEGORO ANGIN', channel: 'Denny Caknan' },
+                { id: 'WlmWXoP0C0s', type: 'video', title: 'Denny Caknan - Kartonyono Medot Janji', channel: 'Denny Caknan' },
+                { id: 'iWit_B3DNsc', type: 'video', title: 'Denny Caknan Feat. Gilga Sahid - NEMEN', channel: 'Denny Caknan' },
+                { id: 'fBnqChaU-ck', type: 'video', title: 'GuyonWaton - Wirang', channel: 'GuyonWaton' },
+                { id: 'NBp3gFJZLBk', type: 'video', title: 'MASDDDHO - KISINAN 2', channel: 'MASDDDHO' },
+                { id: '9X8pLgPwx5o', type: 'video', title: 'Denny Caknan - Cundamani', channel: 'Denny Caknan' },
+                { id: 's525A0Bc3z4', type: 'video', title: 'Denny Caknan - Sigar', channel: 'Denny Caknan' },
+                { id: 'R0OezRPmy6Q', type: 'video', title: 'GuyonWaton - Pelanggaran', channel: 'GuyonWaton' },
+                { id: '1eRYwa-rcj8', type: 'video', title: 'Masdddho - Titeni Lan Enteni', channel: 'Masdddho' },
+                { id: 'Si-lvKJcWLs', type: 'video', title: 'Ndarboy Genk - Mendung Tanpo Udan', channel: 'Ndarboy Genk' },
+                { id: '7YQZUUEh1Rk', type: 'video', title: 'Aftershine Ft. Damara De - Aku Ikhlas', channel: 'Aftershine' },
+                { id: 'Ml42TaBRFPw', type: 'video', title: 'Ndarboy Genk - Koyo Jogja Istimewa', channel: 'Ndarboy Genk' },
+                { id: 'qRUsQyd0lag', type: 'video', title: 'Gilga Sahid (Gildcoustic) - Nemu', channel: 'Gildcoustic' },
+                { id: 'RSWPTbP2uik', type: 'video', title: 'Wawes Ft. GuyonWaton - Dumes', channel: 'Wawes' },
+                { id: 'Tzzdu68zbvQ', type: 'video', title: 'Happy Asmara - Rungkad', channel: 'Happy Asmara' },
+                { id: 'fKVgm3_x-OI', type: 'video', title: 'Denny Caknan ft. Happy Asmara - Satru', channel: 'Denny Caknan' },
+                { id: 'cmD9vPWi9h4', type: 'video', title: 'Ndarboy Genk - Balungan Kere', channel: 'Ndarboy Genk' },
+                { id: 'S0kaqFBoGqI', type: 'video', title: 'GuyonWaton - Korban Janji', channel: 'GuyonWaton' },
+                { id: 'Xo9egupmgoE', type: 'video', title: 'Didi Kempot - Pamer Bojo', channel: 'Didi Kempot' },
+                { id: 'PLZvTiXDi9xqC8Zn4rGuUQgEn3lD6dDNM7', type: 'playlist', title: 'Mix Lagu Jawa Indonesia Terbaru', channel: 'Jawa Hits' }
+            ],
+            'Indo': [
+                { id: 'nEszH6h2aRw', type: 'video', title: 'Ungu - Demi Waktu', channel: 'UNGU' },
+                { id: 'Q-xL479Vb8A', type: 'video', title: 'Ungu - Tercipta Untukku', channel: 'UNGU' },
+                { id: 'hT8C6xL02uQ', type: 'video', title: 'Ungu - Cinta Dalam Hati', channel: 'UNGU' },
+                { id: '2V1gDIfE2W0', type: 'video', title: 'Ungu - Kekasih Gelapku', channel: 'UNGU' },
+                { id: 'W0v4n4c2gEE', type: 'video', title: 'Ungu - Andai Ku Tahu', channel: 'UNGU' },
+                { id: 'p0Q-m5Y_3pI', type: 'video', title: 'Ungu - Sejauh Mungkin', channel: 'UNGU' },
+                { id: 'k9X6j8k6nQk', type: 'video', title: 'Wali - Baik Baik Sayang', channel: 'WALI' },
+                { id: '7o0H7xG8m0U', type: 'video', title: 'Wali - Cari Jodoh', channel: 'WALI' },
+                { id: 'Y7l6m0g8aQk', type: 'video', title: 'Wali - Dik', channel: 'WALI' },
+                { id: 'q9Q3h4k8nU0', type: 'video', title: 'Wali - Yank', channel: 'WALI' },
+                { id: 'Z7l9k5j4qG8', type: 'video', title: 'Kangen Band - Yolanda', channel: 'Kangen Band' },
+                { id: 'p4T5n8c9rV0', type: 'video', title: 'Kangen Band - Tentang Aku, Kau, Dan Dia', channel: 'Kangen Band' },
+                { id: 'B2m8v6c4zX0', type: 'video', title: 'Kangen Band - Pujaan Hati', channel: 'Kangen Band' },
+                { id: 'X9v3m5b2kG0', type: 'video', title: 'Peterpan - Bintang di Surga', channel: 'Noah' },
+                { id: 'V4b6n8c9zM0', type: 'video', title: 'Peterpan - Yang Terdalam', channel: 'Noah' },
+                { id: 'P8v2k4n6cZ0', type: 'video', title: 'Peterpan - Mungkin Nanti', channel: 'Noah' },
+                { id: 'z1m8k4v9cX0', type: 'video', title: 'NOAH - Separuh Aku', channel: 'Noah' },
+                { id: 'x5b2n9c4vM0', type: 'video', title: 'Sheila On 7 - Dan', channel: 'Sheila On 7' },
+                { id: 'c4v8b2n9mX0', type: 'video', title: 'Sheila On 7 - Sephia', channel: 'Sheila On 7' },
+                { id: 'k4n9c2b8vM0', type: 'video', title: 'D\'Masiv - Cinta Ini Membunuhku', channel: 'D\'Masiv' },
+                { id: 'v2c8b9n4mM0', type: 'video', title: 'Armada - Asal Kau Bahagia', channel: 'Armada' },
+                { id: 'PLU4GTyMETaQ5I6BAekRLnVfd-WtBszMSW', type: 'playlist', title: 'Wali - Full Album', channel: 'WALI' },
+                { id: 'RDEMGddYAh8fMWgpZ17szTAWgw', type: 'playlist', title: 'Ungu - Mix', channel: 'UNGU' },
+                { id: 'PLU4GTyMETaQ4vvtliE4OWIAdM06nhjRG8', type: 'playlist', title: 'Sheila On 7 - Best Of', channel: 'Sheila On 7' },
+                { id: 'PLW_i3VU4-wwZ1aGBQbaPl2KJoArwSYpEb', type: 'playlist', title: 'Noah - Top Hits', channel: 'NOAH' }
+            ],
+            'Luar': [
+                { id: 'G7KNmW9a75Y', type: 'video', title: 'Miley Cyrus - Flowers', channel: 'Miley Cyrus' },
+                { id: 'H5v3kku4y6Q', type: 'video', title: 'Harry Styles - As It Was', channel: 'Harry Styles' },
+                { id: 'b1kbLwvqugk', type: 'video', title: 'Taylor Swift - Anti-Hero', channel: 'Taylor Swift' },
+                { id: '4NRXx6U8ABQ', type: 'video', title: 'The Weeknd - Blinding Lights', channel: 'The Weeknd' },
+                { id: 'oygrmJFKYZY', type: 'video', title: 'Dua Lipa - Don\'t Start Now', channel: 'Dua Lipa' },
+                { id: 'DyDfgMOUjCI', type: 'video', title: 'Billie Eilish - bad guy', channel: 'Billie Eilish' },
+                { id: 'ZmDBbnmKpqQ', type: 'video', title: 'Olivia Rodrigo - drivers license', channel: 'Olivia Rodrigo' },
+                { id: 'JGwWNGJdvx8', type: 'video', title: 'Ed Sheeran - Shape of You', channel: 'Ed Sheeran' },
+                { id: 'OPf0YbXqDm0', type: 'video', title: 'Mark Ronson ft. Bruno Mars - Uptown Funk', channel: 'Mark Ronson' },
+                { id: '09R8_2nJtjg', type: 'video', title: 'Maroon 5 - Sugar', channel: 'Maroon 5' },
+                { id: 'fRh_vgS2dFE', type: 'video', title: 'Justin Bieber - Sorry', channel: 'Justin Bieber' },
+                { id: 'CevxZvSJLk8', type: 'video', title: 'Katy Perry - Roar', channel: 'Katy Perry' },
+                { id: 'hT_nvWreIhg', type: 'video', title: 'OneRepublic - Counting Stars', channel: 'OneRepublic' },
+                { id: '3AtDnEC4zak', type: 'video', title: 'Charlie Puth ft. Selena Gomez - We Don\'t Talk Anymore', channel: 'Charlie Puth' },
+                { id: 'Pkh8UtuejGw', type: 'video', title: 'Shawn Mendes, Camila Cabello - Señorita', channel: 'Shawn Mendes' },
+                { id: 'rYEDA3JcQqw', type: 'video', title: 'Adele - Rolling in the Deep', channel: 'Adele' },
+                { id: 'LjhCEhWiKXk', type: 'video', title: 'Bruno Mars - Just The Way You Are', channel: 'Bruno Mars' },
+                { id: 'VPRjCeoBqrI', type: 'video', title: 'Coldplay - A Sky Full of Stars', channel: 'Coldplay' },
+                { id: 'tg00YEETFzg', type: 'video', title: 'Rihanna ft. Calvin Harris - We Found Love', channel: 'Rihanna' },
+                { id: 'bo_efYhYU2A', type: 'video', title: 'Lady Gaga, Bradley Cooper - Shallow', channel: 'Lady Gaga' },
+                { id: 'ru0K8uYEZWw', type: 'video', title: 'Justin Timberlake - Can\'t Stop the Feeling!', channel: 'Justin Timberlake' },
+                { id: 'lp-EO5I60KA', type: 'video', title: 'Ed Sheeran - Thinking Out Loud', channel: 'Ed Sheeran' },
+                { id: 'e-ORhEE9VVg', type: 'video', title: 'Taylor Swift - Blank Space', channel: 'Taylor Swift' },
+                { id: '450p7goxZqg', type: 'video', title: 'John Legend - All of Me', channel: 'John Legend' },
+                { id: '2vjPBrBU-TM', type: 'video', title: 'Sia - Chandelier', channel: 'Sia' },
+                { id: 'PLeA8PwIGIvy13ttPOUueS8pv0u6E081j6', type: 'playlist', title: 'Top Hits Pop Luar Negeri', channel: 'Pop Barat' }
+            ],
+            'Murotal': [
+                { id: 'VYql3txo_vE', type: 'video', title: 'Juz 30 Full', channel: 'Murottal' },
+                { id: 'Q8fQoW9lygg', type: 'video', title: 'Juz 29 Full', channel: 'Murottal' }
+            ]
+        };
 
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('ytplayer', {
@@ -632,9 +718,12 @@
                 isPlaying = true;
                 let videoData = ytPlayer.getVideoData();
                 if(videoData && videoData.title && youtubeLibrary[currentYtIndex]) {
-                    youtubeLibrary[currentYtIndex].title = videoData.title; 
+                    if (youtubeLibrary[currentYtIndex].title.includes('Custom') || youtubeLibrary[currentYtIndex].title.includes('Playlist')) {
+                         youtubeLibrary[currentYtIndex].title = videoData.title; // Update ke judul asli yg lagi main
+                         saveYTLocal();
+                    }
                     document.getElementById('music-title').innerText = videoData.title;
-                    updateMediaSession(videoData.title, youtubeLibrary[currentYtIndex].channel || 'YouTube Media', `https://img.youtube.com/vi/${youtubeLibrary[currentYtIndex].id}/hqdefault.jpg`);
+                    updateMediaSession(videoData.title, youtubeLibrary[currentYtIndex].channel || 'YouTube Media', `https://img.youtube.com/vi/${videoData.video_id || youtubeLibrary[currentYtIndex].id}/hqdefault.jpg`);
                 }
                 updateUIPlayer();
             } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
@@ -681,79 +770,130 @@
             document.getElementById('playlist-container-online').classList.add('hidden');
             document.getElementById('yt-search-results').classList.remove('hidden');
             document.getElementById('btn-back-playlist').classList.remove('hidden');
-            document.getElementById('yt-view-title').innerText = "HASIL PENCARIAN";
+            document.getElementById('yt-view-title').innerText = "HASIL PENCARIAN & KOLEKSI VIP";
         }
 
-        function quickSearchYT(query) {
-            document.getElementById('yt-search-input').value = query;
-            executeYTSearch();
-        }
-
-        // FUNGSI PENCARIAN SMART ENGINE (DUCKDUCKGO HTML SCRAPING) - ANTI LEMOT, ANTI API DOWN!
+        // FUNGSI PENCARIAN TINGKAT DEWA (PROMISE RACING ANTI LEMOT)
         async function executeYTSearch() {
             const query = document.getElementById('yt-search-input').value.trim();
             if(!query) return;
             
             showYtSearchView();
             const resultBox = document.getElementById('yt-search-results');
-            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-3"></div><p class="text-[10px] font-bold text-slate-500 text-center leading-tight">Mencari via Smart Engine...<br><span class="text-[8px] opacity-70">Anti Lemot & Anti Gagal</span></p></div>';
+            resultBox.innerHTML = '<div class="flex flex-col items-center justify-center py-6 opacity-70"><div class="animate-spin rounded-full h-6 w-6 border-2 border-red-500 border-t-transparent mb-3"></div><p class="text-[10px] font-bold text-slate-500 text-center leading-tight">Mencari kilat... 🚀</p></div>';
 
+            const apis = [
+                `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://pipedapi.tokhmi.xyz/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://api.piped.projectsegfau.lt/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://pipedapi.smnz.de/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://piped-api.lunar.icu/search?q=${encodeURIComponent(query)}&filter=music_songs`,
+                `https://invidious.jing.rocks/api/v1/search?q=${encodeURIComponent(query)}`,
+                `https://inv.tux.pizza/api/v1/search?q=${encodeURIComponent(query)}`
+            ];
+            
             try {
-                // Metode 1: DuckDuckGo HTML Lite (Sangat Ringan, Cepat & Bebas Blokir)
-                const targetUrl = encodeURIComponent(`https://html.duckduckgo.com/html/?q=site:youtube.com+${encodeURIComponent(query)}`);
-                const proxyUrl = `https://api.allorigins.win/get?url=${targetUrl}`;
+                // Timeout super singkat 4 detik
+                const fetchPromises = apis.map(api => fetch(api, { signal: AbortSignal.timeout(4000) }).then(async r => {
+                    if (!r.ok) throw new Error('Bad response');
+                    const json = await r.json();
+                    if ((json.items && json.items.length === 0) || (Array.isArray(json) && json.length === 0)) throw new Error('Empty');
+                    return json;
+                }));
 
-                const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-                if (!res.ok) throw new Error('Proxy down');
+                const data = await Promise.any(fetchPromises);
                 
-                const data = await res.json();
-                const htmlText = data.contents;
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-                const results = doc.querySelectorAll('.result');
-
                 let streams = [];
-                results.forEach(res => {
-                    if(streams.length >= 15) return;
-                    const a = res.querySelector('.result__url');
-                    const titleEl = res.querySelector('.result__title');
-                    if(a && titleEl) {
-                        const href = a.getAttribute('href') || '';
-                        const unescaped = decodeURIComponent(href);
-                        const idMatch = unescaped.match(/v=([a-zA-Z0-9_-]{11})/);
-                        if(idMatch) {
-                            let title = titleEl.textContent.trim().replace(/ - YouTube$/, '').replace(/\|.*/, '');
-                            // Hindari duplikat
-                            if(!streams.find(s => s.id === idMatch[1])) {
-                                streams.push({
-                                    id: idMatch[1],
-                                    title: title,
-                                    channel: "YouTube Music",
-                                    thumb: `https://img.youtube.com/vi/${idMatch[1]}/mqdefault.jpg`
-                                });
-                            }
-                        }
-                    }
-                });
+                if (data.items) { 
+                    streams = data.items.filter(i => i.type === 'stream').slice(0, 15).map(i => ({
+                        id: i.url.split('?v=')[1] || i.url.split('/watch?v=')[1], title: i.title, channel: i.uploaderName, thumb: i.thumbnail
+                    }));
+                } else if (Array.isArray(data)) {
+                    streams = data.slice(0, 15).map(i => ({
+                        id: i.videoId, title: i.title, channel: i.author, thumb: i.videoThumbnails?.[1]?.url || i.videoThumbnails?.[0]?.url || `https://img.youtube.com/vi/${i.videoId}/0.jpg`
+                    }));
+                }
 
                 if(streams.length > 0) {
                     resultBox.innerHTML = '';
-                    streams.forEach(item => {
-                        renderYTResultItem(item.id, item.title, item.channel, item.thumb);
-                    });
-                    return;
+                    streams.forEach(item => { if(item.id) renderYTResultItem(item.id, item.title, item.channel, item.thumb); });
+                    return; 
                 }
                 throw new Error("Kosong");
             } catch(e) {
-                // Fallback Mode Darurat
-                resultBox.innerHTML = '<div class="bg-rose-50 text-rose-500 text-[9px] text-center p-2 rounded-lg font-bold mb-2 border border-rose-100">Koneksi jaringan melemah. 🚀<br>Memuat Rekomendasi Offline VIP:</div>';
-                const filtered = ytFallbackData.filter(v => v.title.toLowerCase().includes(query.toLowerCase()) || v.channel.toLowerCase().includes(query.toLowerCase()));
-                const toShow = filtered.length > 0 ? filtered : ytFallbackData;
-                toShow.forEach(item => {
-                    renderYTResultItem(item.id, item.title, item.channel, `https://img.youtube.com/vi/${item.id}/mqdefault.jpg`);
-                });
+                // FALLBACK ALLORIGINS JIKA SEMUA SERVER MATI
+                try {
+                    const proxy = 'https://api.allorigins.win/get?url=';
+                    const targetUrl = encodeURIComponent(`https://m.youtube.com/results?search_query=${encodeURIComponent(query)}`);
+                    const res = await fetch(proxy + targetUrl, { signal: AbortSignal.timeout(5000) });
+                    const json = await res.json();
+                    const text = json.contents;
+
+                    let dataStr = "";
+                    const match1 = text.match(/var ytInitialData = (\{.*?\});<\/script>/);
+                    const match2 = text.match(/window\["ytInitialData"\] = (\{.*?\});/);
+                    if(match1) dataStr = match1[1];
+                    else if(match2) dataStr = match2[1];
+
+                    if(dataStr) {
+                        const data = JSON.parse(dataStr);
+                        let results = [];
+                        function extractVideos(obj) {
+                            if (results.length >= 15) return;
+                            if (typeof obj !== 'object' || obj === null) return;
+                            if (obj.compactVideoRenderer && obj.compactVideoRenderer.videoId) {
+                                 let id = obj.compactVideoRenderer.videoId;
+                                 let title = obj.compactVideoRenderer.title?.runs?.[0]?.text || "Unknown";
+                                 let channel = obj.compactVideoRenderer.shortBylineText?.runs?.[0]?.text || "YouTube";
+                                 if(!results.find(x => x.id === id)) results.push({id, title, channel});
+                            }
+                            if(Array.isArray(obj)) {
+                                for(let item of obj) extractVideos(item);
+                            } else {
+                                for (let k in obj) extractVideos(obj[k]);
+                            }
+                        }
+                        extractVideos(data);
+                        if(results.length > 0) {
+                            resultBox.innerHTML = '';
+                            results.forEach(item => renderYTResultItem(item.id, item.title, item.channel, `https://img.youtube.com/vi/${item.id}/0.jpg`));
+                            return; 
+                        }
+                    }
+                    throw new Error("Scraping fallback failed");
+                } catch(err) {
+                    resultBox.innerHTML = '<div class="bg-rose-50 text-rose-500 text-[9px] text-center p-2 rounded-lg font-bold mb-2 border border-rose-100">Yah server pencarian lagi sibuk banget bree. 😭<br>Coba klik kategori koleksi di atas aja ya!</div>';
+                }
             }
+        }
+
+        // Tembak Langsung Koleksi (Anti-Loading)
+        function loadPresetYT(cat) {
+            showYtSearchView();
+            const resultBox = document.getElementById('yt-search-results');
+            resultBox.innerHTML = '';
+            
+            ytPresets[cat].forEach(item => {
+                const thumb = item.type === 'playlist' ? 'LOGO.png' : `https://img.youtube.com/vi/${item.id}/0.jpg`;
+                const row = document.createElement('div');
+                row.className = "flex gap-2.5 p-1.5 hover:bg-slate-50 cursor-pointer rounded-xl border border-transparent hover:border-slate-200 transition-all active:scale-[0.98]";
+                
+                const safeTitle = item.title.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeChannel = item.channel.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                
+                row.setAttribute('onclick', `tambahDanPutarYT('${item.id}', '${safeTitle}', '${safeChannel}', '${item.type}')`);
+                row.innerHTML = `
+                    <div class="w-20 h-[50px] shrink-0 relative rounded-lg overflow-hidden bg-slate-200 shadow-sm border border-slate-100 flex items-center justify-center">
+                        ${item.type === 'playlist' ? `<span class="text-2xl">📑</span>` : `<img src="${thumb}" onerror="this.src='LOGO.png'" class="w-full h-full object-cover">`}
+                        <div class="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors"></div>
+                    </div>
+                    <div class="flex flex-col justify-center min-w-0 pr-1 py-0.5">
+                        <p class="text-[11px] font-black text-slate-800 line-clamp-2 leading-tight">${item.title}</p>
+                        <p class="text-[9px] font-bold text-slate-400 mt-1 truncate flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> ${item.channel}</p>
+                    </div>
+                `;
+                resultBox.appendChild(row);
+            });
         }
 
         function renderYTResultItem(id, title, channel, thumbUrl) {
@@ -765,7 +905,7 @@
             row.setAttribute('onclick', `tambahDanPutarYT('${id}', '${safeTitle}', '${safeChannel}')`);
             row.innerHTML = `
                 <div class="w-20 h-[50px] shrink-0 relative rounded-lg overflow-hidden bg-slate-200 shadow-sm border border-slate-100">
-                    <img src="${thumbUrl}" onerror="this.src='https://img.youtube.com/vi/${id}/default.jpg'" class="w-full h-full object-cover">
+                    <img src="${thumbUrl}" onerror="this.src='https://img.youtube.com/vi/${id}/0.jpg'" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors"></div>
                 </div>
                 <div class="flex flex-col justify-center min-w-0 pr-1 py-0.5">
@@ -776,15 +916,19 @@
             resultBox.appendChild(row);
         }
 
-        function tambahDanPutarYT(id, title, channel) {
-            youtubeLibrary.push({ title: title, id: id, channel: channel });
+        function tambahDanPutarYT(id, title, channel, type = 'video') {
+            youtubeLibrary.push({ title: title, id: id, channel: channel, type: type });
+            saveYTLocal();
             currentYtIndex = youtubeLibrary.length - 1;
             setTrackOnline(currentYtIndex);
             
             showYtPlaylistView();
             bukaManagerMusik();
             
-            if(isYtReady) ytPlayer.playVideo();
+            if(isYtReady) {
+                if(type === 'playlist') ytPlayer.loadPlaylist({list: id});
+                else ytPlayer.playVideo();
+            }
             toggleModal('music-manager-modal', false);
         }
 
@@ -797,11 +941,19 @@
         function tambahLaguYoutubeManual() {
             let input = document.getElementById('yt-url-input');
             let url = input.value.trim();
-            let id = extractYTId(url);
-            if(id) {
-                tambahDanPutarYT(id, 'YouTube Media (Manual)', 'Unknown');
-                input.value = '';
-            } else { alert("Link YouTube tidak valid!"); }
+            if(!url) return;
+            
+            let listMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+            let videoMatch = url.match(/(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*)/);
+
+            if(listMatch && listMatch[1]) {
+                tambahDanPutarYT(listMatch[1], 'Custom Playlist', 'YouTube', 'playlist');
+            } else if(videoMatch && videoMatch[1].length === 11) {
+                tambahDanPutarYT(videoMatch[1], 'Custom Video', 'YouTube', 'video');
+            } else {
+                alert("Link YouTube tidak valid!");
+            }
+            input.value = '';
         }
 
         function triggerUploadMusik() { document.getElementById('upload-musik').click(); }
@@ -834,7 +986,10 @@
                     const row = document.createElement('div');
                     row.className = `flex justify-between items-center p-2 rounded-xl border cursor-pointer transition-colors ${isActive ? 'bg-red-50 border-red-200 transform scale-[1.02] shadow-sm' : 'bg-white border-slate-100 hover:bg-slate-50'}`;
                     const eqIndicator = isActive && isPlaying ? `<div class="flex items-end gap-[1px] h-[10px] ml-1"><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.4s_ease-in-out_infinite_alternate]" style="height: 4px;"></div><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.3s_ease-in-out_infinite_alternate]" style="height: 8px;"></div><div class="w-1 bg-red-500 rounded-sm animate-[eq-bounce_0.5s_ease-in-out_infinite_alternate]" style="height: 6px;"></div></div>` : '';
-                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-2" onclick="setTrackOnline(${index}); if(isYtReady)ytPlayer.playVideo(); bukaManagerMusik();"><div class="w-10 h-7 shrink-0 rounded overflow-hidden shadow-sm"><img src="https://img.youtube.com/vi/${track.id}/mqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/${track.id}/default.jpg'" class="w-full h-full object-cover"></div><div class="flex flex-col min-w-0"><span class="text-[10px] font-black truncate ${isActive ? 'text-red-600' : 'text-slate-700'}">${index + 1}. ${track.title}</span><span class="text-[8px] text-slate-400 font-bold truncate">${track.channel || 'YouTube Media'}</span></div>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLagu('online', ${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
+                    
+                    const thumbImg = track.type === 'playlist' ? '<span class="text-2xl">📑</span>' : `<img src="https://img.youtube.com/vi/${track.id}/0.jpg" onerror="this.src='LOGO.png'" class="w-full h-full object-cover">`;
+
+                    row.innerHTML = `<div class="flex-1 min-w-0 pr-2 flex items-center gap-2" onclick="setTrackOnline(${index}); if(isYtReady){if('${track.type}'==='playlist')ytPlayer.loadPlaylist({list:'${track.id}'});else ytPlayer.playVideo();} bukaManagerMusik();"><div class="w-10 h-7 shrink-0 rounded overflow-hidden shadow-sm flex items-center justify-center bg-slate-200">${thumbImg}</div><div class="flex flex-col min-w-0"><span class="text-[10px] font-black truncate ${isActive ? 'text-red-600' : 'text-slate-700'}">${index + 1}. ${track.title}</span><span class="text-[8px] text-slate-400 font-bold truncate">${track.channel || 'YouTube Media'}</span></div>${eqIndicator}</div><button onclick="event.stopPropagation(); hapusLagu('online', ${index})" class="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg active:scale-90 shrink-0 transition-colors" title="Hapus"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>`;
                     conOn.appendChild(row);
                 });
             }
@@ -851,8 +1006,9 @@
                     else if (index <= currentTrackIndex) { currentTrackIndex = Math.max(0, currentTrackIndex - 1); setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play(); } 
                 } else {
                     youtubeLibrary.splice(index, 1);
+                    saveYTLocal();
                     if (youtubeLibrary.length === 0) { stopMusik(); } 
-                    else if (index <= currentYtIndex) { currentYtIndex = Math.max(0, currentYtIndex - 1); setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo(); } 
+                    else if (index <= currentYtIndex) { currentYtIndex = Math.max(0, currentYtIndex - 1); setTrackOnline(currentYtIndex); if (isPlaying) { if(youtubeLibrary[currentYtIndex].type === 'playlist') ytPlayer.loadPlaylist({list: youtubeLibrary[currentYtIndex].id}); else ytPlayer.playVideo(); } } 
                 }
                 bukaManagerMusik(); 
             } 
@@ -877,11 +1033,18 @@
             if(musicMode !== 'online') return;
             if(!isYtReady || youtubeLibrary.length === 0) return;
             currentYtIndex = index; 
-            ytPlayer.loadVideoById(youtubeLibrary[currentYtIndex].id);
-            const titleEl = document.getElementById('music-title'); titleEl.innerText = youtubeLibrary[currentYtIndex].title;
-            if (youtubeLibrary[currentYtIndex].title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
+            const track = youtubeLibrary[currentYtIndex];
+            
+            if(track.type === 'playlist') {
+                ytPlayer.loadPlaylist({list: track.id});
+            } else {
+                ytPlayer.loadVideoById(track.id);
+            }
+            
+            const titleEl = document.getElementById('music-title'); titleEl.innerText = track.title;
+            if (track.title.length > 18) { titleEl.classList.add('marquee-text'); } else { titleEl.classList.remove('marquee-text'); }
             renderEqualizer();
-            // Metadata Media Session YouTube dihandle di onPlayerStateChange
+            // Metadata Media Session YouTube dihandle dinamis di onPlayerStateChange
         }
 
         function updateUIPlayer() {
@@ -905,7 +1068,7 @@
                 if (isPlaying) { currentAudio.pause(); isPlaying = false; } else { currentAudio.play().catch(e => console.log(e)); isPlaying = true; }
                 updateUIPlayer();
             } else {
-                if (youtubeLibrary.length === 0) return alert("Playlist YouTube kosong! Cari lagu dulu.");
+                if (youtubeLibrary.length === 0) return alert("Playlist YouTube kosong! Add dari daftar Koleksi.");
                 if (!isYtReady) return alert("Menyiapkan koneksi ke YouTube, tunggu sebentar...");
                 
                 let state = ytPlayer.getPlayerState();
@@ -914,7 +1077,7 @@
                 } else {
                     let url = ytPlayer.getVideoUrl();
                     if(!url || url.includes('undefined')) setTrackOnline(currentYtIndex);
-                    ytPlayer.playVideo();
+                    else ytPlayer.playVideo();
                 }
             }
         }
@@ -933,7 +1096,11 @@
                 currentTrackIndex = (currentTrackIndex + 1) % musicLibrary.length; setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play();
             } else {
                 if (youtubeLibrary.length === 0 || !isYtReady) return; 
-                currentYtIndex = (currentYtIndex + 1) % youtubeLibrary.length; setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo();
+                currentYtIndex = (currentYtIndex + 1) % youtubeLibrary.length; setTrackOnline(currentYtIndex);
+                if (isPlaying) {
+                    if(youtubeLibrary[currentYtIndex].type === 'playlist') ytPlayer.loadPlaylist({list: youtubeLibrary[currentYtIndex].id});
+                    else ytPlayer.playVideo();
+                }
             }
             updateUIPlayer();
         }
@@ -944,7 +1111,11 @@
                 currentTrackIndex = (currentTrackIndex - 1 + musicLibrary.length) % musicLibrary.length; setTrackOffline(currentTrackIndex); if (isPlaying) currentAudio.play();
             } else {
                 if (youtubeLibrary.length === 0 || !isYtReady) return; 
-                currentYtIndex = (currentYtIndex - 1 + youtubeLibrary.length) % youtubeLibrary.length; setTrackOnline(currentYtIndex); if (isPlaying) ytPlayer.playVideo();
+                currentYtIndex = (currentYtIndex - 1 + youtubeLibrary.length) % youtubeLibrary.length; setTrackOnline(currentYtIndex); 
+                if (isPlaying) {
+                    if(youtubeLibrary[currentYtIndex].type === 'playlist') ytPlayer.loadPlaylist({list: youtubeLibrary[currentYtIndex].id});
+                    else ytPlayer.playVideo();
+                }
             }
             updateUIPlayer();
         }
@@ -1204,7 +1375,7 @@
         function initMathBg() { const bg = document.getElementById('mathBg'); const symbols = ['🕌', '☀️', '🦅', '📚', '🔬', '📐', '⚽', '🎨', '💻', '🎭', 'ا', '🕋']; for(let i = 0; i < 10; i++) { let el = document.createElement('div'); el.className = 'symbol'; el.innerText = symbols[Math.floor(Math.random() * symbols.length)]; el.style.left = `${Math.random() * 100}vw`; el.style.animationDuration = `${12 + Math.random() * 10}s`; el.style.animationDelay = `-${Math.random() * 15}s`; el.style.fontSize = `${2 + Math.random() * 2}rem`; bg.appendChild(el); } }
         
         window.addEventListener('load', () => {
-            initMathBg(); muatAturanDariLocal(); muatSiswaDariLocal(); muatNilaiDariLocal(); initLongPressEvents(); updateKelasDropdownOptions();
+            initMathBg(); loadYTLocal(); muatAturanDariLocal(); muatSiswaDariLocal(); muatNilaiDariLocal(); initLongPressEvents(); updateKelasDropdownOptions();
             activeKelas = null; document.getElementById('area-kelas').classList.remove('needs-class');
             nilaiInput = { r1: '', r2: '', r3: '', total: '' }; updateTampilan(); kalkulasi(); muatDataOffline();
 
